@@ -5,7 +5,7 @@ export default function MovieList({ movies }) {
         {movies.map((movie, index) => {
           return (
             <li key={index}>
-              <img src={movie.Poster} alt={`${movie.Title} poster`}></img>
+              <img src={movie.Poster} alt={`${movie.title} poster`}></img>
             </li>
           );
         })}
