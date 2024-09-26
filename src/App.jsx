@@ -87,6 +87,12 @@ function App() {
     },
   ]);
 
+  async function fetchRequestedMovie(searchValue) {
+    const ulr = `http://www.omdbapi.com/?s=${searchValue}&apikey=64c9f7e5`;
+
+    const response = await fetch(url);
+  }
+
   return (
     <>
       <MovieList movies={movies} />
