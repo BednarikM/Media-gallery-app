@@ -6,7 +6,7 @@ export default function MovieList({ movies }) {
       <ul className="movie-list">
         {movies.map((movie, index) => {
           return (
-            <li key={index} className="movie-list_item">
+            <li key={index} className="movie-list__item">
               <img src={movie.Poster} alt={`${movie.title} poster`}></img>
             </li>
           );
