@@ -7,7 +7,8 @@ export default function MovieList({ movies }) {
         {movies.map((movie, index) => {
           return (
             <li key={index} className="movie-list__item">
-              <img src={movie.Poster} alt={`${movie.title} poster`}></img>
+              <img src={movie.Poster} alt={`${movie.title} poster`} />
+              <div className="movie-list__item-overlay"></div>
             </li>
           );
         })}

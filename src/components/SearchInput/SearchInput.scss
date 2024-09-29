@@ -1,31 +1,23 @@
+@use "sass:color";
+
 .search-input {
-  user-select: none;
-
-  &__label {
-    color: white;
-    display: block;
-    font-size: 1.8rem;
-    line-height: 2.2rem;
-    margin-bottom: 1rem;
-  }
-
   &__element {
-    border: 1px solid red;
-    background-color: black;
-    width: 100%;
-    height: 5rem;
-    font-size: 1.8rem;
+    border: none;
+    background-color: rgb(255, 255, 255);
+    width: 5rem;
+    height: 1rem;
+    font-size: 1rem;
     line-height: 2.2rem;
-    padding: 1rem 1.5rem;
+    padding: 0.5rem;
 
     &:active,
     &:focus {
-      outline: 1px solid pink;
+      outline: 1px solid rgb(0, 0, 0);
     }
 
     &--disabled {
       pointer-events: none;
-      background-color: darken(pink, 5);
+      background-color: color.scale(pink, $lightness: -5%);
 
       &:active,
       &:focus {
