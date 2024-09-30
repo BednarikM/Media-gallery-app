@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SearchContext } from "../../context/SearchContext.js";
+import { SearchContext } from "../../context/Context.js";
 import "./SearchInput.scss";
 
 export default function SearchInput() {

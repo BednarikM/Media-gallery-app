@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 import "./App.scss";
 
-import MovieList from "./components/MovieList/MovieList.jsx";
+import Homepage from "./pages/Homepage.jsx";
 import Header from "./components/Header/Header.jsx";
+import Movie from "./pages/Movie.jsx";
 
-import { SearchContext } from "./context/SearchContext.js";
+import { SearchContext, MovieContext } from "./context/Context.js";
 
 function App() {
   const [movies, setMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState({});
   const [searchValue, setSearchValue] = useState("all");
 
   async function fetchRequestedMovie(searchValue) {
@@ -27,12 +30,20 @@ function App() {
 
   return (
     <>
-      <div>
-        <SearchContext.Provider value={{ searchValue, setSearchValue }}>
-          <Header heading="Movies" setSearchValue={setSearchValue} />
-        </SearchContext.Provider>
-      </div>
-      <MovieList movies={movies} />
+      <SearchContext.Provider value={{ searchValue, setSearchValue }}>
+        <Header heading="Movies" setSearchValue={setSearchValue} />
+      </SearchContext.Provider>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <MovieContext.Provider value={{ setSelectedMovie }}>
+              <Homepage movies={movies} />
+            </MovieContext.Provider>
+          }
+        />
+        <Route path="/:id" element={<Movie movie={selectedMovie} />} />
+      </Routes>
     </>
   );
 }
