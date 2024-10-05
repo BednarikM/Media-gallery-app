@@ -5,7 +5,10 @@ import "./Header.scss";
 export default function Header(props) {
   return (
     <div className="header">
-      <h1>{props.heading}</h1>
+      <div className="¨neon-wrapper">
+        <span className="neon-text">{props.heading}</span>
+        <span className="neon-gradient"></span>
+      </div>
       <SearchInput />
     </div>
   );

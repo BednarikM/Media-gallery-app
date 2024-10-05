@@ -1,13 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+
 html {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font-family: "Roboto Condensed", sans-serif;
   min-height: 100vh;
   max-width: 100vw;
   overflow-x: hidden;
 }
 
 body {
+  min-height: 100vh;
   margin: 0;
 }
 

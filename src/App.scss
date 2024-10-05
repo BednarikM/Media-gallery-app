@@ -1,12 +1,4 @@
 #root {
-  background: rgb(5, 93, 125);
-  background: linear-gradient(
-    65deg,
-    hsl(196deg 92% 25%) 0%,
-    hsl(197deg 100% 21%) 21%,
-    hsl(200deg 100% 17%) 41%,
-    hsl(204deg 100% 14%) 61%,
-    hsl(209deg 100% 11%) 81%,
-    hsl(0deg 0% 0%) 100%
-  );
+  min-height: 100vh;
+  background: radial-gradient(#055b7a, #20043d);;
 }
