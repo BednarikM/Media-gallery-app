@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import "./App.scss";
 
-import Homepage from "./pages/Homepage.jsx";
-import Header from "./components/Header/Header.jsx";
-import Movie from "./pages/Movie.jsx";
+import Homepage from "../pages/Homepage.jsx";
+import Movie from "../pages/Movie.jsx";
+import Header from "./Header.jsx";
 
-import { SearchContext, MovieContext } from "./context/Context.js";
+import { SearchContext, MovieContext } from "../context/Context.js";
 
 function App() {
   const [movies, setMovies] = useState([]);

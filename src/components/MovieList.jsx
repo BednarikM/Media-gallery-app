@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 
-import { MovieContext } from "../../context/Context.js";
+import { MovieContext } from "../context/Context.js";
 
-import "./MovieList.scss";
+import "../styles/MovieList.scss";
 
 export default function MovieList({ movies }) {
   const { setSelectedMovie } = useContext(MovieContext);

@@ -16,6 +16,11 @@ body {
   margin: 0;
 }
 
+#root {
+  min-height: 100vh;
+  background: radial-gradient(#055b7a, #20043d);
+}
+
 h1 {
   margin: 0;
 }

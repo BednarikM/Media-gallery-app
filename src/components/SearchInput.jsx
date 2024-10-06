@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { SearchContext } from "../../context/Context.js";
-import "./SearchInput.scss";
+import { SearchContext } from "../context/Context.js";
+import "../styles/SearchInput.scss";
 
 export default function SearchInput() {
   const { searchValue, setSearchValue } = useContext(SearchContext);

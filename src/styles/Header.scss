@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 2rem;
+
+  .neon-wrapper {
+    display: inline-flex;
+
+    .neon-text {
+      background: -webkit-linear-gradient(
+        0deg,
+        rgb(153, 0, 255) 20%,
+        rgb(255, 183, 0) 80%
+      );
+      font-size: 4rem;
+      font-weight: bold;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      position: relative;
+
+      &::after {
+        content: "Movies";
+        position: absolute;
+        background-image: -webkit-linear-gradient(
+          0deg,
+          rgb(153, 0, 255) 20%,
+          rgb(255, 183, 0) 80%
+        );
+        left: 0;
+        right: 0;
+        filter: blur(2px);
+        background-clip: text;
+      }
+    }
+  }
+}
