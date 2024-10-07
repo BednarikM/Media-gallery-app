@@ -1,3 +1,5 @@
+@use './variables' as *;
+
 .header {
   display: flex;
   flex-direction: column;
@@ -5,36 +7,32 @@
   align-items: center;
   padding: 2rem 2rem;
 
-  .neon-wrapper {
-    display: inline-flex;
+  .neon-text {
+    background: -webkit-linear-gradient(
+      0deg,
+      $color-purple 20%,
+      $color-gold 80%
+    );
+    font-size: 10rem;
+    font-weight: bold;
+    background-clip: text;
+    color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
 
-    .neon-text {
-      background: -webkit-linear-gradient(
+    &::after {
+      content: "Movies";
+      position: absolute;
+      background-image: -webkit-linear-gradient(
         0deg,
-        rgb(153, 0, 255) 20%,
-        rgb(255, 183, 0) 80%
+        $color-purple 20%,
+        $color-gold 80%
       );
-      font-size: 4rem;
-      font-weight: bold;
-      -webkit-background-clip: text;
+      left: 0;
+      right: 0;
+      filter: blur(2px);
       background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-      position: relative;
-
-      &::after {
-        content: "Movies";
-        position: absolute;
-        background-image: -webkit-linear-gradient(
-          0deg,
-          rgb(153, 0, 255) 20%,
-          rgb(255, 183, 0) 80%
-        );
-        left: 0;
-        right: 0;
-        filter: blur(2px);
-        background-clip: text;
-      }
     }
   }
 }

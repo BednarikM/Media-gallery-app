@@ -1,3 +1,4 @@
+/* IMPORTS ********************************************************************/
 import { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -7,13 +8,22 @@ import Header from "./Header.jsx";
 
 import { SearchContext, MovieContext } from "../context/Context.js";
 
+
+
+/* JSX LOGIC ******************************************************************/
 function App() {
+
+  /* DEFINITION ***************************************************************/
+  const [authToken, setAuthToken] = useState("")
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState({});
-  const [searchValue, setSearchValue] = useState("all");
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("all")
 
-  async function fetchRequestedMovie(searchValue) {
-    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=64c9f7e5`;
+  /* FUNCTIONS ****************************************************************/
+
+  async function fetchRequestedMovie(debouncedSearchValue) {
+    const url = `http://www.omdbapi.com/?s=${debouncedSearchValue}&apikey=64c9f7e5`;
 
     const response = await fetch(url);
     const reponseJson = await response.json();
@@ -23,10 +33,22 @@ function App() {
     }
   }
 
+  /* HOOKS ********************************************************************/
   useEffect(() => {
-    fetchRequestedMovie(searchValue);
-  }, [searchValue]);
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 500);
 
+    return () => clearTimeout(timeoutId);
+  }, [searchValue]);
+  
+  
+  useEffect(() => {
+    fetchRequestedMovie(debouncedSearchValue);
+  }, [debouncedSearchValue]);
+
+
+  /* JSX TEMPLATE *************************************************************/
   return (
     <>
       <SearchContext.Provider value={{ searchValue, setSearchValue }}>

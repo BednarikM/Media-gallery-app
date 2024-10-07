@@ -9,7 +9,6 @@
 
 .movie-list__item {
   width: fit-content;
-  height: auto;
   object-fit: contain;
   position: relative;
   width: auto;
@@ -19,7 +18,7 @@
     object-fit: contain;
     opacity: 90%;
     max-width: 200px;
-    max-height: 250px;
+    max-height: 160px;
     border-radius: 5px;
   }
 
