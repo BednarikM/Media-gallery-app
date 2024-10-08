@@ -1,2 +1,8 @@
 $color-gold: #ffb700;
 $color-purple: #9900ff;
+$gradient-purple-gold: -webkit-linear-gradient(
+  0deg,
+  $color-purple 20%,
+  $color-gold 80%
+);
+$gradient-purple-blue: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);

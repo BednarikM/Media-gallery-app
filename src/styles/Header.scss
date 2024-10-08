@@ -6,14 +6,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 2rem 2rem;
-  gap: 2rem;
+  gap: 1rem;
 
-  &-title {
-    background: -webkit-linear-gradient(
-      0deg,
-      $color-purple 20%,
-      $color-gold 80%
-    );
+  &__title {
+    background: $gradient-purple-gold;
     font-size: 6rem;
     font-weight: bold;
     background-clip: text;
@@ -25,15 +21,45 @@
     &::after {
       content: "Movies";
       position: absolute;
-      background-image: -webkit-linear-gradient(
-        0deg,
-        $color-purple 20%,
-        $color-gold 80%
-      );
+      background-image: $gradient-purple-gold;
       left: 0;
       right: 0;
       filter: blur(2px);
       background-clip: text;
     }
   }
+
+  &__buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+  }
+
+  &__button {
+    background-image: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
+    border: none;
+    border-radius: 4px;
+    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+    padding: 0.2rem;
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+
+    &-text {
+      background-color: rgb(5, 6, 45);
+      border-radius: 3px;
+      padding: 0.2rem 2rem;
+      font-size: 2rem;
+      transition: 300ms;
+      color: #fff;
+      display: flex;
+    }
+
+    &:hover span {
+      background: none;
+    }
+  }
 }
+
+// <!-- HTML !-->
+// <button class="button-64" role="button"><span class="text">Button 64</span></button>

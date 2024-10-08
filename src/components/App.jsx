@@ -10,10 +10,9 @@ import { SearchContext, MovieContext } from "../context/Context.js";
 
 /* JSX LOGIC ******************************************************************/
 function App() {
-
   /* DEFINITION ***************************************************************/
   const [moviesData, setMoviesData] = useState([]);
-  const [activeMoviesGenre, setActiveMoviesGenre] = useState("all")
+  const [activeMoviesGenre, setActiveMoviesGenre] = useState("all");
   const [selectedMovie, setSelectedMovie] = useState({});
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
@@ -21,24 +20,26 @@ function App() {
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
   const apiOptions = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${apiKey}`
-    }
+      accept: "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
   };
 
-
   /* FUNCTIONS ****************************************************************/
-  async function fetchMoviesData(genre, apiOptions, pagination="1") {
-    const response = await fetch(`https://api.themoviedb.org/3/trending/${genre}/week?language=en-US&page=${pagination}`, apiOptions)
+  async function fetchMoviesData(genre, apiOptions, pagination = "1") {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/trending/${genre}/week?language=en-US&page=${pagination}`,
+      apiOptions
+    );
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
     }
 
     const data = await response.json();
-    setMoviesData(data.results)
+    setMoviesData(data.results);
   }
 
   // async function fetchRequestedMovie(debouncedSearchValue) {
@@ -66,14 +67,17 @@ function App() {
   // }, [debouncedSearchValue]);
 
   useEffect(() => {
-    fetchMoviesData(moviesGenre, apiOptions);
+    fetchMoviesData(activeMoviesGenre, apiOptions);
   }, []);
 
   /* JSX TEMPLATE *************************************************************/
   return (
     <>
-      <SearchContext.Provider value={{ searchInputValue, setSearchInputValue, activeMoviesGenre, setActiveMoviesGenre }}>
-        <Header heading="Movies" setSearchInputValue={setSearchInputValue} />
+      <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
+        <Header
+          heading="Movies"
+          {...{ activeMoviesGenre, setActiveMoviesGenre }}
+        />
       </SearchContext.Provider>
       <Routes>
         <Route

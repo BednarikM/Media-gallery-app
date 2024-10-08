@@ -2,11 +2,12 @@
 @use "sass:color";
 
 .search-input {
+  margin-top: 2rem;
   display: flex;
   position: relative;
   justify-content: center;
   align-items: center;
-  background-color: rgb(255, 255, 255);
+  background-color: #ffffff;
   border-radius: 2px;
   height: fit-content;
   font-size: 2rem;
@@ -21,16 +22,15 @@
     }
   }
 
-
   &__element {
     border: none;
     outline: none;
     font-size: 16px;
     padding: 0.5rem 1rem;
-   
+    width: 15rem;
 
     &:hover {
-      cursor: text
+      cursor: text;
     }
   }
 
