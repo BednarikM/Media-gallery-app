@@ -4,7 +4,7 @@ import "../styles/SearchInput.scss";
 import SvgIcon from "./SvgIcon.jsx";
 
 export default function SearchInput() {
-  const { searchValue, setSearchValue } = useContext(SearchContext);
+  const { searchInputValue, setSearchInputValue } = useContext(SearchContext);
   const inputRef = useRef();
 
   const handleIconClick = () => {
@@ -16,11 +16,11 @@ export default function SearchInput() {
       <input
         type="text"
         ref={inputRef}
-        value={searchValue}
+        value={searchInputValue}
         id="search-input__element"
         className="search-input__element"
         placeholder="Search"
-        onChange={(e) => setSearchValue(e.target.value)}
+        onChange={(e) => setSearchInputValue(e.target.value)}
       />
       <SvgIcon 
         className="search-input__svg" 
