@@ -18,7 +18,6 @@ export default function App() {
   const [selectedMovie, setSelectedMovie] = useState({});
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
-  const [loading, setLoading] = useState(true);
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -32,8 +31,6 @@ export default function App() {
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMoviesData(genre, apiOptions, pagination = "1") {
-    setLoading(true);
-
     try {
       const response = await fetch(
         `https://api.themoviedb.org/3/trending/${genre}/week?language=en-US&page=${pagination}`,
@@ -49,11 +46,6 @@ export default function App() {
     } catch (error) {
       console.log("Failed to fetch movies:", error);
       navigate("/404");
-    } finally {
-      // Set loading to false with a delay to allow time for rendering
-      setTimeout(() => {
-        setLoading(false); // Set loading to false after a delay
-      }, 1000); // Adjust the timeout duration as needed (e.g., 1000ms)
     }
   }
 
@@ -99,7 +91,7 @@ export default function App() {
           path="/"
           element={
             <MovieContext.Provider value={{ setSelectedMovie }}>
-              {loading ? <Loader /> : <Homepage moviesData={moviesData} />}
+              <Homepage moviesData={moviesData} />
             </MovieContext.Provider>
           }
         />

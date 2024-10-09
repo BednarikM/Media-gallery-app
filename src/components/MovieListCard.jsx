@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { MovieContext } from "../context/Context.js";
 import "../styles/MovieListCard.scss";
 
 export default function MovieListCard({ movie, index }) {
   const { setSelectedMovie } = useContext(MovieContext);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   function formatRoute(title) {
     return title
@@ -34,11 +35,16 @@ export default function MovieListCard({ movie, index }) {
         className="movie-list-card__link"
         onClick={() => setSelectedMovie(movie)}
       >
-        <img
-          src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-          alt={`${movie.title} poster`}
-          className="movie-list-card__image"
-        />
+        {!isImageLoaded ? (
+          <div className="movie-list-card__placeholder" />
+        ) : (
+          <img
+            src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+            alt={`${movie.title} poster`}
+            className="movie-list-card__image"
+            onLoad={() => setIsImageLoaded(true)} // Set isLoaded to true when image is loaded
+          />
+        )}
         <div className="movie-list-card__information">
           <div className="movie-list-card__title">
             {movie.media_type === "movie" ? movie.title : movie.name}
