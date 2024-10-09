@@ -1,4 +1,4 @@
-import icons from '../assets/icons.svg';
+import icons from "../assets/icons.svg";
 
 export default function SvgIcon({ className, iconName, handleIconClick }) {
   return (
@@ -6,5 +6,4 @@ export default function SvgIcon({ className, iconName, handleIconClick }) {
       <use xlinkHref={`${icons}#${iconName}`} />
     </svg>
   );
-};
-
+}

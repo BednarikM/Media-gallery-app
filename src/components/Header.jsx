@@ -1,8 +1,22 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import SearchInput from "./SearchInput.jsx";
 import "../styles/Header.scss";
 
-export default function Header({ heading, activeMoviesGenre, setActiveMoviesGenre }) {
+export default function Header({
+  heading,
+  activeMoviesGenre,
+  setActiveMoviesGenre,
+}) {
   const movieGenres = ["all", "movie", "tv"];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  function handleButtonClick(genre) {
+    setActiveMoviesGenre(genre);
+    if (location.pathname !== "/") {
+      navigate("/");
+    }
+  }
 
   return (
     <div className="header">
@@ -15,8 +29,7 @@ export default function Header({ heading, activeMoviesGenre, setActiveMoviesGenr
               className={`header__button ${
                 activeMoviesGenre === genre ? "header__button--active" : ""
               }`}
-              // onClick={() => setActiveMoviesGenre(genre)}
-              onClick={() => setActiveMoviesGenre(genre)}
+              onClick={() => handleButtonClick(genre)}
             >
               <span className="header__button-text">{genre}</span>
             </button>

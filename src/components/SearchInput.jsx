@@ -1,6 +1,8 @@
 import { useContext, useRef } from "react";
 import { SearchContext } from "../context/Context.js";
+
 import "../styles/SearchInput.scss";
+
 import SvgIcon from "./SvgIcon.jsx";
 
 export default function SearchInput() {
@@ -8,7 +10,7 @@ export default function SearchInput() {
   const inputRef = useRef();
 
   const handleIconClick = () => {
-    inputRef.current.focus();  // Focus the input when the SVG is clicked
+    inputRef.current.focus(); // Focus the input when the SVG is clicked
   };
 
   return (
@@ -22,9 +24,9 @@ export default function SearchInput() {
         placeholder="Search"
         onChange={(e) => setSearchInputValue(e.target.value)}
       />
-      <SvgIcon 
-        className="search-input__svg" 
-        iconName="search" 
+      <SvgIcon
+        className="search-input__svg"
+        iconName="search"
         handleIconClick={handleIconClick}
       />
     </div>

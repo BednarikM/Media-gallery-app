@@ -5,17 +5,20 @@ import { Route, Routes } from "react-router-dom";
 import Homepage from "../pages/Homepage.jsx";
 import Movie from "../pages/Movie.jsx";
 import Header from "./Header.jsx";
+import Loader from "./Loader.jsx";
+import NotFound from "../pages/NotFound.jsx"; // Custom 404 component
 
 import { SearchContext, MovieContext } from "../context/Context.js";
 
 /* JSX LOGIC ******************************************************************/
-function App() {
+export default function App() {
   /* DEFINITION ***************************************************************/
   const [moviesData, setMoviesData] = useState([]);
   const [activeMoviesGenre, setActiveMoviesGenre] = useState("all");
   const [selectedMovie, setSelectedMovie] = useState({});
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -29,17 +32,29 @@ function App() {
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMoviesData(genre, apiOptions, pagination = "1") {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/trending/${genre}/week?language=en-US&page=${pagination}`,
-      apiOptions
-    );
+    setLoading(true);
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/trending/${genre}/week?language=en-US&page=${pagination}`,
+        apiOptions
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setMoviesData(data.results);
+    } catch (error) {
+      console.log("Failed to fetch movies:", error);
+      navigate("/404");
+    } finally {
+      // Set loading to false with a delay to allow time for rendering
+      setTimeout(() => {
+        setLoading(false); // Set loading to false after a delay
+      }, 1000); // Adjust the timeout duration as needed (e.g., 1000ms)
     }
-
-    const data = await response.json();
-    setMoviesData(data.results);
   }
 
   // async function fetchRequestedMovie(debouncedSearchValue) {
@@ -84,14 +99,13 @@ function App() {
           path="/"
           element={
             <MovieContext.Provider value={{ setSelectedMovie }}>
-              <Homepage moviesData={moviesData} />
+              {loading ? <Loader /> : <Homepage moviesData={moviesData} />}
             </MovieContext.Provider>
           }
         />
         <Route path="/:id" element={<Movie movie={selectedMovie} />} />
+        <Route path="/404" element={<NotFound />} /> {/* 404 Not Found Route */}
       </Routes>
     </>
   );
 }
-
-export default App;

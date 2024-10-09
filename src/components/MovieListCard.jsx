@@ -1,9 +1,28 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { MovieContext } from "../context/Context.js";
 import "../styles/MovieListCard.scss";
 
 export default function MovieListCard({ movie, index }) {
+  const { setSelectedMovie } = useContext(MovieContext);
+
   function formatRoute(title) {
-    return title.toLowerCase().replace(/\s+/g, "-");
+    return title
+      .toLowerCase() // Convert to lowercase
+      .replace(/:/g, "-") // Replace colons with hyphens
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Collapse multiple hyphens into one
+      .replace(/^-+|-+$/g, ""); // Remove leading or trailing hyphens
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`;
   }
 
   return (
@@ -21,7 +40,14 @@ export default function MovieListCard({ movie, index }) {
           className="movie-list-card__image"
         />
         <div className="movie-list-card__information">
-          <div className="movie-list-card__title">{movie.media_type === "movie" ? movie.title : movie.name}</div>
+          <div className="movie-list-card__title">
+            {movie.media_type === "movie" ? movie.title : movie.name}
+          </div>
+          <div className="movie-list-card__release-date">
+            {movie.media_type === "movie"
+              ? formatDate(movie.release_date)
+              : formatDate(movie.first_air_date)}
+          </div>
         </div>
       </Link>
     </li>
