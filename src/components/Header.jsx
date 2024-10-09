@@ -1,7 +1,7 @@
 import SearchInput from "./SearchInput.jsx";
 import "../styles/Header.scss";
 
-export default function Header({ heading, activeGenre, setActiveMoviesGenre }) {
+export default function Header({ heading, activeMoviesGenre, setActiveMoviesGenre }) {
   const movieGenres = ["all", "movie", "tv"];
 
   return (
@@ -13,8 +13,9 @@ export default function Header({ heading, activeGenre, setActiveMoviesGenre }) {
             <button
               key={genre}
               className={`header__button ${
-                activeGenre === genre ? "header__button-active-genre" : ""
+                activeMoviesGenre === genre ? "header__button--active" : ""
               }`}
+              // onClick={() => setActiveMoviesGenre(genre)}
               onClick={() => setActiveMoviesGenre(genre)}
             >
               <span className="header__button-text">{genre}</span>

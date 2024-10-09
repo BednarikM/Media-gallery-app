@@ -68,7 +68,7 @@ function App() {
 
   useEffect(() => {
     fetchMoviesData(activeMoviesGenre, apiOptions);
-  }, []);
+  }, [activeMoviesGenre]);
 
   /* JSX TEMPLATE *************************************************************/
   return (

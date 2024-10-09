@@ -7,7 +7,7 @@
   position: relative;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: $color-white;
   border-radius: 2px;
   height: fit-content;
   font-size: 2rem;
@@ -38,6 +38,6 @@
     width: 25px;
     height: 25px;
     flex-shrink: 0;
-    fill: #666;
+    fill: $color-search-svg;
   }
 }
