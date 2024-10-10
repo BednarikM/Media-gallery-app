@@ -20,7 +20,7 @@ export default function MovieListCard({ movie, index }) {
     const date = new Date(dateString);
 
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
     return `${day}.${month}.${year}`;
@@ -35,24 +35,24 @@ export default function MovieListCard({ movie, index }) {
         className="movie-list-card__link"
         onClick={() => setSelectedMovie(movie)}
       >
-        {!isImageLoaded ? (
-          <div className="movie-list-card__placeholder" />
-        ) : (
+        <div className="movie-list-card__image-container">
+          {!isImageLoaded && <div className="movie-list-card__placeholder" />}
           <img
             src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
             alt={`${movie.title} poster`}
             className="movie-list-card__image"
-            onLoad={() => setIsImageLoaded(true)} // Set isLoaded to true when image is loaded
+            onLoad={() => setIsImageLoaded(true)}
+            style={{ display: isImageLoaded ? "block" : "none" }}
           />
-        )}
-        <div className="movie-list-card__information">
-          <div className="movie-list-card__title">
-            {movie.media_type === "movie" ? movie.title : movie.name}
-          </div>
-          <div className="movie-list-card__release-date">
-            {movie.media_type === "movie"
-              ? formatDate(movie.release_date)
-              : formatDate(movie.first_air_date)}
+          <div className="movie-list-card__information">
+            <div className="movie-list-card__title">
+              {movie.media_type === "movie" ? movie.title : movie.name}
+            </div>
+            <div className="movie-list-card__release-date">
+              {movie.media_type === "movie"
+                ? formatDate(movie.release_date)
+                : formatDate(movie.first_air_date)}
+            </div>
           </div>
         </div>
       </Link>

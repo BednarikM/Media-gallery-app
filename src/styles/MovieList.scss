@@ -1,8 +1,22 @@
+@use "./variables" as *;
+
 .movie-list {
+  align-items: stretch;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: stretch;
   gap: 30px;
+  justify-content: center;
   padding: 20px 20px 60px;
+
+  &__no-results {
+    align-items: center;
+    color: $color-white;
+    display: flex;
+    flex-direction: column;
+    font-size: 3rem;
+    font-weight: bold;
+    gap: 1rem;
+    justify-content: center;
+    padding: 5rem 2rem;
+  }
 }

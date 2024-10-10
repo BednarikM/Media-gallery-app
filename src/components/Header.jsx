@@ -6,6 +6,7 @@ export default function Header({
   heading,
   activeMoviesGenre,
   setActiveMoviesGenre,
+  setSearchInputValue
 }) {
   const movieGenres = ["all", "movie", "tv"];
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function Header({
 
   function handleButtonClick(genre) {
     setActiveMoviesGenre(genre);
+    setSearchInputValue("")
     if (location.pathname !== "/") {
       navigate("/");
     }

@@ -2,16 +2,16 @@
 @use "sass:color";
 
 .search-input {
-  margin-top: 2rem;
-  display: flex;
-  position: relative;
-  justify-content: center;
   align-items: center;
   background-color: $color-white;
   border-radius: 2px;
-  height: fit-content;
+  display: flex;
   font-size: 2rem;
+  height: fit-content;
+  justify-content: center;
+  margin-top: 2rem;
   overflow: hidden;
+  position: relative;
 
   &:active,
   &:focus-within {
@@ -24,10 +24,10 @@
 
   &__element {
     border: none;
+    font-size: 2.2rem;
     outline: none;
-    font-size: 16px;
     padding: 0.5rem 1rem;
-    width: 15rem;
+    width: 22rem;
 
     &:hover {
       cursor: text;
@@ -35,9 +35,10 @@
   }
 
   &__svg {
-    width: 25px;
-    height: 25px;
-    flex-shrink: 0;
     fill: $color-search-svg;
+    flex-shrink: 0;
+    height: 25px;
+    margin-right: 0.5rem;
+    width: 25px;
   }
 }

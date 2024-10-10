@@ -1,9 +1,12 @@
 export default function Movie({ movie }) {
-  console.log(movie);
+
+  console.log(movie)
+
 
   return (
     <>
-      <div>{movie.Title}</div>
+      <h1>TEST</h1>
+      <div>{movie.name}</div>
     </>
   );
 }
