@@ -1,5 +1,5 @@
-import MovieList from "../components/MovieList.jsx";
+import MediaList from "../components/MediaList.jsx";
 
-export default function Homepage({ moviesData }) {
-  return <MovieList moviesData={moviesData} />;
+export default function Homepage({ mediasData }) {
+  return <MediaList mediasData={mediasData} />;
 }

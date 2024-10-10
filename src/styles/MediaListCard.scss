@@ -1,6 +1,6 @@
 @use "./variables" as *;
 
-.movie-list-card {
+.media-list-card {
   &__link {
     background-color: $color-dark-blue;
     border-radius: 4px;
@@ -16,7 +16,7 @@
       opacity: 100%;
       transform: scale(1.05);
 
-      .movie-list-card__image {
+      .media-list-card__image {
         opacity: 100%;
       }
     }

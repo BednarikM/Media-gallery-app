@@ -3,21 +3,23 @@ import { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import Homepage from "../pages/Homepage.jsx";
-import Movie from "../pages/Movie.jsx";
+import MediaDetail from "../pages/MediaDetail.jsx";
 import Header from "./Header.jsx";
 import NotFound from "../pages/NotFound.jsx"; // Custom 404 component
 
-import { SearchContext, MovieContext } from "../context/Context.js";
+import { SearchContext } from "../context/Context.js";
 
 /* JSX LOGIC ******************************************************************/
 export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
 
-  const [moviesData, setMoviesData] = useState([]);
+  const [mediasData, setMediasData] = useState([]);
   const [pagination, setPagination] = useState(1);
-  const [activeMoviesGenre, setActiveMoviesGenre] = useState("all");
-  const [selectedMovie, setSelectedMovie] = useState({});
+  const [activeMediasGenre, setActiveMediasGenre] = useState("all");
+  const [selectedMedia, setSelectedMedia] = useState(
+    JSON.parse(localStorage.getItem("selectedMedia")) || {}
+  );
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
@@ -32,10 +34,11 @@ export default function App() {
   };
 
   /* FUNCTIONS ****************************************************************/
-  async function fetchMovieData(url, apiOptions) {
+  async function fetchMediasData(url, apiOptions) {
     try {
       const response = await fetch(url, apiOptions);
 
+      // TODO HIDE SEARCH BAR
       if (!response.ok) {
         throw {
           status: "5XX",
@@ -46,18 +49,10 @@ export default function App() {
 
       const fetchedData = await response.json();
 
-      if (!fetchedData.results || fetchedData.total_results === 0) {
-        throw {
-          status: "404",
-          message:
-            "Sorry, we couldn't find any results for your search. Please try different keywords or check for spelling mistakes.",
-        };
-      }
-
       const filteredData = fetchedData.results.filter(
         (item) => item.media_type !== "person"
       );
-      setMoviesData(filteredData);
+      setMediasData(filteredData);
     } catch (error) {
       console.log(error);
       navigate(`/${error.status}`, {
@@ -68,9 +63,9 @@ export default function App() {
 
   /* HOOKS ********************************************************************/
   useEffect(() => {
-    const apiUrl = `https://api.themoviedb.org/3/trending/${activeMoviesGenre}/week?language=en-US&page=${pagination}`;
-    fetchMovieData(apiUrl, apiOptions);
-  }, [activeMoviesGenre]);
+    const apiUrl = `https://api.themoviedb.org/3/trending/${activeMediasGenre}/week?language=en-US&page=${pagination}`;
+    fetchMediasData(apiUrl, apiOptions);
+  }, [activeMediasGenre]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -83,30 +78,28 @@ export default function App() {
   useEffect(() => {
     if (debouncedSearchValue) {
       const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${pagination}`;
-      fetchMovieData(apiUrl, apiOptions);
+      fetchMediasData(apiUrl, apiOptions);
     }
   }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    if (selectedMedia && Object.keys(selectedMedia).length > 0) {
+      localStorage.setItem("selectedMedia", JSON.stringify(selectedMedia));
+    }
+  }, [selectedMedia]);
 
   /* JSX TEMPLATE *************************************************************/
   return (
     <>
       <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
         <Header
-          heading="Movies Search App"
-          {...{ activeMoviesGenre, setActiveMoviesGenre, setSearchInputValue }}
+          heading="Medias Search App"
+          {...{ activeMediasGenre, setActiveMediasGenre, setSearchInputValue }}
         />
       </SearchContext.Provider>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <MovieContext.Provider value={{ setSelectedMovie }}>
-              <Homepage moviesData={moviesData} />
-            </MovieContext.Provider>
-          }
-        />
-        <Route path="/:id" element={<Movie movie={selectedMovie} />} />
-        <Route path="/404" element={<NotFound />} />
+        <Route path="/" element={<Homepage mediasData={mediasData} />} />
+        <Route path="/:id" element={<MediaDetail media={selectedMedia} />} />
         <Route path="/5XX" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

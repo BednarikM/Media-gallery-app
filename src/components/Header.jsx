@@ -4,17 +4,17 @@ import "../styles/Header.scss";
 
 export default function Header({
   heading,
-  activeMoviesGenre,
-  setActiveMoviesGenre,
-  setSearchInputValue
+  activeMediasGenre,
+  setActiveMediasGenre,
+  setSearchInputValue,
 }) {
-  const movieGenres = ["all", "movie", "tv"];
+  const mediaGenres = ["all", "movie", "tv"];
   const navigate = useNavigate();
   const location = useLocation();
 
   function handleButtonClick(genre) {
-    setActiveMoviesGenre(genre);
-    setSearchInputValue("")
+    setActiveMediasGenre(genre);
+    setSearchInputValue("");
     if (location.pathname !== "/") {
       navigate("/");
     }
@@ -24,12 +24,12 @@ export default function Header({
     <div className="header">
       <div className="header__title">{heading}</div>
       <div className="header__buttons-wrapper">
-        {movieGenres.map((genre) => {
+        {mediaGenres.map((genre) => {
           return (
             <button
               key={genre}
               className={`header__button ${
-                activeMoviesGenre === genre ? "header__button--active" : ""
+                activeMediasGenre === genre ? "header__button--active" : ""
               }`}
               onClick={() => handleButtonClick(genre)}
             >
