@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import ImageContainer from "../components/ImageContainer";
+
 export default function MediaDetail() {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [media, setMedia] = useState(
+  const [media, _ ] = useState(
     JSON.parse(localStorage.getItem("selectedMedia")) || {}
   );
 
-  const navigate = useNavigate();
-  console.log(media);
+  console.log(media)
 
-  const mediaType = media.media_type;
+  const navigate = useNavigate();
 
   if (Object.entries(media).length === 0) {
     return null;
@@ -23,20 +23,11 @@ export default function MediaDetail() {
   }, [media]);
 
   return (
-    <>
+    <div>
       <h1>TEST</h1>
       <div>{media.name}</div>
       <div>{media.adult.toString()}</div>
-      <div className="media-list-card__image-container">
-        {!isImageLoaded && <div className="media-list-card__placeholder" />}
-        <img
-          src={`https://image.tmdb.org/t/p/w500/${media.poster_path}`}
-          alt={`${media.title} poster`}
-          className="media-list-card__image"
-          onLoad={() => setIsImageLoaded(true)}
-          style={{ display: isImageLoaded ? "block" : "none" }}
-        />
-      </div>
-    </>
-  );
+      <ImageContainer imageUrl={media.backdrop_path} imageAlt={media.formattedTitle}/>
+    </div>
+  )
 }
