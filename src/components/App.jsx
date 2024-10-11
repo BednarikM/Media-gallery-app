@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import Homepage from "../pages/Homepage.jsx";
 import MediaDetail from "../pages/MediaDetail.jsx";
 import Header from "./Header.jsx";
-import NotFound from "../pages/NotFound.jsx"; // Custom 404 component
+import Error from "../pages/Error.jsx"; // Custom 404 component
 
 import { SearchContext } from "../context/Context.js";
 import { formatRoute, formatDate } from "../utils/Utils.js";
@@ -17,6 +17,7 @@ export default function App() {
 
   const [mediasData, setMediasData] = useState([]);
   const [mediaGenres, setMediaGenres] = useState({});
+  const [loadingGenres, setLoadingGenres] = useState(true);
   const [pagination, setPagination] = useState(1);
   const [activeMediasGenre, setActiveMediasGenre] = useState("all");
   const [selectedMedia, _] = useState(
@@ -37,65 +38,47 @@ export default function App() {
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMediasData(url, apiOptions) {
-    // try {
+    if (loadingGenres) return;
+
     const response = await fetch(url, apiOptions);
 
-    // TODO HIDE SEARCH BAR
-    // if (!response.ok) {
-    //   throw {
-    //     status: "5XX",
-    //     message:
-    //       "Oops! It seems like we're having trouble fetching data right now. Please try again later.",
-    //   };
-    // }
+    //TODO HIDE SEARCH BAR
 
     const fetchedData = await response.json();
 
     const formattedData = fetchedData.results
       .filter((media) => media.media_type !== "person")
-      .map((media) => ({
-        ...media,
-        formattedTitle: media.media_type === "movie" ? media.title : media.name,
-        formattedRoute: formatRoute(
-          media.media_type === "movie" ? media.title : media.name
-        ),
-        formattedReleaseDate: formatDate(
-          media.media_type === "movie"
-            ? media.release_date
-            : media.first_air_date
-          // ),
-          // formattedGenres:
-          //   media.media_type === "movie"
-          //     ? media.genre_ids
-          //         .map((genreId) => {
-          //           const genre = mediaGenres.movie.find(
-          //             (genre) => genre.id === genreId
-          //           );
-          //           return genre ? genre.name : "";
-          //         })
-          //         .filter((name) => name)
-          //     : media.media_type === "tv"
-          //     ? media.genre_ids
-          //         .map((genreId) => {
-          //           const genre = mediaGenres.tv.find(
-          //             (genre) => genre.id === genreId
-          //           );
-          //           return genre ? genre.name : "";
-          //         })
-          //         .filter((name) => name)
-          //     : [],
-        ),
-      }));
+      .map((media) => {
+        const isMovie = media.media_type === "movie";
+
+        const formattedTitle = isMovie ? media.title : media.name;
+        const formattedRoute = formatRoute(isMovie ? media.title : media.name);
+        const formattedReleaseDate = formatDate(
+          isMovie ? media.release_date : media.first_air_date
+        );
+
+        const selectedGenreList = isMovie ? mediaGenres.movie : mediaGenres.tv;
+
+        const formattedGenres = media.genre_ids.map((genreId) => {
+          const genre = selectedGenreList.find((genre) => genre.id === genreId);
+          return genre.name;
+        });
+
+        return {
+          ...media,
+          formattedTitle,
+          formattedRoute,
+          formattedReleaseDate,
+          formattedGenres,
+        };
+      });
 
     setMediasData(formattedData);
-    // } catch (error) {
-    //   navigate(`/${error.status}`, {
-    //     state: { status: error.status, message: error.message },
-    //   });
-    // }
   }
 
   async function fetchMediaGenres(apiOptions) {
+    setLoadingGenres(true);
+
     const movieGenresResponse = await fetch(
       "https://api.themoviedb.org/3/genre/movie/list?language=en",
       apiOptions
@@ -105,29 +88,16 @@ export default function App() {
       apiOptions
     );
 
-    // try {
-    //   if (!movieGenresResponse.ok || !tvGenresResponse.ok) {
-    //     throw {
-    //       status: "5XX",
-    //       message:
-    //         "Oops! It seems like we're having trouble fetching data right now. Please try again later.",
-    //     };
-    //   }
-
     const movieGenresData = await movieGenresResponse.json();
     const tvGenresData = await tvGenresResponse.json();
 
-    setMediaGenres({
+    const genresList = {
       movie: movieGenresData.genres || [],
       tv: tvGenresData.genres || [],
-    });
+    };
 
-    console.log(mediaGenres);
-    // } catch (error) {
-    //   navigate(`/${error.status}`, {
-    //     state: { status: error.status, message: error.message },
-    //   });
-    // }
+    setMediaGenres(genresList);
+    setLoadingGenres(false);
   }
 
   /* HOOKS ********************************************************************/
@@ -139,13 +109,13 @@ export default function App() {
   }, [navigate]);
 
   useEffect(() => {
-    const apiUrl = `https://api.themoviedb.org/3/trending/${activeMediasGenre}/week?language=en-US&page=${pagination}`;
-    fetchMediasData(apiUrl, apiOptions);
-  }, [activeMediasGenre]);
-
-  useEffect(() => {
     fetchMediaGenres(apiOptions);
   }, []);
+
+  useEffect(() => {
+    const apiUrl = `https://api.themoviedb.org/3/trending/${activeMediasGenre}/week?language=en-US&page=${pagination}`;
+    fetchMediasData(apiUrl, apiOptions);
+  }, [activeMediasGenre, loadingGenres]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -185,8 +155,8 @@ export default function App() {
           path="/media/:formattedRoute"
           element={<MediaDetail media={selectedMedia} />}
         />
-        <Route path="/5XX" element={<NotFound />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/error" element={<Error />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </>
   );

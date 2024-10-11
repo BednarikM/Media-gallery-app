@@ -1,8 +1,10 @@
 import { useLocation } from "react-router-dom";
 
-export default function NotFound() {
-  const location = useLocation()
+export default function Error() {
+  const location = useLocation();
   const { status, message } = location.state || {}; // Fallback in case state is missing
+
+  console.log(status, message);
 
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
