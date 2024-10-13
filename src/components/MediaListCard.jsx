@@ -7,7 +7,7 @@ export default function MediaListCard({ media, index }) {
   return (
     <li className="media-list-card" key={index}>
       <Link
-        to={media.formattedRoute}
+        to={`${media.formattedRoute}/${media.id}`}
         className="media-list-card__link"
         onClick={() => {
           localStorage.setItem("selectedMedia", JSON.stringify(media)); // Store media in localStorage
@@ -20,6 +20,7 @@ export default function MediaListCard({ media, index }) {
         />
         <div className="media-list-card__information">
           <div className="media-list-card__title">{media.formattedTitle}</div>
+          <div className="media-list-card__type">{media.media_type}</div>
           <div className="media-list-card__release-date">
             {media.formattedReleaseDate}
           </div>

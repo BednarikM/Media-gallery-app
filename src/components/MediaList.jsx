@@ -10,7 +10,7 @@ export default function MediasList({ mediasData }) {
   useEffect(() => {
     setIsLoading(false);
 
-    if (mediasData.length === 0 && !isLoading) {
+    if (!mediasData.length && !isLoading) {
       setIsEmpty(true);
     } else {
       setIsEmpty(false);

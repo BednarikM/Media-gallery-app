@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Error() {
   const location = useLocation();
@@ -8,8 +8,11 @@ export default function Error() {
 
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
-      <h1>{status}</h1>
-      <p>{message}</p>
+      <h1>404</h1>
+      <p>Page not found</p>
+      <p>
+        go to the <Link to={"/all"}>Homepage</Link>
+      </p>
     </div>
   );
 }

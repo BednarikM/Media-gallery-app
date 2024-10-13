@@ -9,7 +9,6 @@
   padding: 20px 20px 60px;
 
   &__no-results {
-    align-items: center;
     color: $color-white;
     display: flex;
     flex-direction: column;
@@ -18,5 +17,9 @@
     gap: 1rem;
     justify-content: center;
     padding: 5rem 2rem;
+
+    span {
+      text-align: center;
+    }
   }
 }

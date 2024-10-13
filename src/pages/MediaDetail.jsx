@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { GenreContext } from "../context/Context.js";
 import { useNavigate } from "react-router-dom";
 
 import MediaDetailCard from "../components/MediaDetailCard";
@@ -7,8 +8,7 @@ export default function MediaDetail() {
   const [media, _] = useState(
     JSON.parse(localStorage.getItem("selectedMedia")) || {}
   );
-
-  // console.log(media);
+  const { setActiveMediasGenre } = useContext(GenreContext);
 
   const navigate = useNavigate();
 
@@ -21,6 +21,10 @@ export default function MediaDetail() {
       navigate("/404");
     }
   }, [media]);
+
+  useEffect(() => {
+    setActiveMediasGenre("search");
+  });
 
   return <MediaDetailCard media={media} />;
 }

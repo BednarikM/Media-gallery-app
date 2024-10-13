@@ -3,11 +3,11 @@ import { GenreContext } from "../context/Context.js";
 
 import MediaList from "../components/MediaList.jsx";
 
-export default function Homepage({ mediasData }) {
+export default function Movie({ mediasData }) {
   const { setActiveMediasGenre } = useContext(GenreContext);
 
   useEffect(() => {
-    setActiveMediasGenre("all");
+    setActiveMediasGenre("movie");
   });
 
   return <MediaList mediasData={mediasData} />;
