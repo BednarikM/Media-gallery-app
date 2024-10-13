@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ImageContainer from "../components/ImageContainer";
+import MediaDetailCard from "../components/MediaDetailCard";
 
 export default function MediaDetail() {
-  const [media, _ ] = useState(
+  const [media, _] = useState(
     JSON.parse(localStorage.getItem("selectedMedia")) || {}
   );
 
-  console.log(media)
+  // console.log(media);
 
   const navigate = useNavigate();
 
@@ -22,12 +22,5 @@ export default function MediaDetail() {
     }
   }, [media]);
 
-  return (
-    <div>
-      <h1>TEST</h1>
-      <div>{media.name}</div>
-      <div>{media.adult.toString()}</div>
-      <ImageContainer imageUrl={media.backdrop_path} imageAlt={media.formattedTitle}/>
-    </div>
-  )
+  return <MediaDetailCard media={media} />;
 }

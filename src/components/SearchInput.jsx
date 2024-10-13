@@ -9,9 +9,9 @@ export default function SearchInput() {
   const { searchInputValue, setSearchInputValue } = useContext(SearchContext);
   const inputRef = useRef();
 
-  const handleIconClick = () => {
+  function handleIconClick() {
     inputRef.current.focus(); // Focus the input when the SVG is clicked
-  };
+  }
 
   return (
     <div className="search-input">

@@ -1,19 +1,22 @@
 /* IMPORTS ********************************************************************/
-import { useState, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { SearchContext } from "../context/Context.js";
+import { formatRoute, formatDate } from "../utils/Utils.js";
 
 import Homepage from "../pages/Homepage.jsx";
 import MediaDetail from "../pages/MediaDetail.jsx";
-import Header from "./Header.jsx";
 import Error from "../pages/Error.jsx"; // Custom 404 component
+import Search from "../pages/Search.jsx";
 
-import { SearchContext } from "../context/Context.js";
-import { formatRoute, formatDate } from "../utils/Utils.js";
+import Header from "./Header.jsx";
 
 /* JSX LOGIC ******************************************************************/
 export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
+  const location = useLocation(); // Track the current pathname
+  const prevPathname = useRef(location.pathname); // Store the previous pathname
 
   const [mediasData, setMediasData] = useState([]);
   const [mediaGenres, setMediaGenres] = useState({});
@@ -115,7 +118,17 @@ export default function App() {
   useEffect(() => {
     const apiUrl = `https://api.themoviedb.org/3/trending/${activeMediasGenre}/week?language=en-US&page=${pagination}`;
     fetchMediasData(apiUrl, apiOptions);
-  }, [activeMediasGenre, loadingGenres]);
+    console.log(location);
+    if (
+      prevPathname.current === "/search" &&
+      activeMediasGenre === location.pathname
+    ) {
+      console.log(location.pathname);
+      fetchMediasData(apiUrl, apiOptions);
+    }
+
+    prevPathname.current = location.pathname;
+  }, [activeMediasGenre, loadingGenres, prevPathname]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -129,6 +142,7 @@ export default function App() {
     if (debouncedSearchValue) {
       const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${pagination}`;
       fetchMediasData(apiUrl, apiOptions);
+      navigate("/search");
     }
   }, [debouncedSearchValue]);
 
@@ -151,6 +165,7 @@ export default function App() {
         <Route path="/all" element={<Homepage mediasData={mediasData} />} />
         <Route path="/movie" element={<Homepage mediasData={mediasData} />} />
         <Route path="/tv" element={<Homepage mediasData={mediasData} />} />
+        <Route path="/search" element={<Search mediasData={mediasData} />} />
         <Route
           path="/media/:formattedRoute"
           element={<MediaDetail media={selectedMedia} />}

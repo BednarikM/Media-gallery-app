@@ -24,24 +24,17 @@ export default function Header({
         {mediaGenres.map((genre) => {
           return (
             <NavLink
-            key={genre}
-            to={`/${genre}`} // Navigate to the correct route
-            className={({ isActive }) =>
-              isActive
-                ? "header__nav-link header__nav-link--active"
-                : "header__nav-link"
-            }
-            
-            // className={`header__button ${
-            //   activeMediasGenre === genre ? "header__button--active" : ""
-            // }`}
-
-
-
-            onClick={() => handleButtonClick(genre)} // Perform the click logic
-          >
-            <span className="header__nav-link-text">{genre}</span>
-          </NavLink>
+              key={genre}
+              to={`/${genre}`}
+              className={({ isActive }) =>
+                isActive
+                  ? "header__nav-link header__nav-link--active"
+                  : "header__nav-link"
+              }
+              onClick={() => handleButtonClick(genre)}
+            >
+              <span className="header__nav-link-text">{genre}</span>
+            </NavLink>
           );
         })}
       </div>
