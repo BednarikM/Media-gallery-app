@@ -49,8 +49,9 @@ export default function App() {
 
     try {
       const response = await fetch(url, apiOptions);
-
       const fetchedData = await response.json();
+
+      console.log(fetchedData);
 
       const formattedData = fetchedData.results
         .filter((media) => media.media_type !== "person")
@@ -156,7 +157,6 @@ export default function App() {
       const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${pagination}`;
       fetchMediasData(apiUrl, apiOptions);
       setLastSearchedValue(debouncedSearchValue);
-      setSearchInputValue("");
       navigate("/search");
     }
   }, [debouncedSearchValue]);
