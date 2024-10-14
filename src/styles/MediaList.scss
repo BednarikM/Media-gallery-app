@@ -1,12 +1,19 @@
 @use "./variables" as *;
 
 .media-list {
-  align-items: stretch;
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
   justify-content: center;
-  padding: 20px 20px 60px;
+
+  &__content {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    padding: 20px 40px 60px;
+    max-width: 1220px;
+  }
 
   &__no-results {
     color: $color-white;

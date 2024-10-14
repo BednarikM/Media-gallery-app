@@ -1,6 +1,6 @@
 /* IMPORTS ********************************************************************/
 import { useState, useEffect } from "react";
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { SearchContext, GenreContext } from "../context/Context.js";
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
@@ -18,8 +18,9 @@ import Header from "./Header.jsx";
 export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
-  const location = useLocation(); // Track the current pathname
-
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [mediasData, setMediasData] = useState([]);
   const [mediaGenres, setMediaGenres] = useState({});
@@ -31,7 +32,6 @@ export default function App() {
   );
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
-  const [lastSearchedValue, setLastSearchedValue] = useState("");
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -50,8 +50,6 @@ export default function App() {
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
-
-      console.log(fetchedData);
 
       const formattedData = fetchedData.results
         .filter((media) => media.media_type !== "person")
@@ -117,23 +115,32 @@ export default function App() {
   }
 
   /* HOOKS ********************************************************************/
-  /* DEFAULT HOMEPAGE HOOK */
+  /* LOCATION PATHNAME HOOK */
   useEffect(() => {
     if (location.pathname === "/") {
       setActiveMediasGenre("all");
       navigate("/all", { replace: true });
+    } else if (location.pathname !== "/search" && !location.pathname.startsWith("/media/")) {
+      setSearchInputValue("");
     }
     setIsInitialLoad(false);
-  }, [navigate]);
+  }, [navigate, location.pathname]); 
 
   /* INITIAL GENRE LISTS HOOK */
   useEffect(() => {
     fetchMediaGenres(apiOptions);
   }, []);
 
+  /* SEARCH QUERY HOOK */
   useEffect(() => {
-    console.log(activeMediasGenre);
-  }, [activeMediasGenre]);
+    const queryParams = new URLSearchParams(location.search);
+    const keyword = queryParams.get("keyword");
+
+    if (keyword) {
+      setSearchInputValue(keyword)
+    } 
+
+  }, [location.search]); 
 
   /* FETCH GENRE LIST HOOK */
   useEffect(() => {
@@ -156,10 +163,11 @@ export default function App() {
     if (debouncedSearchValue) {
       const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${pagination}`;
       fetchMediasData(apiUrl, apiOptions);
-      setLastSearchedValue(debouncedSearchValue);
-      navigate("/search");
+
+      navigate(`/search?keyword=${debouncedSearchValue}`);
     }
   }, [debouncedSearchValue]);
+
 
   /* SAVE SELECTED MEDIA TO LOCAL */
   useEffect(() => {
@@ -182,12 +190,7 @@ export default function App() {
             <Route path="/tv" element={<Tv mediasData={mediasData} />} />
             <Route
               path="/search"
-              element={
-                <Search
-                  mediasData={mediasData}
-                  lastSearchedValue={lastSearchedValue}
-                />
-              }
+              element={<Search mediasData={mediasData} />}
             />
             <Route
               path="/media/:formattedRoute/:id"

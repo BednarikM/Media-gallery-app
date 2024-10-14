@@ -6,6 +6,7 @@ import "../styles/MediaList.scss";
 export default function MediasList({ mediasData }) {
   const [isLoading, setIsLoading] = useState(true); //Initial render
   const [isEmpty, setIsEmpty] = useState(true); // State to track if the media list is empty
+  
 
   useEffect(() => {
     setIsLoading(false);
@@ -22,19 +23,19 @@ export default function MediasList({ mediasData }) {
   }
 
   return (
-    <>
+    <div className="media-list">
       {isEmpty ? (
         <div className="media-list__no-results">
           <span>No results found.</span>
           <span>Please try different keywords.</span>
         </div>
       ) : (
-        <ul className="media-list">
+        <ul className="media-list__content">
           {mediasData.map((media, index) => {
             return <MediaListCard key={index} {...{ media, index }} />;
           })}
         </ul>
       )}
-    </>
+    </div>
   );
 }

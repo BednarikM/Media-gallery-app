@@ -4,6 +4,8 @@ import "../styles/MediaListCard.scss";
 import ImageContainer from "./ImageContainer";
 
 export default function MediaListCard({ media, index }) {
+  console.log(media)
+
   return (
     <li className="media-list-card" key={index}>
       <Link
@@ -22,7 +24,7 @@ export default function MediaListCard({ media, index }) {
           <div className="media-list-card__title">{media.formattedTitle}</div>
           <div className="media-list-card__type">{media.media_type}</div>
           <div className="media-list-card__release-date">
-            {media.formattedReleaseDate}
+            {media.formattedReleaseDate ? media.formattedReleaseDate : ""}
           </div>
         </div>
       </Link>

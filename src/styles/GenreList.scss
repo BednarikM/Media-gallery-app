@@ -1,0 +1,13 @@
+@use "./variables" as *;
+
+.genre-list {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+
+  &__item {
+    padding: 0.2rem 1rem;
+    border-radius: 4px;
+    background-color: $color-purple;
+  }
+}

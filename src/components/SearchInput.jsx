@@ -9,8 +9,14 @@ export default function SearchInput() {
   const { searchInputValue, setSearchInputValue } = useContext(SearchContext);
   const inputRef = useRef();
 
-  function handleSearchIconClick() {
-    inputRef.current.focus(); // Focus the input when the SVG is clicked
+  // function handleSearchIconClick() {
+  //   inputRef.current.focus(); // Focus the input when the SVG is clicked
+  // }
+
+  function handleClearIconClick() {
+    if(searchInputValue) {
+      setSearchInputValue("")
+    }
   }
 
   return (
@@ -26,18 +32,20 @@ export default function SearchInput() {
           onChange={(e) => setSearchInputValue(e.target.value)}
         />
         <SvgIcon
-          className="search-input__svg-clear"
+            className={`search-input__svg-clear ${
+              searchInputValue ? "search-input__svg-clear--display" : ""
+            }`}
           iconName="clear"
-          handleIconClick={handleIconClick}
+          handleIconClick={() => handleClearIconClick()}
         />
       </div>
-      <div className="search-input__svg-container">
+      {/* <div className="search-input__svg-container">
         <SvgIcon
           className="search-input__svg-search"
           iconName="search"
-          handleIconClick={handleSearchIconClick}
+          handleIconClick={() => handleSearchIconClick()}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

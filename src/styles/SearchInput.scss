@@ -36,7 +36,7 @@
 
   &__svg-clear {
     position: absolute;
-    display: block;
+    display: none;
     height: 15px;
     width: 15px;
     right: 5px;
@@ -44,7 +44,7 @@
     transform: translateY(-50%);
     cursor: pointer;
 
-    &--active {
+    &--display {
       display: block;
     }
 
@@ -53,25 +53,25 @@
     }
   }
 
-  &__svg-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    border-left: 1px solid $color-svg;
-    padding: 1rem 0.5rem;
-    height: 35px;
-  }
+  // &__svg-container {
+  //   display: flex;
+  //   flex-direction: row;
+  //   align-items: center;
+  //   justify-content: center;
+  //   border-left: 1px solid $color-svg;
+  //   padding: 1rem 0.5rem;
+  //   height: 35px;
+  // }
 
-  &__svg-search {
-    fill: $color-svg;
-    flex-shrink: 0;
-    height: 20px;
-    width: 20px;
-    cursor: pointer;
+  // &__svg-search {
+  //   fill: $color-svg;
+  //   flex-shrink: 0;
+  //   height: 20px;
+  //   width: 20px;
+  //   cursor: pointer;
 
-    &:hover {
-      fill: $color-purple;
-    }
-  }
+  //   &:hover {
+  //     fill: $color-purple;
+  //   }
+  // }
 }

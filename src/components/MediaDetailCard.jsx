@@ -1,58 +1,42 @@
+import MediaDetailField from "./MediaDetailField";
 import ImageContainer from "../components/ImageContainer";
+import GenreList from "../components/GenreList";
+
+import "../styles/MediaDetailCard.scss";
 
 export default function MediaDetailCard({ media }) {
+  const {
+    formattedTitle,
+    backdrop_path,
+    formattedReleaseDate,
+    formattedGenres,
+    adult,
+    media_type,
+    overview,
+    vote_average,
+    vote_count,
+  } = media;
+
   return (
     <div className="media-detail-card">
-      <div className="media-detail-card__title">
-        <span className="media-detail-card__key">Title</span>
-        <span className="media-detail-card__value">{media.formattedTitle}</span>
-      </div>
+      <MediaDetailField label="Title" value={formattedTitle} />
       <ImageContainer
         parentClass={"media-detail-card"}
-        imageUrl={media.backdrop_path}
-        imageAlt={media.formattedTitle}
+        imageUrl={backdrop_path}
+        imageAlt={formattedTitle}
       />
 
-      <div className="media-detail-card__release-date">
-        <span className="media-detail-card__key">Release date</span>
-        <span className="media-detail-card__value">
-          {media.formattedReleaseDate}
-        </span>
-      </div>
-      <div className="media-detail-card__genres-container">
-        {media.formattedGenres.map((genre, index) => {
-          return (
-            <span className="media-detail-card__genre" key={index}>
-              {genre}
-            </span>
-          );
-        })}
-      </div>
-      <div className="media-detail-card__age-restriction">
-        <span className="media-detail-card__key">Age restriction</span>
-        <span className="media-detail-card__value">
-          {media.adult.toString()}
-        </span>
-      </div>
-      <div className="media-detail-card__media-type">
-        <span className="media-detail-card__key">Media type</span>
-        <span className="media-detail-card__value">{media.media_type}</span>
-      </div>
-      <div className="media-detail-card__overview">
-        <span className="media-detail-card__key">Overview</span>
-        <span className="media-detail-card__value">{media.overview}</span>
-      </div>
-      <div className="media-detail-card__rating">
-        <span className="media-detail-card__key">Average rating</span>
-        <span className="media-detail-card__value">
-          {`${media.vote_average} / 10 (${media.vote_count} votes)`}
-        </span>
-        <span></span>
-      </div>
-      <div className="media-detail-card__vote-count">
-        <span className="media-detail-card__key">Vote count</span>
-        <span className="media-detail-card__value">{media.vote_count}</span>
-      </div>
+      <MediaDetailField label="Release date" value={formattedReleaseDate} />
+      <MediaDetailField label="Genres">
+        <GenreList formattedGenres={formattedGenres}/>
+      </MediaDetailField>
+      <MediaDetailField label="Age restriction" value={adult.toString()} />
+      <MediaDetailField label="Media type" value={media_type} />
+      <MediaDetailField label="Overview" value={overview} />
+      <MediaDetailField
+        label="Average rating"
+        value={`${vote_average} / 10 (${vote_count} votes)`}
+      />
     </div>
   );
 }

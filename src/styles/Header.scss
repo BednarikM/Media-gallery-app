@@ -48,6 +48,12 @@
     width: fit-content;
     text-decoration: none;
 
+    &:not(&--active):hover {
+      .header__nav-link-text {
+        color: $color-gold;
+      }
+    }
+
     &-text {
       background-color: $color-dark-blue;
       border-radius: 3px;
