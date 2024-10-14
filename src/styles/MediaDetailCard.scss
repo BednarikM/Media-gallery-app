@@ -1,13 +1,14 @@
 @use "./variables" as *;
 
 .media-detail-card {
-    background-color: $color-dark-blue;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    max-width: 600px;
-    margin: 0 auto;
+  background-color: $color-dark-blue;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  max-width: 70rem;
+  height: 100%;
+  margin: 0 auto;
 
   &__image-container {
     width: 100%;
@@ -16,14 +17,11 @@
     justify-content: center;
   }
 
-  &__placeholder {
-    background-color: gray;
-  }
-
+  &__placeholder,
   &__image {
-    border-radius: 5px;
+    height: 100%;
+    width: 100%;
+    max-width: 780rem;
     object-fit: contain;
-    max-width: 500px;
-    height: auto;
   }
 }

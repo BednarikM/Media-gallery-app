@@ -22,13 +22,14 @@ export default function MediaDetailCard({ media }) {
       <MediaDetailField label="Title" value={formattedTitle} />
       <ImageContainer
         parentClass={"media-detail-card"}
+        imageType="backdrop"
         imageUrl={backdrop_path}
         imageAlt={formattedTitle}
       />
 
       <MediaDetailField label="Release date" value={formattedReleaseDate} />
       <MediaDetailField label="Genres">
-        <GenreList formattedGenres={formattedGenres}/>
+        <GenreList formattedGenres={formattedGenres} />
       </MediaDetailField>
       <MediaDetailField label="Age restriction" value={adult.toString()} />
       <MediaDetailField label="Media type" value={media_type} />

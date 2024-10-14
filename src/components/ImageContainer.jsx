@@ -1,17 +1,39 @@
 import { useState } from "react";
+import backdropPlaceholder from "../assets/images/backdrop_placeholder.png"; // Adjust path as needed
+import posterPlaceholder from "../assets/images/poster_placeholder.png";
 
-export default function ImageContainer({ imageUrl, imageAlt, parentClass }) {
+export default function ImageContainer({
+  imageUrl,
+  imageAlt,
+  imageType = "poster",
+  parentClass,
+}) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  const placeholders = {
+    poster: posterPlaceholder,
+    backdrop: backdropPlaceholder,
+  };
+
+  const placeholder = placeholders[imageType] || backdropPlaceholder; // Fallback if imageType is not recognized
 
   return (
     <div className={`${parentClass}__image-container`}>
-      {(!isImageLoaded || !imageUrl) && <div className={`${parentClass}__placeholder`} />}
+      {(!isImageLoaded || !imageUrl) && (
+        <img
+          src={placeholder}
+          alt={`${imageAlt} placeholder`}
+          className={`${parentClass}__placeholder`}
+        />
+        // <div className={`${parentClass}__placeholder`} />
+      )}
       {imageUrl && (
         <img
-          src={`https://image.tmdb.org/t/p/w500/${imageUrl}`}
+          src={`https://image.tmdb.org/t/p/w780/${imageUrl}`}
           alt={`${imageAlt} image`}
           className={`${parentClass}__image`}
           onLoad={() => setIsImageLoaded(true)}
+          onError={() => setIsImageLoaded(false)}
           style={{ display: isImageLoaded ? "block" : "none" }}
         />
       )}
