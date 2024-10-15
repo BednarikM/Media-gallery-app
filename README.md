@@ -25,7 +25,9 @@ To get started with the React Media Search App, follow these steps:
    cd react-media-search-app
 
 2. Install the dependencies:
+   ```bash
    npm install
 
-3. Start the development server:
-  npm run dev
+4. Start the development server:
+   ```bash
+   npm run dev
