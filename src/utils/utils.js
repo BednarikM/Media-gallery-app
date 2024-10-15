@@ -8,12 +8,18 @@ export function formatRoute(mediaTitle) {
     .replace(/^-+|-+$/g, ""); // Remove leading or trailing hyphens
 }
 
-export function formatDate(dateString) {
+export function formatDate(format = "year", dateString) {
   const date = new Date(dateString);
 
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
-  return `${day}.${month}.${year}`;
+  if (format === "full") {
+    return `${day}.${month}.${year}`;
+  } else if (format === "year") {
+    return `${year}`;
+  } else {
+    throw new Error("Invalid format. Use 'full' or 'year' parameter.");
+  }
 }

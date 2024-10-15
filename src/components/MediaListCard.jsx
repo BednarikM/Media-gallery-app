@@ -16,7 +16,7 @@ export default function MediaListCard({ media, index }) {
   return (
     <li className="media-list-card" key={index}>
       <Link
-        to={`${formattedRoute}/${id}`}
+        to={`${formattedRoute}?type=${media_type}&id=${id}`}
         className="media-list-card__link"
         onClick={() => {
           localStorage.setItem("selectedMedia", JSON.stringify(media)); // Store media in localStorage

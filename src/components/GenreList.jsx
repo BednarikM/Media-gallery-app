@@ -1,7 +1,6 @@
 import "../styles/GenreList.scss";
 
 export default function GenreList({formattedGenres}) {
-  console.log(formattedGenres)
 
   return (
     <div className="genre-list">

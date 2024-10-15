@@ -1,7 +1,7 @@
 /* IMPORTS ********************************************************************/
 import { useState, useEffect } from "react";
-import { Route, Routes, useNavigate, useLocation, useSearchParams } from "react-router-dom";
-import { SearchContext, GenreContext } from "../context/Context.js";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { SearchContext, GenreContext, ApiOptionsContext } from "../context/Context.js";
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
 import Homepage from "../pages/Homepage.jsx";
@@ -19,7 +19,6 @@ export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
   
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [mediasData, setMediasData] = useState([]);
@@ -27,9 +26,6 @@ export default function App() {
   const [loadingGenres, setLoadingGenres] = useState(true);
   const [pagination, setPagination] = useState(1);
   const [activeMediasGenre, setActiveMediasGenre] = useState("");
-  const [selectedMedia, setSelectedMedia] = useState(
-    JSON.parse(localStorage.getItem("selectedMedia")) || {}
-  );
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
@@ -169,16 +165,17 @@ export default function App() {
   }, [debouncedSearchValue]);
 
 
-  /* SAVE SELECTED MEDIA TO LOCAL */
-  useEffect(() => {
-    if (selectedMedia && Object.keys(selectedMedia).length > 0) {
-      localStorage.setItem("selectedMedia", JSON.stringify(selectedMedia));
-    }
-  }, [selectedMedia]);
+  // /* SAVE SELECTED MEDIA TO LOCAL */
+  // useEffect(() => {
+  //   if (selectedMedia && Object.keys(selectedMedia).length > 0) {
+  //     localStorage.setItem("selectedMedia", JSON.stringify(selectedMedia));
+  //   }
+  // }, [selectedMedia]);
 
   /* JSX TEMPLATE *************************************************************/
   return (
     <>
+    <ApiOptionsContext.Provider value={{apiOptions}}>
       <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
         <Header heading="Medias Search App" />
       </SearchContext.Provider>
@@ -193,8 +190,8 @@ export default function App() {
               element={<Search mediasData={mediasData} />}
             />
             <Route
-              path="/media/:formattedRoute/:id"
-              element={<MediaDetail media={selectedMedia} />}
+              path="/media/:selectedMovieId"
+              element={<MediaDetail />}
             />
 
             <Route path="/error" element={<Error />} />
@@ -202,6 +199,7 @@ export default function App() {
           </Routes>
         </GenreContext.Provider>
       )}
+      </ApiOptionsContext.Provider>
     </>
   );
 }
