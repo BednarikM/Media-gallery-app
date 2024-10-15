@@ -25,7 +25,6 @@ export default function ImageContainer({
           alt={`${imageAlt} placeholder`}
           className={`${parentClass}__placeholder`}
         />
-        // <div className={`${parentClass}__placeholder`} />
       )}
       {imageUrl && (
         <img

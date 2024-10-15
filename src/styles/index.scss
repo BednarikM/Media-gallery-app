@@ -1,3 +1,5 @@
+@use "./variables" as *;
+
 * {
   box-sizing: border-box;
 }
@@ -22,6 +24,7 @@ body {
   background: radial-gradient(#055b7a, #20043d);
   min-height: 100vh;
   padding: 2rem 2rem 10rem;
+  color: $color-white;
 }
 
 h1 {
