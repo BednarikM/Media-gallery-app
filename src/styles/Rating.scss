@@ -1,0 +1,30 @@
+@use "./variables" as *;
+
+.rating {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  &__svg-star {
+    height: 35px;
+    width: 35px;
+    fill: $color-gold
+  }
+
+  &__average {
+    font-size: 1.8rem;
+  }
+
+  &__maximum {
+    font-size: 1.6rem;
+    color: #9c9c9c;
+  }
+
+  &__count {
+    font-size: 1.4rem;
+    color: $color-medium-gray;
+  }
+}

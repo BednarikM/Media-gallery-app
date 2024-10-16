@@ -1,9 +1,15 @@
-import MediaDetailField from "./MediaDetailField";
-import ImageContainer from "../components/ImageContainer";
-import GenreList from "../components/GenreList";
 import { useEffect, useContext, useState } from "react";
 import { ApiOptionsContext } from "../context/Context.js";
-import { formatDate, formatRuntime } from "../utils/Utils.js";
+import {
+  formatDate,
+  formatRuntime,
+  capitalFirstLetter,
+} from "../utils/Utils.js";
+
+import MediaDetailField from "../components/MediaDetailField.jsx";
+import ImageContainer from "../components/ImageContainer.jsx";
+import GenreList from "../components/GenreList.jsx";
+import Rating from "../components/Rating.jsx";
 
 import "../styles/MediaDetailCard.scss";
 
@@ -53,45 +59,39 @@ export default function MediaDetailCard() {
       {dataAreFetched && (
         <div className="media-detail-card__content">
           <div className="media-detail-card__main-information-container">
-            <div className="media-detail-card__title-container media-detail-card__title-container--mobile">
+            <div className="media-detail-card__meta-container media-detail-card__meta-container">
               <div className="media-detail-card__title">{mediaData.title}</div>
               <div className="media-detail-card__tagline">
                 {mediaData.tagline}
               </div>
-              <div className="media-detail-card__title-adds-container">
+              <div className="media-detail-card__sub-information">
                 <span>{mediaData.release_date}</span>
+                <span>{capitalFirstLetter(mediaData.media_type)}</span>
                 <span>{formatRuntime(mediaData.runtime)}</span>
+              </div>
+              <div className="media-detail-card__genres-and-rating">
+                <GenreList
+                  parentClass={"media-detail-card"}
+                  formattedGenres={mediaData.genres}
+                />
+                <Rating
+                  voteAverage={mediaData.vote_average}
+                  voteCount={mediaData.vote_count}
+                />
               </div>
             </div>
             <ImageContainer
+              classModifier={""}
               parentClass={"media-detail-card"}
               imageUrl={mediaData.poster_path}
               imageAlt={mediaData.title}
             />
           </div>
-          <div className="media-detail-card__add-information-container">
-            <MediaDetailField parentClass={"media-detail-card"} label="Genres">
-              <GenreList formattedGenres={mediaData.genres} />
-            </MediaDetailField>
-            <MediaDetailField
-              parentClass={"media-detail-card"}
-              label="Age restriction"
-              value={mediaData.adult.toString()}
-            />
-            <MediaDetailField
-              parentClass={"media-detail-card"}
-              label="Media type"
-              value={mediaData.media_type}
-            />
+          <div className="media-detail-card__secondary-information-container">
             <MediaDetailField
               parentClass={"media-detail-card"}
               label="Overview"
               value={mediaData.overview}
-            />
-            <MediaDetailField
-              parentClass={"media-detail-card"}
-              label="Average rating"
-              value={`${mediaData.vote_average} / 10  (${mediaData.vote_count} votes)`}
             />
           </div>
         </div>

@@ -7,6 +7,7 @@ export default function ImageContainer({
   imageAlt,
   imageType = "poster",
   parentClass,
+  classModifier
 }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -18,7 +19,7 @@ export default function ImageContainer({
   const placeholder = placeholders[imageType] || backdropPlaceholder; // Fallback if imageType is not recognized
 
   return (
-    <div className={`${parentClass}__image-container`}>
+    <div className={`${parentClass}__image-container ${classModifier ? `${parentClass}__image-container--${classModifier}` : ''}`}>
       {(!isImageLoaded || !imageUrl) && (
         <img
           src={placeholder}

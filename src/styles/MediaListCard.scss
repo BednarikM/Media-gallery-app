@@ -3,6 +3,7 @@
 .media-list-card {
   &__link {
     background-color: $color-dark-blue;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
     border-radius: 6px;
     display: flex;
     flex-direction: column;

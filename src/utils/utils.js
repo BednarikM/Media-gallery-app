@@ -29,3 +29,7 @@ export function formatRuntime(minutes) {
   const remainingMinutes = minutes % 60;
   return `${hours}h ${remainingMinutes}m`;
 }
+
+export function capitalFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
