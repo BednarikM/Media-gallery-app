@@ -57,44 +57,54 @@ export default function MediaDetailCard() {
   return (
     <div className="media-detail-card">
       {dataAreFetched && (
-        <div className="media-detail-card__content">
-          <div className="media-detail-card__main-information-container">
-            <div className="media-detail-card__meta-container media-detail-card__meta-container">
-              <div className="media-detail-card__title">{mediaData.title}</div>
-              <div className="media-detail-card__tagline">
-                {mediaData.tagline}
-              </div>
-              <div className="media-detail-card__sub-information">
-                <span>{mediaData.release_date}</span>
-                <span>{capitalFirstLetter(mediaData.media_type)}</span>
-                <span>{formatRuntime(mediaData.runtime)}</span>
-              </div>
-              <div className="media-detail-card__genres-and-rating">
-                <GenreList
+        <>
+          <div className="media-detail-card__content-container">
+            <div className="media-detail-card__content">
+              <div className="media-detail-card__main-information-container">
+                <div className="media-detail-card__meta-container media-detail-card__meta-container">
+                  <div className="media-detail-card__title">
+                    {mediaData.title}
+                  </div>
+                  <div className="media-detail-card__tagline">
+                    {mediaData.tagline}
+                  </div>
+                  <div className="media-detail-card__sub-information">
+                    <span>{mediaData.release_date}</span>
+                    <span>{capitalFirstLetter(mediaData.media_type)}</span>
+                    <span>{formatRuntime(mediaData.runtime)}</span>
+                  </div>
+                  <GenreList
+                    parentClass={"media-detail-card"}
+                    formattedGenres={mediaData.genres}
+                  />
+                  <Rating
+                    voteAverage={mediaData.vote_average}
+                    voteCount={mediaData.vote_count}
+                  />
+                </div>
+                <ImageContainer
+                  classModifier={"mobile"}
                   parentClass={"media-detail-card"}
-                  formattedGenres={mediaData.genres}
+                  imageUrl={mediaData.poster_path}
+                  imageAlt={mediaData.title}
                 />
-                <Rating
-                  voteAverage={mediaData.vote_average}
-                  voteCount={mediaData.vote_count}
+              </div>
+              <div className="media-detail-card__secondary-information-container">
+                <MediaDetailField
+                  parentClass={"media-detail-card"}
+                  label="Overview"
+                  value={mediaData.overview}
                 />
               </div>
             </div>
             <ImageContainer
-              classModifier={""}
+              classModifier={"desktop"}
               parentClass={"media-detail-card"}
               imageUrl={mediaData.poster_path}
               imageAlt={mediaData.title}
             />
           </div>
-          <div className="media-detail-card__secondary-information-container">
-            <MediaDetailField
-              parentClass={"media-detail-card"}
-              label="Overview"
-              value={mediaData.overview}
-            />
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
