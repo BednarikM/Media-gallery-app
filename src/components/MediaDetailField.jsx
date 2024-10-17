@@ -9,8 +9,8 @@ export default function MediaDetailField({ label, value, children }) {
         <span className="media-detail-field__key">{label}</span>
       )}
 
-      {children && children}
       {value && <span className="media-detail-field__value">{value}</span>}
+      {children && <span className="media-detail-field__children">{children}</span>}
     </div>
   );
 }

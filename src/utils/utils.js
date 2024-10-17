@@ -1,3 +1,5 @@
+import ISO6391 from 'iso-639-1';
+
 export function formatRoute(mediaTitle) {
   return `/media/` + mediaTitle
     .toLowerCase()
@@ -32,4 +34,8 @@ export function formatRuntime(minutes) {
 
 export function capitalFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function getFullLangNames(languageCode) {
+  return ISO6391.getName(languageCode)
 }
