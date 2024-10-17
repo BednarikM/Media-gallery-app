@@ -39,10 +39,10 @@ export default function MediaDetailCard() {
       ),
       genres: fetchedData.genres.map((genre) => genre.name),
       media_type: queryParams.type,
-      production_companies: fetchedData.production_companies.length
+      production_companies: (fetchedData.production_companies && fetchedData.production_companies.length)
         ? fetchedData.production_companies.map((company) => company.name)
         : "",
-      created_by: fetchedData.created_by.length
+      created_by: (fetchedData.created_by && fetchedData.created_by.length)
         ? fetchedData.created_by.map((creator) => creator.name)
         : "",
     };
