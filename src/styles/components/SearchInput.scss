@@ -1,4 +1,4 @@
-@use "./variables" as *;
+@use "../variables" as *;
 @use "sass:color";
 
 .search-input {
@@ -9,16 +9,12 @@
   font-size: 2rem;
   height: fit-content;
   justify-content: center;
-  margin-top: 2rem;
-  overflow: hidden;
+  width: min-content;
+  position: relative;
 
   &:active,
   &:focus-within {
     outline: 2px solid $color-purple;
-  }
-
-  &__element-container {
-    position: relative;
   }
 
   &__element {

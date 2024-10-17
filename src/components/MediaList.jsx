@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
+
 import MediaListCard from "./MediaListCard.jsx";
 
-import "../styles/MediaList.scss";
+import "../styles/components/MediaList.scss";
 
 export default function MediasList({ mediasData }) {
   const [isLoading, setIsLoading] = useState(true); //Initial render
   const [isEmpty, setIsEmpty] = useState(true); // State to track if the media list is empty
-  
 
   useEffect(() => {
     setIsLoading(false);

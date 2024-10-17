@@ -1,7 +1,12 @@
 /* IMPORTS ********************************************************************/
 import { useState, useEffect } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import { SearchContext, GenreContext, ApiOptionsContext } from "../context/Context.js";
+
+import {
+  SearchContext,
+  GenreContext,
+  ApiOptionsContext,
+} from "../context/Context.js";
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
 import Homepage from "../pages/Homepage.jsx";
@@ -12,6 +17,8 @@ import MediaDetail from "../pages/MediaDetail.jsx";
 import Error from "../pages/Error.jsx"; // Custom 404 component
 import NotFound from "../pages/NotFound.jsx";
 
+import PageLayout from "../layouts/PageLayout.jsx";
+
 import Header from "./Header.jsx";
 
 /* JSX LOGIC ******************************************************************/
@@ -19,7 +26,7 @@ export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [mediasData, setMediasData] = useState([]);
   const [mediaGenres, setMediaGenres] = useState({});
@@ -116,11 +123,14 @@ export default function App() {
     if (location.pathname === "/") {
       setActiveMediasGenre("all");
       navigate("/all", { replace: true });
-    } else if (location.pathname !== "/search" && !location.pathname.startsWith("/media/")) {
+    } else if (
+      location.pathname !== "/search" &&
+      !location.pathname.startsWith("/media/")
+    ) {
       setSearchInputValue("");
     }
     setIsInitialLoad(false);
-  }, [navigate, location.pathname]); 
+  }, [navigate, location.pathname]);
 
   /* INITIAL GENRE LISTS HOOK */
   useEffect(() => {
@@ -133,10 +143,9 @@ export default function App() {
     const keyword = queryParams.get("keyword");
 
     if (keyword) {
-      setSearchInputValue(keyword)
-    } 
-
-  }, [location.search]); 
+      setSearchInputValue(keyword);
+    }
+  }, [location.search]);
 
   /* FETCH GENRE LIST HOOK */
   useEffect(() => {
@@ -164,7 +173,6 @@ export default function App() {
     }
   }, [debouncedSearchValue]);
 
-
   // /* SAVE SELECTED MEDIA TO LOCAL */
   // useEffect(() => {
   //   if (selectedMedia && Object.keys(selectedMedia).length > 0) {
@@ -175,30 +183,40 @@ export default function App() {
   /* JSX TEMPLATE *************************************************************/
   return (
     <>
-    <ApiOptionsContext.Provider value={{apiOptions}}>
-      <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
-        <Header heading="Medias Search App" />
-      </SearchContext.Provider>
-      {!isInitialLoad && (
-        <GenreContext.Provider value={{ setActiveMediasGenre }}>
-          <Routes>
-            <Route path="/all" element={<Homepage mediasData={mediasData} />} />
-            <Route path="/movie" element={<Movie mediasData={mediasData} />} />
-            <Route path="/tv" element={<Tv mediasData={mediasData} />} />
-            <Route
-              path="/search"
-              element={<Search mediasData={mediasData} />}
-            />
-            <Route
-              path="/media/:selectedMovieId"
-              element={<MediaDetail />}
-            />
+      <ApiOptionsContext.Provider value={{ apiOptions }}>
+        <SearchContext.Provider
+          value={{ searchInputValue, setSearchInputValue }}
+        >
+          <Header heading="Medias Search App" />
+        </SearchContext.Provider>
+        {!isInitialLoad && (
+          <PageLayout>
+            <GenreContext.Provider value={{ setActiveMediasGenre }}>
+              <Routes>
+                <Route
+                  path="/all"
+                  element={<Homepage mediasData={mediasData} />}
+                />
+                <Route
+                  path="/movie"
+                  element={<Movie mediasData={mediasData} />}
+                />
+                <Route path="/tv" element={<Tv mediasData={mediasData} />} />
+                <Route
+                  path="/search"
+                  element={<Search mediasData={mediasData} />}
+                />
+                <Route
+                  path="/media/:selectedMovieId"
+                  element={<MediaDetail />}
+                />
 
-            <Route path="/error" element={<Error />} />
-            <Route path="/*" element={<NotFound />} />
-          </Routes>
-        </GenreContext.Provider>
-      )}
+                <Route path="/error" element={<Error />} />
+                <Route path="/*" element={<NotFound />} />
+              </Routes>
+            </GenreContext.Provider>
+          </PageLayout>
+        )}
       </ApiOptionsContext.Provider>
     </>
   );

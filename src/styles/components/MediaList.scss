@@ -1,4 +1,4 @@
-@use "./variables" as *;
+@use "../variables" as *;
 
 .media-list {
   width: 100%;
@@ -11,7 +11,7 @@
     flex-wrap: wrap;
     gap: 30px;
     justify-content: center;
-    padding: 20px 40px 60px;
+    padding: 2rem;
     max-width: 1220px;
   }
 

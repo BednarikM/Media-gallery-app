@@ -1,4 +1,5 @@
 import { useEffect, useContext, useState } from "react";
+
 import { ApiOptionsContext } from "../context/Context.js";
 import {
   formatDate,
@@ -13,7 +14,7 @@ import GenreList from "../components/GenreList.jsx";
 import Rating from "../components/Rating.jsx";
 import CountryFlags from "../components/CountryFlags.jsx";
 
-import "../styles/MediaDetailCard.scss";
+import "../styles/components/MediaDetailCard.scss";
 
 export default function MediaDetailCard() {
   const { apiOptions } = useContext(ApiOptionsContext);
@@ -39,12 +40,15 @@ export default function MediaDetailCard() {
       ),
       genres: fetchedData.genres.map((genre) => genre.name),
       media_type: queryParams.type,
-      production_companies: (fetchedData.production_companies && fetchedData.production_companies.length)
-        ? fetchedData.production_companies.map((company) => company.name)
-        : "",
-      created_by: (fetchedData.created_by && fetchedData.created_by.length)
-        ? fetchedData.created_by.map((creator) => creator.name)
-        : "",
+      production_companies:
+        fetchedData.production_companies &&
+        fetchedData.production_companies.length
+          ? fetchedData.production_companies.map((company) => company.name)
+          : "",
+      created_by:
+        fetchedData.created_by && fetchedData.created_by.length
+          ? fetchedData.created_by.map((creator) => creator.name)
+          : "",
     };
 
     setMediaData(mappedData);

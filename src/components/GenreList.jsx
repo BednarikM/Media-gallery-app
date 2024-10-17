@@ -1,16 +1,15 @@
-import "../styles/GenreList.scss";
+import "../styles/components/GenreList.scss";
 
-export default function GenreList({formattedGenres, parentClass}) {
-
+export default function GenreList({ formattedGenres, parentClass }) {
   return (
     <div className="genre-list">
-    {formattedGenres.map((genre, index) => {
-      return (
-        <span className="genre-list__item" key={index}>
-          {genre}
-        </span>
-      );
-    })}
+      {formattedGenres.map((genre, index) => {
+        return (
+          <span className="genre-list__item" key={index}>
+            {genre}
+          </span>
+        );
+      })}
     </div>
-  )
+  );
 }

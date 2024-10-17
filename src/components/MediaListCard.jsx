@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import "../styles/MediaListCard.scss";
 
 import ImageContainer from "./ImageContainer";
+
+import "../styles/components/MediaListCard.scss";
 
 export default function MediaListCard({ media, index }) {
   const {

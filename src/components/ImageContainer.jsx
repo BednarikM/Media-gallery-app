@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import backdropPlaceholder from "../assets/images/backdrop_placeholder.png"; // Adjust path as needed
 import posterPlaceholder from "../assets/images/poster_placeholder.png";
 
@@ -7,7 +8,7 @@ export default function ImageContainer({
   imageAlt,
   imageType = "poster",
   parentClass,
-  classModifier
+  classModifier,
 }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -19,7 +20,11 @@ export default function ImageContainer({
   const placeholder = placeholders[imageType] || backdropPlaceholder; // Fallback if imageType is not recognized
 
   return (
-    <div className={`${parentClass}__image-container ${classModifier ? `${parentClass}__image-container--${classModifier}` : ''}`}>
+    <div
+      className={`${parentClass}__image-container ${
+        classModifier ? `${parentClass}__image-container--${classModifier}` : ""
+      }`}
+    >
       {(!isImageLoaded || !imageUrl) && (
         <img
           src={placeholder}

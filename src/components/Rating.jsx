@@ -1,6 +1,6 @@
 import SvgIcon from "../components/SvgIcon.jsx";
 
-import "../styles/Rating.scss";
+import "../styles/components/Rating.scss";
 
 export default function Rating({ voteAverage, voteCount }) {
   return (
