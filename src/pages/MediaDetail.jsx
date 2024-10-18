@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { GenreContext } from "../context/Context.js";
 import { useNavigate } from "react-router-dom";
 
-import MediaDetailCard from "../components/MediaDetailCard";
+import MediaDetailCard from "../components/MediaDetailCard.jsx";
 
 export default function MediaDetail() {
   const [media, _] = useState(

@@ -2,7 +2,7 @@ import { useContext, useRef } from "react";
 
 import { SearchContext } from "../context/Context.js";
 
-import SvgIcon from "./SvgIcon.jsx";
+import SvgIcon from "../components/SvgIcon.jsx";
 
 import "../styles/components/SearchInput.scss";
 

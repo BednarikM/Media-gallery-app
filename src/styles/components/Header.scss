@@ -5,20 +5,24 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: $color-dark-blue;
+  background-color: $color-blue-dark;
   position: relative;
+  margin-bottom: 2rem;
 
   &__content {
     flex-grow: 1;
     max-width: 118rem;
     display: flex;
+    align-items: flex-end;
     flex-direction: column;
     padding: 2rem;
     gap: 2rem;
   }
 
   &__title-container {
+    width: 100%;
     display: flex;
+    justify-content: center;
   }
 
   &__title {
@@ -31,14 +35,14 @@
     -webkit-text-fill-color: transparent;
   }
 
-  &__user-action {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 4rem;
-    height: 4rem;
-  }
+  // &__user-action {
+  //   display: flex;
+  //   flex-direction: row;
+  //   align-items: center;
+  //   justify-content: flex-end;
+  //   gap: 4rem;
+  //   height: 4rem;
+  // }
 
   &__menu {
     display: none;
@@ -46,7 +50,7 @@
 
     &--is-opened {
       border-bottom: 1px solid $color-purple;
-      background-color: $color-dark-blue;
+      background-color: $color-blue-dark;
       padding: 2rem 2rem 4rem;
       width: 100%;
       top: 100%;
@@ -57,6 +61,14 @@
       position: absolute;
       z-index: 1;
     }
+  }
+
+  &__nav-link-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1rem;
   }
 
   &__nav-link {
@@ -74,7 +86,7 @@
 
     &-text {
       position: relative;
-      background-color: $color-dark-blue;
+      background-color: $color-blue-dark;
       color: $color-white;
       font-size: 2rem;
       font-weight: bold;
@@ -132,6 +144,20 @@
 //   }
 // }
 
+@media (min-width: 400px) {
+  .header {
+    &__content {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &__title-container {
+      width: fit-content;
+    }
+  }
+}
+
 @media (min-width: 700px) {
   .header {
     &__content {
@@ -143,13 +169,16 @@
 
 @media (min-width: 900px) {
   .header {
-    &__user-action {
-      flex-direction: row-reverse;
-    }
-
     &__menu {
       display: flex;
       flex-direction: row-reverse;
+      justify-items: center;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    &__nav-link-list {
+      flex-direction: row;
     }
 
     &__svg-hamburger-menu {

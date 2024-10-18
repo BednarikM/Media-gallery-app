@@ -1,41 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
-import MediaListCard from "./MediaListCard.jsx";
+import { MediasDataFetchedContext } from "../context/Context.js";
+
+import MediaListCard from "../components/MediaListCard.jsx";
 
 import "../styles/components/MediaList.scss";
 
 export default function MediasList({ mediasData }) {
-  const [isLoading, setIsLoading] = useState(true); //Initial render
+  const { mediasDataFetched } = useContext(MediasDataFetchedContext);
   const [isEmpty, setIsEmpty] = useState(true); // State to track if the media list is empty
 
-  useEffect(() => {
-    setIsLoading(false);
+  console.log(mediasDataFetched);
 
-    if (!mediasData.length && !isLoading) {
+  useEffect(() => {
+    if (!mediasData.length) {
       setIsEmpty(true);
     } else {
       setIsEmpty(false);
     }
   }, [mediasData]);
 
-  if (isLoading) {
-    return null;
-  }
-
   return (
-    <div className="media-list">
-      {isEmpty ? (
-        <div className="media-list__no-results">
-          <span>No results found.</span>
-          <span>Please try different keywords.</span>
+    <>
+      {mediasDataFetched && (
+        <div className="media-list">
+          {isEmpty ? (
+            <div className="media-list__no-results">
+              <span>No results found.</span>
+              <span>Please try different keywords.</span>
+            </div>
+          ) : (
+            <ul className="media-list__content">
+              {mediasData.map((media, index) => {
+                return <MediaListCard key={index} {...{ media, index }} />;
+              })}
+            </ul>
+          )}
         </div>
-      ) : (
-        <ul className="media-list__content">
-          {mediasData.map((media, index) => {
-            return <MediaListCard key={index} {...{ media, index }} />;
-          })}
-        </ul>
       )}
-    </div>
+    </>
   );
 }

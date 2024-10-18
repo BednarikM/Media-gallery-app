@@ -6,6 +6,7 @@ import {
   SearchContext,
   GenreContext,
   ApiOptionsContext,
+  MediasDataFetchedContext,
 } from "../context/Context.js";
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
@@ -29,12 +30,13 @@ export default function App() {
 
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [mediasData, setMediasData] = useState([]);
+  const [mediasDataFetched, setMediasDataFetched] = useState(false);
   const [mediaGenres, setMediaGenres] = useState({});
   const [loadingGenres, setLoadingGenres] = useState(true);
-  const [pagination, setPagination] = useState(1);
   const [activeMediasGenre, setActiveMediasGenre] = useState("");
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [pagination, setPagination] = useState(1);
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -49,6 +51,7 @@ export default function App() {
   /* FUNCTIONS ****************************************************************/
   async function fetchMediasData(url, apiOptions) {
     if (loadingGenres) return;
+    setMediasDataFetched(false);
 
     try {
       const response = await fetch(url, apiOptions);
@@ -88,6 +91,7 @@ export default function App() {
         });
 
       setMediasData(formattedData);
+      setMediasDataFetched(true);
     } catch (error) {
       console.error("Caught error while fetching media data:", error);
     }
@@ -192,28 +196,30 @@ export default function App() {
         {!isInitialLoad && (
           <PageLayout>
             <GenreContext.Provider value={{ setActiveMediasGenre }}>
-              <Routes>
-                <Route
-                  path="/all"
-                  element={<Homepage mediasData={mediasData} />}
-                />
-                <Route
-                  path="/movie"
-                  element={<Movie mediasData={mediasData} />}
-                />
-                <Route path="/tv" element={<Tv mediasData={mediasData} />} />
-                <Route
-                  path="/search"
-                  element={<Search mediasData={mediasData} />}
-                />
-                <Route
-                  path="/media/:selectedMovieId"
-                  element={<MediaDetail />}
-                />
+              <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
+                <Routes>
+                  <Route
+                    path="/all"
+                    element={<Homepage mediasData={mediasData} />}
+                  />
+                  <Route
+                    path="/movie"
+                    element={<Movie mediasData={mediasData} />}
+                  />
+                  <Route path="/tv" element={<Tv mediasData={mediasData} />} />
+                  <Route
+                    path="/search"
+                    element={<Search mediasData={mediasData} />}
+                  />
+                  <Route
+                    path="/media/:selectedMovieId"
+                    element={<MediaDetail />}
+                  />
 
-                <Route path="/error" element={<Error />} />
-                <Route path="/*" element={<NotFound />} />
-              </Routes>
+                  <Route path="/error" element={<Error />} />
+                  <Route path="/*" element={<NotFound />} />
+                </Routes>
+              </MediasDataFetchedContext.Provider>
             </GenreContext.Provider>
           </PageLayout>
         )}

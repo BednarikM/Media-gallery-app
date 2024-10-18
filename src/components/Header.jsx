@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
-import SearchInput from "./SearchInput.jsx";
-import SvgIcon from "./SvgIcon.jsx";
+import SearchInput from "../components/SearchInput.jsx";
+import SvgIcon from "../components/SvgIcon.jsx";
 
 import "../styles/components/Header.scss";
 
@@ -26,7 +26,7 @@ export default function Header({ heading }) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isMobileMenuOpened]);
 
   return (
     <div className="header">
@@ -34,13 +34,13 @@ export default function Header({ heading }) {
         <div className="header__title-container">
           <span className="header__title">{heading}</span>
         </div>
-        <div className="header__user-action">
+        <div
+          className={`header__menu ${
+            isMobileMenuOpened ? "header__menu--is-opened" : ""
+          }`}
+        >
           <SearchInput />
-          <ul
-            className={`header__menu ${
-              isMobileMenuOpened ? "header__menu--is-opened" : ""
-            }`}
-          >
+          <ul className="header__nav-link-list">
             {mediaGenres.map((genre) => {
               return (
                 <NavLink
@@ -57,12 +57,12 @@ export default function Header({ heading }) {
               );
             })}
           </ul>
-          <SvgIcon
-            className="header__svg-hamburger-menu"
-            iconName={"hamburger-menu"}
-            handleIconClick={toggleMenu}
-          />
         </div>
+        <SvgIcon
+          className="header__svg-hamburger-menu"
+          iconName={"hamburger-menu"}
+          handleIconClick={toggleMenu}
+        />
       </div>
     </div>
   );

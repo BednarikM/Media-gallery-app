@@ -8,7 +8,7 @@ export default function Rating({ voteAverage, voteCount }) {
       <SvgIcon className="rating__svg-star" iconName={"star"} />
       <div className="rating__numbers">
         <div className="rating__numbers-container">
-          <span className="rating__average">{voteAverage}</span>
+          <span className="rating__average">{voteAverage.toFixed(1)}</span>
           <span className="rating__maximum">/10</span>
         </div>
         <span className="rating__count">{voteCount}x</span>

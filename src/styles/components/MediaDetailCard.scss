@@ -1,11 +1,12 @@
 @use "../variables" as *;
 
 .media-detail-card {
-  background-color: $color-dark-blue;
+  background-color: $color-blue-dark;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   border-radius: 4px;
 
   &__content-container {
@@ -26,7 +27,7 @@
   }
 
   &__meta-container {
-    color: $color-light-gray;
+    color: $color-gray-light;
     gap: 0.5rem;
 
     &--mobile {
@@ -97,8 +98,8 @@
       padding: 0.2rem 1rem;
       border-radius: 4px;
       min-width: min-content;
-      color: $color-medium-gray;
-      border: 2px solid $color-dark-gray;
+      color: $color-gray-medium;
+      border: 2px solid $color-gray-dark;
     }
   }
 
@@ -150,7 +151,7 @@
         display: block;
         width: 100%; /* Full width of the element */
         height: 1px; /* Height of the line */
-        background-color: $color-dark-gray; /* Color of the line */
+        background-color: $color-gray-dark; /* Color of the line */
         position: absolute;
         bottom: -1rem; /* Position it at the bottom of the element */
         left: 0;
@@ -165,7 +166,7 @@
     &__children {
       font-size: 1.6rem;
       white-space: pre-wrap;
-      color: $color-light-gray;
+      color: $color-gray-light;
     }
 
     &__created-by,
@@ -183,7 +184,7 @@
 
 @media (min-width: 768px) {
   .media-detail-card {
-    padding: 5rem 0;
+    padding: 5rem 2rem;
 
     &__content-container {
       display: flex;
