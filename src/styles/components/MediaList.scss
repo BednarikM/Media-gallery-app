@@ -2,6 +2,7 @@
 
 .media-list {
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
 
@@ -11,22 +12,30 @@
     flex-wrap: wrap;
     gap: 30px;
     justify-content: center;
-    padding: 2rem;
-    max-width: 1220px;
+    padding: 2rem 0;
   }
 
   &__no-results {
     color: $color-white;
     display: flex;
     flex-direction: column;
-    font-size: 3rem;
+    font-size: 2.2rem;
     font-weight: bold;
     gap: 1rem;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 5rem 2rem;
 
     span {
       text-align: center;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .media-list {
+    &__no-results {
+      justify-content: center;
+      font-size: 2.8rem;
     }
   }
 }
