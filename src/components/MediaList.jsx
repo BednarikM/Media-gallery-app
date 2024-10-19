@@ -1,30 +1,22 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 
-import { MediasDataFetchedContext } from "../context/Context.js";
+import { GenreContext, MediasDataFetchedContext } from "../context/Context.js";
 
 import MediaListCard from "../components/MediaListCard.jsx";
 
 import "../styles/components/MediaList.scss";
 
 export default function MediasList({ mediasData }) {
+  const { activeMediasGenre } = useContext(GenreContext);
   const { mediasDataFetched } = useContext(MediasDataFetchedContext);
-  const [isEmpty, setIsEmpty] = useState(true); // State to track if the media list is empty
 
-  console.log(mediasDataFetched);
-
-  useEffect(() => {
-    if (!mediasData.length) {
-      setIsEmpty(true);
-    } else {
-      setIsEmpty(false);
-    }
-  }, [mediasData]);
+  console.log(mediasData);
 
   return (
     <>
       {mediasDataFetched && (
         <div className="media-list">
-          {isEmpty ? (
+          {activeMediasGenre === "search" && !mediasData.length ? (
             <div className="media-list__no-results">
               <span>No results found.</span>
               <span>Please try different keywords.</span>

@@ -52,40 +52,6 @@
     margin-bottom: 0.5rem;
   }
 
-  &__sub-information {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-items: center;
-    margin: 1.5rem 0;
-
-    span:not(:first-child) {
-      &::before {
-        display: inline-block;
-        margin: 0 0.5rem 0.2rem;
-        content: "";
-        font-size: 1rem;
-        line-height: 0.5rem;
-        padding: 1px;
-        border-radius: 50%;
-        vertical-align: middle;
-        background-color: currentColor;
-      }
-    }
-
-    .homepage-link {
-      a {
-        color: $color-purple;
-      }
-    }
-
-    .imdb-link {
-      a {
-        color: $color-gold;
-      }
-    }
-  }
-
   & .genre-list {
     display: flex;
     flex-wrap: wrap;
@@ -107,7 +73,7 @@
     position: relative;
     height: auto;
     display: none;
-    padding: 2rem 0;
+    padding: 3rem 0;
 
     &--mobile {
       display: flex;

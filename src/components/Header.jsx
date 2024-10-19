@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 
 import SearchInput from "../components/SearchInput.jsx";
@@ -8,18 +8,19 @@ import "../styles/components/Header.scss";
 
 export default function Header({ heading }) {
   const [isMobileMenuOpened, setIsMobileMenuOpened] = useState(false);
-  const mediaGenres = ["all", "movie", "tv"];
+  const headerRef = useRef(null);
+  const mediaGenres = ["all", "movie", "tv", "favorites"];
 
   function toggleMenu() {
     setIsMobileMenuOpened((open) => !open);
   }
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 900 && isMobileMenuOpened) {
+    function handleResize() {
+      if (window.innerWidth >= 950 && isMobileMenuOpened) {
         setIsMobileMenuOpened(false);
       }
-    };
+    }
 
     window.addEventListener("resize", handleResize);
 
@@ -29,7 +30,7 @@ export default function Header({ heading }) {
   }, [isMobileMenuOpened]);
 
   return (
-    <div className="header">
+    <div className="header" ref={headerRef}>
       <div className="header__content">
         <div className="header__title-container">
           <span className="header__title">{heading}</span>
@@ -60,7 +61,7 @@ export default function Header({ heading }) {
         </div>
         <SvgIcon
           className="header__svg-hamburger-menu"
-          iconName={"hamburger-menu"}
+          iconName={`${isMobileMenuOpened ? "chevron-left" : "hamburger-menu"}`}
           handleIconClick={toggleMenu}
         />
       </div>

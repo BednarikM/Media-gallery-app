@@ -81,16 +81,18 @@
     font-size: 1.4rem;
   }
 
+  &__likeness {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   &__svg-favorite {
-    position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     fill: $color-gray-light;
-    bottom: 10px;
-    right: 10px;
-    stroke: red;
-    cursor: pointer;
-    z-index: 1000;
+    z-index: 20;
 
     &--added {
       fill: red;

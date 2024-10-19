@@ -14,6 +14,7 @@ import Homepage from "../pages/Homepage.jsx";
 import Movie from "../pages/Movie.jsx";
 import Tv from "../pages/Tv.jsx";
 import Search from "../pages/Search.jsx";
+import Favorites from "../pages/Favorites.jsx";
 import MediaDetail from "../pages/MediaDetail.jsx";
 import Error from "../pages/Error.jsx"; // Custom 404 component
 import NotFound from "../pages/NotFound.jsx";
@@ -33,7 +34,7 @@ export default function App() {
   const [mediasDataFetched, setMediasDataFetched] = useState(false);
   const [mediaGenres, setMediaGenres] = useState({});
   const [loadingGenres, setLoadingGenres] = useState(true);
-  const [activeMediasGenre, setActiveMediasGenre] = useState("");
+  const [activeMediasGenre, setActiveMediasGenre] = useState("all");
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [pagination, setPagination] = useState(1);
@@ -124,19 +125,31 @@ export default function App() {
   /* HOOKS ********************************************************************/
   /* LOCATION PATHNAME HOOK */
   useEffect(() => {
+    const validMediaTypes = ["all", "movie", "tv"];
+
     if (location.pathname === "/") {
-      setActiveMediasGenre("all");
       navigate("/all", { replace: true });
-    } else if (
+      setActiveMediasGenre("all");
+    }
+
+    const mediaType = validMediaTypes.find((type) =>
+      location.pathname.includes(type)
+    );
+
+    if (mediaType) {
+      setActiveMediasGenre(mediaType);
+    }
+
+    if (
       location.pathname !== "/search" &&
       !location.pathname.startsWith("/media/")
     ) {
       setSearchInputValue("");
     }
+
     setIsInitialLoad(false);
   }, [navigate, location.pathname]);
 
-  /* INITIAL GENRE LISTS HOOK */
   useEffect(() => {
     fetchMediaGenres(apiOptions);
   }, []);
@@ -153,7 +166,10 @@ export default function App() {
 
   /* FETCH GENRE LIST HOOK */
   useEffect(() => {
-    if (activeMediasGenre === "search") return;
+    if (!["all", "movie", "tv"].includes(activeMediasGenre)) {
+      return;
+    }
+
     const apiUrl = `https://api.themoviedb.org/3/trending/${activeMediasGenre}/week?language=en-US&page=${pagination}`;
     fetchMediasData(apiUrl, apiOptions);
   }, [activeMediasGenre, loadingGenres]);
@@ -195,7 +211,7 @@ export default function App() {
         </SearchContext.Provider>
         {!isInitialLoad && (
           <PageLayout>
-            <GenreContext.Provider value={{ setActiveMediasGenre }}>
+            <GenreContext.Provider value={{ activeMediasGenre }}>
               <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
                 <Routes>
                   <Route
@@ -211,6 +227,7 @@ export default function App() {
                     path="/search"
                     element={<Search mediasData={mediasData} />}
                   />
+                  <Route path="/favorites" element={<Favorites />} />
                   <Route
                     path="/media/:selectedMovieId"
                     element={<MediaDetail />}

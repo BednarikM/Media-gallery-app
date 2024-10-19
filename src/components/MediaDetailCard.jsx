@@ -1,18 +1,13 @@
 import { useEffect, useContext, useState } from "react";
 
 import { ApiOptionsContext } from "../context/Context.js";
-import {
-  formatDate,
-  formatRuntime,
-  capitalFirstLetter,
-  getFullLangNames,
-} from "../utils/Utils.js";
+import { formatDate, getFullLangNames } from "../utils/Utils.js";
 
 import MediaDetailField from "../components/MediaDetailField.jsx";
 import ImageContainer from "../components/ImageContainer.jsx";
 import GenreList from "../components/GenreList.jsx";
 import Rating from "../components/Rating.jsx";
-import CountryFlags from "../components/CountryFlags.jsx";
+import MediaSubInformation from "../components/MediaSubInformation.jsx";
 
 import "../styles/components/MediaDetailCard.scss";
 
@@ -86,50 +81,7 @@ export default function MediaDetailCard() {
                   <div className="media-detail-card__tagline">
                     {mediaData.tagline}
                   </div>
-                  <div className="media-detail-card__sub-information">
-                    {mediaData.media_type === "movie" && (
-                      <>
-                        <span>{mediaData.release_date}</span>
-                        <CountryFlags country={mediaData.origin_country} />
-                        <span>{capitalFirstLetter(mediaData.media_type)}</span>
-                        <span>{formatRuntime(mediaData.runtime)}</span>
-                      </>
-                    )}
-                    {mediaData.media_type === "tv" && (
-                      <>
-                        <span>{mediaData.first_air_date}</span>
-                        <CountryFlags country={mediaData.origin_country} />
-                        <span>{`${mediaData.media_type.toUpperCase()} ${
-                          mediaData.type
-                        }`}</span>
-                        <span>{`${mediaData.number_of_seasons} SE`}</span>
-                        <span>{`${mediaData.number_of_episodes} EP`}</span>
-                      </>
-                    )}
-                    {mediaData.homepage && (
-                      <span className="homepage-link">
-                        <a
-                          href={mediaData.homepage}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Homepage
-                        </a>
-                      </span>
-                    )}
-
-                    {mediaData.imdb_id && (
-                      <span className="imdb-link">
-                        <a
-                          href={`https://www.imdb.com/title/${mediaData.imdb_id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          IMDB
-                        </a>
-                      </span>
-                    )}
-                  </div>
+                  <MediaSubInformation mediaData={mediaData} />
                   <GenreList
                     parentClass={"media-detail-card"}
                     formattedGenres={mediaData.genres}

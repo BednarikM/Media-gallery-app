@@ -1,0 +1,35 @@
+@use "../variables" as *;
+
+.sub-information {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  margin: 1.5rem 0;
+
+  span:not(:first-child) {
+    &::before {
+      display: inline-block;
+      margin: 0 0.5rem 0.2rem;
+      content: "";
+      font-size: 1rem;
+      line-height: 0.5rem;
+      padding: 1px;
+      border-radius: 50%;
+      vertical-align: middle;
+      background-color: currentColor;
+    }
+  }
+
+  &__homepage-link {
+    a {
+      color: $color-purple;
+    }
+  }
+
+  &__imdb-link {
+    a {
+      color: $color-gold;
+    }
+  }
+}

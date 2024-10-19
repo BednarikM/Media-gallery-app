@@ -12,11 +12,6 @@
   width: min-content;
   position: relative;
 
-  &:active,
-  &:focus-within {
-    outline: 2px solid $color-purple;
-  }
-
   &__element {
     border: none;
     font-size: 2rem;
