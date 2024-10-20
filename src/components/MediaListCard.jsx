@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 
 import ImageContainer from "../components/ImageContainer.jsx";
 import Rating from "../components/Rating.jsx";
-import Favorite from "./Favorite.jsx";
+import FavoriteIcon from "./FavoriteIcon.jsx";
+import MediaSubInformation from "../components/MediaSubInformation.jsx";
 
 import "../styles/components/MediaListCard.scss";
 
@@ -13,7 +14,6 @@ export default function MediaListCard({ media, index }) {
     poster_path,
     formattedTitle,
     media_type,
-    formattedReleaseDate,
     vote_average,
     vote_count,
   } = media;
@@ -22,6 +22,7 @@ export default function MediaListCard({ media, index }) {
     <li className="media-list-card" key={index}>
       <Link
         to={`${formattedRoute}?type=${media_type}&id=${id}`}
+        state={{ stateMediaData: media }}
         className="media-list-card__link"
       >
         <ImageContainer
@@ -30,18 +31,13 @@ export default function MediaListCard({ media, index }) {
           imageAlt={formattedTitle}
         />
         <div className="media-list-card__information">
-          <div className="media-list-card__title">{formattedTitle}</div>
-          <div className="media-list-card__details">
-            <div className="media-list-card__type">
-              {media_type.toUpperCase()}
-            </div>
-            <div className="media-list-card__release-date">
-              {formattedReleaseDate || ""}
-            </div>
-            <div className="media-list-card__likeness">
-              <Rating voteAverage={vote_average} voteCount={vote_count} />
-              <Favorite media={media} />
-            </div>
+          <div className="media-list-card__information-container">
+            <div className="media-list-card__title">{formattedTitle}</div>
+            <MediaSubInformation mediaData={media} />
+          </div>
+          <div className="media-list-card__likeness">
+            <Rating voteAverage={vote_average} voteCount={vote_count} />
+            <FavoriteIcon media={media} />
           </div>
         </div>
       </Link>

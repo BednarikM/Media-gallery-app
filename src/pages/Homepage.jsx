@@ -1,5 +1,5 @@
 import MediaList from "../components/MediaList.jsx";
 
-export default function Homepage({ mediasData }) {
+export default function HomePage({ mediasData }) {
   return <MediaList mediasData={mediasData} />;
 }

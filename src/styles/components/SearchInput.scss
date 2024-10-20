@@ -1,5 +1,4 @@
 @use "../variables" as *;
-@use "sass:color";
 
 .search-input {
   align-items: center;
@@ -62,7 +61,7 @@
   //   cursor: pointer;
 
   //   &:hover {
-  //     fill: $color-purple;
+  //     fill: $color-purple-medium;
   //   }
   // }
 }

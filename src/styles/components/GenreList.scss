@@ -1,0 +1,18 @@
+@use "../variables" as *;
+
+.genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  &__item {
+    padding: 0.2rem 1rem;
+    border-radius: 4px;
+    min-width: min-content;
+    color: $color-gray-medium;
+    border: 2px solid $color-gray-dark;
+  }
+}

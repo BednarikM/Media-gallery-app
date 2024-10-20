@@ -1,35 +1,47 @@
 import { useContext } from "react";
+import { useLocation } from "react-router-dom";
 
-import { GenreContext, MediasDataFetchedContext } from "../context/Context.js";
+import { MediasDataFetchedContext } from "../context/Context.js";
+import { FavoritesContext } from "../context/FavoritesContext.jsx";
 
 import MediaListCard from "../components/MediaListCard.jsx";
 
 import "../styles/components/MediaList.scss";
 
 export default function MediasList({ mediasData }) {
-  const { activeMediasGenre } = useContext(GenreContext);
+  const location = useLocation();
+  const { favorites } = useContext(FavoritesContext);
   const { mediasDataFetched } = useContext(MediasDataFetchedContext);
 
-  console.log(mediasData);
+  const isFavoritesRoute = location.pathname === "/favorites";
+  const listData = isFavoritesRoute ? favorites : mediasData;
 
   return (
     <>
-      {mediasDataFetched && (
+      {isFavoritesRoute || mediasDataFetched ? ( // If it's the favorites route or data is fetched
         <div className="media-list">
-          {activeMediasGenre === "search" && !mediasData.length ? (
+          {!listData.length ? (
             <div className="media-list__no-results">
-              <span>No results found.</span>
-              <span>Please try different keywords.</span>
+              <span>
+                {isFavoritesRoute
+                  ? "No favorite media found."
+                  : "No results found."}
+              </span>
+              <span>
+                {isFavoritesRoute
+                  ? "Please add some favorites."
+                  : "Please try different keywords."}
+              </span>
             </div>
           ) : (
             <ul className="media-list__content">
-              {mediasData.map((media, index) => {
-                return <MediaListCard key={index} {...{ media, index }} />;
-              })}
+              {listData.map((media, index) => (
+                <MediaListCard key={index} {...{ media, index }} />
+              ))}
             </ul>
           )}
         </div>
-      )}
+      ) : null}{" "}
     </>
   );
 }

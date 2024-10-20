@@ -1,4 +1,8 @@
-import { formatRuntime, capitalFirstLetter } from "../utils/Utils.js";
+import {
+  formatRuntime,
+  capitalFirstLetter,
+  formatDate,
+} from "../utils/Utils.js";
 
 import CountryFlags from "../components/CountryFlags.jsx";
 
@@ -22,7 +26,7 @@ export default function MediaSubInformation({ mediaData }) {
     <div className="sub-information">
       {media_type === "movie" && (
         <>
-          {release_date && <span>{release_date}</span>}
+          {release_date && <span>{formatDate(release_date)}</span>}
           {origin_country && <CountryFlags country={origin_country} />}
           {media_type && <span>{capitalFirstLetter(media_type)}</span>}
           {runtime && <span>{formatRuntime(runtime)}</span>}
@@ -30,9 +34,14 @@ export default function MediaSubInformation({ mediaData }) {
       )}
       {media_type === "tv" && (
         <>
-          {first_air_date && <span>{first_air_date}</span>}
+          {first_air_date && <span>{formatDate(first_air_date)}</span>}
           {origin_country && <CountryFlags country={origin_country} />}
-          {media_type && <span>{`${media_type.toUpperCase()} ${type}`}</span>}
+          {(media_type || type) && (
+            <span>
+              {media_type && `${media_type.toUpperCase()}`}
+              {type && ` ${type}`}
+            </span>
+          )}
           {number_of_seasons && <span>{`${number_of_seasons} SE`}</span>}
           {number_of_episodes && <span>{`${number_of_episodes} EP`}</span>}
         </>

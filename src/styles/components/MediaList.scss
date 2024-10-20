@@ -3,16 +3,16 @@
 .media-list {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
+  display: block;
+  padding: 2rem 0;
 
   &__content {
-    align-items: stretch;
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 30px;
     justify-content: center;
-    padding: 2rem 0;
+    align-items: center;
   }
 
   &__no-results {
@@ -27,6 +27,16 @@
 
     span {
       text-align: center;
+    }
+  }
+}
+
+@media (min-width: 550px) {
+  .media-list {
+    &__content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
+      grid-template-rows: auto;
     }
   }
 }

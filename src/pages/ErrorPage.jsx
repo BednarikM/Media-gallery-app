@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 
-export default function Error() {
+export default function ErrorPage() {
   const location = useLocation();
 
   const { status, message } = location.state || {}; // Fallback in case state is missing

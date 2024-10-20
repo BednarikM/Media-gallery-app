@@ -4,20 +4,21 @@ import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 
 import {
   SearchContext,
-  GenreContext,
   ApiOptionsContext,
   MediasDataFetchedContext,
 } from "../context/Context.js";
+import { FavoritesProvider } from "../context/FavoritesContext.jsx";
+
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
-import Homepage from "../pages/Homepage.jsx";
-import Movie from "../pages/Movie.jsx";
-import Tv from "../pages/Tv.jsx";
-import Search from "../pages/Search.jsx";
-import Favorites from "../pages/Favorites.jsx";
-import MediaDetail from "../pages/MediaDetail.jsx";
-import Error from "../pages/Error.jsx"; // Custom 404 component
-import NotFound from "../pages/NotFound.jsx";
+import HomePage from "../pages/HomePage.jsx";
+import MoviePage from "../pages/MoviePage.jsx";
+import TvPage from "../pages/TvPage.jsx";
+import SearchPage from "../pages/SearchPage.jsx";
+import FavoritesPage from "../pages/FavoritesPage.jsx";
+import MediaDetailPage from "../pages/MediaDetailPage.jsx";
+import ErrorPage from "../pages/ErrorPage.jsx"; // Custom 404 component
+import NotFoundPage from "../pages/NotFoundPage.jsx";
 
 import PageLayout from "../layouts/PageLayout.jsx";
 
@@ -29,12 +30,11 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [mediasData, setMediasData] = useState([]);
   const [mediasDataFetched, setMediasDataFetched] = useState(false);
   const [mediaGenres, setMediaGenres] = useState({});
-  const [loadingGenres, setLoadingGenres] = useState(true);
-  const [activeMediasGenre, setActiveMediasGenre] = useState("all");
+  const [mediasGenresFetched, setMediasGenresFetched] = useState(false);
+  // const [activeMediasGenre, setActiveMediasGenre] = useState("all");
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [pagination, setPagination] = useState(1);
@@ -49,11 +49,10 @@ export default function App() {
     },
   };
 
+  const validMediaTypes = ["all", "movie", "tv"];
+
   /* FUNCTIONS ****************************************************************/
   async function fetchMediasData(url, apiOptions) {
-    if (loadingGenres) return;
-    setMediasDataFetched(false);
-
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
@@ -98,9 +97,7 @@ export default function App() {
     }
   }
 
-  async function fetchMediaGenres(apiOptions) {
-    setLoadingGenres(true);
-
+  async function fetchMediasGenres(apiOptions) {
     const movieGenresResponse = await fetch(
       "https://api.themoviedb.org/3/genre/movie/list?language=en",
       apiOptions
@@ -119,25 +116,19 @@ export default function App() {
     };
 
     setMediaGenres(genresList);
-    setLoadingGenres(false);
+    setMediasGenresFetched(true);
   }
 
   /* HOOKS ********************************************************************/
+  /* FETCH GENRE LIST HOOK */
+  useEffect(() => {
+    fetchMediasGenres(apiOptions);
+  }, []);
+
   /* LOCATION PATHNAME HOOK */
   useEffect(() => {
-    const validMediaTypes = ["all", "movie", "tv"];
-
     if (location.pathname === "/") {
-      navigate("/all", { replace: true });
-      setActiveMediasGenre("all");
-    }
-
-    const mediaType = validMediaTypes.find((type) =>
-      location.pathname.includes(type)
-    );
-
-    if (mediaType) {
-      setActiveMediasGenre(mediaType);
+      navigate("/all");
     }
 
     if (
@@ -146,13 +137,19 @@ export default function App() {
     ) {
       setSearchInputValue("");
     }
+  }, [location.pathname]);
 
-    setIsInitialLoad(false);
-  }, [navigate, location.pathname]);
-
+  /* LOCATION MEDIASDATA FETCH HOOK */
   useEffect(() => {
-    fetchMediaGenres(apiOptions);
-  }, []);
+    const mediaType = validMediaTypes.find((type) =>
+      location.pathname.includes(type)
+    );
+
+    if (mediaType && mediasGenresFetched) {
+      const apiUrl = `https://api.themoviedb.org/3/trending/${mediaType}/week?language=en-US&page=${pagination}`;
+      fetchMediasData(apiUrl, apiOptions);
+    }
+  }, [location.pathname, mediasGenresFetched]);
 
   /* SEARCH QUERY HOOK */
   useEffect(() => {
@@ -163,16 +160,6 @@ export default function App() {
       setSearchInputValue(keyword);
     }
   }, [location.search]);
-
-  /* FETCH GENRE LIST HOOK */
-  useEffect(() => {
-    if (!["all", "movie", "tv"].includes(activeMediasGenre)) {
-      return;
-    }
-
-    const apiUrl = `https://api.themoviedb.org/3/trending/${activeMediasGenre}/week?language=en-US&page=${pagination}`;
-    fetchMediasData(apiUrl, apiOptions);
-  }, [activeMediasGenre, loadingGenres]);
 
   /* SAVE DEBOUNCED SEARCH VALUE */
   useEffect(() => {
@@ -193,13 +180,6 @@ export default function App() {
     }
   }, [debouncedSearchValue]);
 
-  // /* SAVE SELECTED MEDIA TO LOCAL */
-  // useEffect(() => {
-  //   if (selectedMedia && Object.keys(selectedMedia).length > 0) {
-  //     localStorage.setItem("selectedMedia", JSON.stringify(selectedMedia));
-  //   }
-  // }, [selectedMedia]);
-
   /* JSX TEMPLATE *************************************************************/
   return (
     <>
@@ -209,37 +189,38 @@ export default function App() {
         >
           <Header heading="Medias Search App" />
         </SearchContext.Provider>
-        {!isInitialLoad && (
-          <PageLayout>
-            <GenreContext.Provider value={{ activeMediasGenre }}>
-              <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
-                <Routes>
-                  <Route
-                    path="/all"
-                    element={<Homepage mediasData={mediasData} />}
-                  />
-                  <Route
-                    path="/movie"
-                    element={<Movie mediasData={mediasData} />}
-                  />
-                  <Route path="/tv" element={<Tv mediasData={mediasData} />} />
-                  <Route
-                    path="/search"
-                    element={<Search mediasData={mediasData} />}
-                  />
-                  <Route path="/favorites" element={<Favorites />} />
-                  <Route
-                    path="/media/:selectedMovieId"
-                    element={<MediaDetail />}
-                  />
+        <PageLayout>
+          <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
+            <FavoritesProvider>
+              <Routes>
+                <Route
+                  path="/all"
+                  element={<HomePage mediasData={mediasData} />}
+                />
+                <Route
+                  path="/movie"
+                  element={<MoviePage mediasData={mediasData} />}
+                />
+                <Route
+                  path="/tv"
+                  element={<TvPage mediasData={mediasData} />}
+                />
+                <Route
+                  path="/search"
+                  element={<SearchPage mediasData={mediasData} />}
+                />
+                <Route path="/favorites" element={<FavoritesPage />} />
+                <Route
+                  path="/media/:selectedMovieId"
+                  element={<MediaDetailPage />}
+                />
 
-                  <Route path="/error" element={<Error />} />
-                  <Route path="/*" element={<NotFound />} />
-                </Routes>
-              </MediasDataFetchedContext.Provider>
-            </GenreContext.Provider>
-          </PageLayout>
-        )}
+                <Route path="/error" element={<ErrorPage />} />
+                <Route path="/*" element={<NotFoundPage />} />
+              </Routes>
+            </FavoritesProvider>
+          </MediasDataFetchedContext.Provider>
+        </PageLayout>
       </ApiOptionsContext.Provider>
     </>
   );

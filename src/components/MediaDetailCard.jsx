@@ -1,18 +1,23 @@
 import { useEffect, useContext, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { ApiOptionsContext } from "../context/Context.js";
-import { formatDate, getFullLangNames } from "../utils/Utils.js";
+import { getFullLangNames } from "../utils/Utils.js";
 
 import MediaDetailField from "../components/MediaDetailField.jsx";
 import ImageContainer from "../components/ImageContainer.jsx";
 import GenreList from "../components/GenreList.jsx";
 import Rating from "../components/Rating.jsx";
+import FavoriteIcon from "../components/FavoriteIcon.jsx";
 import MediaSubInformation from "../components/MediaSubInformation.jsx";
 
 import "../styles/components/MediaDetailCard.scss";
 
 export default function MediaDetailCard() {
+  const { state: { stateMediaData } = {} } = useLocation();
+  console.log("state", stateMediaData);
   const { apiOptions } = useContext(ApiOptionsContext);
+
   const [queryParams, setQueryParams] = useState({});
   const [mediaData, setMediaData] = useState({});
   const [dataAreFetched, setDataAreFetched] = useState(false);
@@ -24,12 +29,6 @@ export default function MediaDetailCard() {
 
     const mappedData = {
       ...fetchedData,
-      release_date: fetchedData.release_date
-        ? formatDate(fetchedData.release_date, "year")
-        : null,
-      first_air_date: fetchedData.first_air_date
-        ? formatDate(fetchedData.first_air_date, "year")
-        : null,
       spoken_languages: fetchedData.spoken_languages.map((language) =>
         getFullLangNames(language["iso_639_1"])
       ),
@@ -48,15 +47,12 @@ export default function MediaDetailCard() {
 
     setMediaData(mappedData);
     setDataAreFetched(true);
-
-    console.log(mappedData);
   }
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const paramsObject = Object.fromEntries(queryParams.entries());
 
-    if (Object.entries(paramsObject).length) console.log(paramsObject);
     setQueryParams(paramsObject);
   }, []);
 
@@ -86,10 +82,13 @@ export default function MediaDetailCard() {
                     parentClass={"media-detail-card"}
                     formattedGenres={mediaData.genres}
                   />
-                  <Rating
-                    voteAverage={mediaData.vote_average}
-                    voteCount={mediaData.vote_count}
-                  />
+                  <div className="media-detail-card__likeness">
+                    <Rating
+                      voteAverage={mediaData.vote_average}
+                      voteCount={mediaData.vote_count}
+                    />
+                    <FavoriteIcon media={stateMediaData} />
+                  </div>
                 </div>
                 <ImageContainer
                   classModifier={"mobile"}

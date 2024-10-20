@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-export default function Error() {
+export default function ErrorPage() {
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
       <h1>404</h1>

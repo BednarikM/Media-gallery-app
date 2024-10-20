@@ -1,7 +1,9 @@
 @use "../variables" as *;
 
 .media-list-card {
-  max-width: 80%;
+  width: 90%;
+  max-width: 25rem;
+  height: 100%;
 
   &__link {
     background-color: $color-blue-dark;
@@ -11,7 +13,6 @@
     flex-direction: column;
     padding: 0.5rem;
     text-decoration: none;
-    width: fit-content;
     width: 100%;
     height: 100%;
 
@@ -54,31 +55,16 @@
     position: relative;
   }
 
-  &__details {
+  &__information-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
   }
 
   &__title {
     color: $color-white;
-  }
-
-  &__release-date,
-  &__type {
-    color: $color-gray-light;
-    width: 100%;
-  }
-
-  &__title {
     font-size: 1.8rem;
     line-height: 2.4rem;
     word-break: break-word;
-  }
-
-  &__release-date,
-  &__type {
-    font-size: 1.4rem;
   }
 
   &__likeness {
@@ -87,23 +73,10 @@
     align-items: center;
     justify-content: space-between;
   }
-
-  &__svg-favorite {
-    width: 35px;
-    height: 35px;
-    fill: $color-gray-light;
-    z-index: 20;
-
-    &--added {
-      fill: red;
-    }
-  }
 }
 
 @media (min-width: 450px) {
   .media-list-card {
-    width: 18rem;
-    max-width: 22rem;
-    flex-grow: 1;
+    width: fit-content;
   }
 }

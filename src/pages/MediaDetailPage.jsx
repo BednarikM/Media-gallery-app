@@ -1,5 +1,5 @@
 import MediaDetailCard from "../components/MediaDetailCard.jsx";
 
-export default function MediaDetail() {
+export default function MediaDetailPage() {
   return <MediaDetailCard />;
 }
