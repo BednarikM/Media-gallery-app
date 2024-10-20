@@ -24,7 +24,7 @@ To get started with the React Media Search App, follow these steps:
    git clone https://github.com/your-username/react-media-search-app.git
    cd react-media-search-app
 
-2. Install the dependencies:
+2. Install the dependencies:  
    create .env from .env.example (use own TMDB key if you have)
 
 2. Install the dependencies:
