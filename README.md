@@ -25,6 +25,9 @@ To get started with the React Media Search App, follow these steps:
    cd react-media-search-app
 
 2. Install the dependencies:
+   create .env from .env.example (use own TMDB key if you have)
+
+2. Install the dependencies:
    ```bash
    npm install
 
