@@ -1,0 +1,45 @@
+@use "../variables" as *;
+
+.pagination-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  width: fit-content;
+  height: fit-content;
+  gap: 1rem;
+  margin-top: 4rem;
+
+  &__svg-chevron-left,
+  &__svg-chevron-right {
+    width: 35px;
+    height: 35px;
+    fill: $color-white;
+    border-radius: 4px;
+    background-color: $color-blue-dark;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  &__button {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: none;
+    color: $color-white;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: $color-blue-dark;
+  }
+}

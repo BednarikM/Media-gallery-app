@@ -5,14 +5,12 @@ export const FavoritesContext = createContext();
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
 
-  // Load favorites from localStorage on mount
   useEffect(() => {
     const storedFavorites =
       JSON.parse(localStorage.getItem("favoriteMedias")) || [];
     setFavorites(storedFavorites);
   }, []);
 
-  // Sync favorites with localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("favoriteMedias", JSON.stringify(favorites));
   }, [favorites]);
