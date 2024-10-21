@@ -5,6 +5,7 @@ import { MediasDataFetchedContext } from "../context/Context.js";
 import { FavoritesContext } from "../context/FavoritesContext.jsx";
 
 import MediaListCard from "../components/MediaListCard.jsx";
+import PaginationContainer from "../components/PaginationContainer";
 
 import "../styles/components/MediaList.scss";
 
@@ -34,11 +35,14 @@ export default function MediasList({ mediasData }) {
               </span>
             </div>
           ) : (
-            <ul className="media-list__content">
-              {listData.map((media, index) => (
-                <MediaListCard key={index} {...{ media, index }} />
-              ))}
-            </ul>
+            <>
+              <ul className="media-list__content">
+                {listData.map((media, index) => (
+                  <MediaListCard key={index} {...{ media, index }} />
+                ))}
+              </ul>
+              <PaginationContainer propsPagesCount={5} />
+            </>
           )}
         </div>
       ) : null}{" "}

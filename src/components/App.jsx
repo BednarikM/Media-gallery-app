@@ -7,11 +7,8 @@ import {
   ApiOptionsContext,
   MediasDataFetchedContext,
 } from "../context/Context.js";
+import { PaginationContext } from "../context/PaginationContext.jsx";
 import { FavoritesProvider } from "../context/FavoritesContext.jsx";
-import {
-  PaginationContext,
-  PaginationProvider,
-} from "../context/PaginationContext.jsx";
 
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
@@ -21,8 +18,8 @@ import TvPage from "../pages/TvPage.jsx";
 import SearchPage from "../pages/SearchPage.jsx";
 import FavoritesPage from "../pages/FavoritesPage.jsx";
 import MediaDetailPage from "../pages/MediaDetailPage.jsx";
-import ErrorPage from "../pages/ErrorPage.jsx"; // Custom 404 component
-import NotFoundPage from "../pages/NotFoundPage.jsx";
+import ErrorPage from "../pages/ErrorPage.jsx"; // Custom 5XX page component
+import NotFoundPage from "../pages/NotFoundPage.jsx"; // Custom 404 page component
 
 import PageLayout from "../layouts/PageLayout.jsx";
 
@@ -41,8 +38,7 @@ export default function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
-  const { actualPaginationNumber, setPaginationNumber } =
-    useContext(PaginationContext);
+  const { actualStatePage, setActualStatePage } = useContext(PaginationContext);
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -151,7 +147,7 @@ export default function App() {
     );
 
     if (mediaType && mediasGenresFetched) {
-      const apiUrl = `https://api.themoviedb.org/3/trending/${mediaType}/week?language=en-US&page=${actualPaginationNumber}`;
+      const apiUrl = `https://api.themoviedb.org/3/trending/${mediaType}/week?language=en-US&page=${actualStatePage}`;
       fetchMediasData(apiUrl, apiOptions);
     }
   }, [location.pathname, mediasGenresFetched]);
@@ -187,48 +183,39 @@ export default function App() {
 
   /* JSX TEMPLATE *************************************************************/
   return (
-    <>
-      <PaginationProvider>
-        <ApiOptionsContext.Provider value={{ apiOptions }}>
-          <SearchContext.Provider
-            value={{ searchInputValue, setSearchInputValue }}
-          >
-            <Header heading="Medias Search App" />
-          </SearchContext.Provider>
-          <PageLayout>
-            <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
-              <FavoritesProvider>
-                <Routes>
-                  <Route
-                    path="/all"
-                    element={<HomePage mediasData={mediasData} />}
-                  />
-                  <Route
-                    path="/movie"
-                    element={<MoviePage mediasData={mediasData} />}
-                  />
-                  <Route
-                    path="/tv"
-                    element={<TvPage mediasData={mediasData} />}
-                  />
-                  <Route
-                    path="/search"
-                    element={<SearchPage mediasData={mediasData} />}
-                  />
-                  <Route path="/favorites" element={<FavoritesPage />} />
-                  <Route
-                    path="/media/:selectedMovieId"
-                    element={<MediaDetailPage />}
-                  />
+    <ApiOptionsContext.Provider value={{ apiOptions }}>
+      <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
+        <Header heading="Medias Search App" />
+      </SearchContext.Provider>
+      <PageLayout>
+        <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
+          <FavoritesProvider>
+            <Routes>
+              <Route
+                path="/all"
+                element={<HomePage mediasData={mediasData} />}
+              />
+              <Route
+                path="/movie"
+                element={<MoviePage mediasData={mediasData} />}
+              />
+              <Route path="/tv" element={<TvPage mediasData={mediasData} />} />
+              <Route
+                path="/search"
+                element={<SearchPage mediasData={mediasData} />}
+              />
+              <Route path="/favorites" element={<FavoritesPage />} />
+              <Route
+                path="/media/:selectedMovieId"
+                element={<MediaDetailPage />}
+              />
 
-                  <Route path="/error" element={<ErrorPage />} />
-                  <Route path="/*" element={<NotFoundPage />} />
-                </Routes>
-              </FavoritesProvider>
-            </MediasDataFetchedContext.Provider>
-          </PageLayout>
-        </ApiOptionsContext.Provider>
-      </PaginationProvider>
-    </>
+              <Route path="/error" element={<ErrorPage />} />
+              <Route path="/*" element={<NotFoundPage />} />
+            </Routes>
+          </FavoritesProvider>
+        </MediasDataFetchedContext.Provider>
+      </PageLayout>
+    </ApiOptionsContext.Provider>
   );
 }
