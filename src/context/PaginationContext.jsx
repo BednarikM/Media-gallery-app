@@ -3,23 +3,15 @@ import { createContext, useEffect, useState } from "react";
 export const PaginationContext = createContext();
 
 export const PaginationProvider = ({ children }) => {
-  const [firstPage, setFirstPage] = useState(1);
+  const [firstPage, _] = useState(1);
   const [totalPagesCount, setTotalPagesCount] = useState(); // FINISH
   const [visiblePagesArray, setVisiblePagesArray] = useState([]);
   const [leftEllipsisVisible, setLeftEllipsisVisible] = useState(false);
   const [rightEllipsisVisible, setrightEllipsisVisible] = useState(true);
-  const [spreadedPagesCount, setSpreadedPagesCount] = useState();
   const [actualStatePage, setActualStatePage] = useState(1);
-
-  /* CONSTANTS ****************************************************************/
-  const lastPage = totalPagesCount;
-  const leftOffset = 2,
-    rightOffset = 2;
-  const maxVisiblePages = 1 + leftOffset + rightOffset;
 
   function incrementPage() {
     if (actualStatePage < totalPagesCount) {
-      console.log("trigered");
       setActualStatePage((prev) => prev + 1);
     }
   }
@@ -36,38 +28,38 @@ export const PaginationProvider = ({ children }) => {
 
   useEffect(() => {
     const visiblePages = [];
-    const totalVisiblePages = 5; 
-    const maxMiddlePage = totalPagesCount - 1; 
-  
-    let startPage = Math.max(2, actualStatePage - 2); 
-    let endPage = Math.min(maxMiddlePage, actualStatePage + 2); 
-  
+    const totalVisiblePages = 5;
+    const lastVisiblePage = totalPagesCount - 1;
+
+    let startPage = Math.max(2, actualStatePage - 2);
+    let endPage = Math.min(lastVisiblePage, actualStatePage + 2);
+
     // ARRAY BEGINNING
     if (actualStatePage <= 3) {
       startPage = 2;
-      endPage = Math.min(maxMiddlePage, totalVisiblePages + 1); 
+      endPage = Math.min(lastVisiblePage, totalVisiblePages + 1);
     }
-  
+
     // ARRAY END
-    if (actualStatePage >= maxMiddlePage - 2) {
-      startPage = Math.max(2, maxMiddlePage - (totalVisiblePages - 1)); 
-      endPage = maxMiddlePage;
+    if (actualStatePage >= lastVisiblePage - 2) {
+      startPage = Math.max(2, lastVisiblePage - (totalVisiblePages - 1));
+      endPage = lastVisiblePage;
     }
-  
+
     // VISIBLE ARRAY
-    for (let i = startPage; i <= endPage && visiblePages.length < totalVisiblePages; i++) {
+    for (
+      let i = startPage;
+      i <= endPage && visiblePages.length < totalVisiblePages;
+      i++
+    ) {
       visiblePages.push(i);
     }
-  
+
     setLeftEllipsisVisible(startPage > 2);
-    
+
     setrightEllipsisVisible(endPage < totalPagesCount - 1);
-  
+
     setVisiblePagesArray(visiblePages);
-    
-    console.log("Current page:", actualStatePage);
-    console.log("Visible Pages:", visiblePages);
-  
   }, [actualStatePage, totalPagesCount]);
 
   return (

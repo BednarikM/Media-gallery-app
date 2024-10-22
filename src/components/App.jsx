@@ -8,6 +8,7 @@ import {
   MediasDataFetchedContext,
 } from "../context/Context.js";
 import { PaginationContext } from "../context/PaginationContext.jsx";
+import { MediaTypeContext } from "../context/MediaTypeContext.jsx";
 import { FavoritesProvider } from "../context/FavoritesContext.jsx";
 
 import { formatRoute, formatDate } from "../utils/Utils.js";
@@ -39,6 +40,7 @@ export default function App() {
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
   const { actualStatePage, setTotalPagesCount } = useContext(PaginationContext);
+  const { mediaTypeState } = useContext(MediaTypeContext);
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -50,32 +52,37 @@ export default function App() {
     },
   };
 
-  const validMediaTypes = ["all", "movie", "tv"];
-
   /* FUNCTIONS ****************************************************************/
   async function fetchMediasData(url, apiOptions) {
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
 
-      setTotalPagesCount(fetchedData.total_pages)
+      console.log(fetchedData);
+
+      setTotalPagesCount(fetchedData.total_pages);
 
       const formattedData = fetchedData.results
         .filter((media) => media.media_type !== "person")
         .map((media) => {
-          const isMovie = media.media_type === "movie";
+          let formattedTitle;
+          let formattedRoute;
+          let formattedReleaseDate;
+          let selectedGenreList;
 
-          const formattedTitle = isMovie ? media.title : media.name;
-          const formattedRoute = formatRoute(
-            isMovie ? media.title : media.name
-          );
-          const formattedReleaseDate = formatDate(
-            isMovie ? media.release_date : media.first_air_date
-          );
+          if (media.media_type === "movie") {
+            formattedTitle = media.title;
+            formattedRoute = formatRoute(media.title);
+            formattedReleaseDate = formatDate(media.release_date);
+            selectedGenreList = mediaGenres.movie;
+          }
 
-          const selectedGenreList = isMovie
-            ? mediaGenres.movie
-            : mediaGenres.tv;
+          if (media.media_type === "tv") {
+            formattedTitle = media.name;
+            formattedRoute = formatRoute(media.name);
+            formattedReleaseDate = formatDate(media.first_air_date);
+            selectedGenreList = mediaGenres.tv;
+          }
 
           const formattedGenres = media.genre_ids.map((genreId) => {
             const genre = selectedGenreList.find(
@@ -142,19 +149,19 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  /* LOCATION MEDIASDATA FETCH HOOK */
+  /* LOCATION MEDIAS DATA FETCH HOOK */
   useEffect(() => {
-    const mediaType = validMediaTypes.find((type) =>
-      location.pathname.includes(type)
-    );
+    if (mediaTypeState === "search") {
+      return;
+    }
 
-    if (mediaType && mediasGenresFetched) {
-      const apiUrl = `https://api.themoviedb.org/3/trending/${mediaType}/week?language=en-US&page=${actualStatePage}`;
+    if (mediaTypeState && mediasGenresFetched) {
+      const apiUrl = `https://api.themoviedb.org/3/trending/${mediaTypeState}/week?language=en-US&page=${actualStatePage}`;
       fetchMediasData(apiUrl, apiOptions);
     }
-  }, [location.pathname, mediasGenresFetched, actualStatePage]);
+  }, [mediaTypeState, mediasGenresFetched, actualStatePage]);
 
-  /* SEARCH QUERY HOOK */
+  /* MEDIA SEARCH QUERY HOOK */
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const keyword = queryParams.get("keyword");
