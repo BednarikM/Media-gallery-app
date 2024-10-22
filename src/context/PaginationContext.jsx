@@ -36,36 +36,33 @@ export const PaginationProvider = ({ children }) => {
 
   useEffect(() => {
     const visiblePages = [];
-    const totalVisiblePages = 5; // Max number of visible pages, including middle, left, and right
-    const maxMiddlePage = totalPagesCount - 1; // Ensure the last page is handled separately
+    const totalVisiblePages = 5; 
+    const maxMiddlePage = totalPagesCount - 1; 
   
-    let startPage = Math.max(2, actualStatePage - 2); // Calculate the start page, but not below 2
-    let endPage = Math.min(maxMiddlePage, actualStatePage + 2); // Calculate the end page, don't exceed totalPagesCount - 1
+    let startPage = Math.max(2, actualStatePage - 2); 
+    let endPage = Math.min(maxMiddlePage, actualStatePage + 2); 
   
-    // Adjust if we're too close to the beginning
+    // ARRAY BEGINNING
     if (actualStatePage <= 3) {
       startPage = 2;
-      endPage = Math.min(maxMiddlePage, totalVisiblePages + 1); // Keep the range within the total and maxMiddlePage
+      endPage = Math.min(maxMiddlePage, totalVisiblePages + 1); 
     }
   
-    // Adjust if we're too close to the end
+    // ARRAY END
     if (actualStatePage >= maxMiddlePage - 2) {
-      startPage = Math.max(2, maxMiddlePage - (totalVisiblePages - 1)); // Adjust to show the last set of pages
+      startPage = Math.max(2, maxMiddlePage - (totalVisiblePages - 1)); 
       endPage = maxMiddlePage;
     }
   
-    // Fill the visiblePages array
+    // VISIBLE ARRAY
     for (let i = startPage; i <= endPage && visiblePages.length < totalVisiblePages; i++) {
       visiblePages.push(i);
     }
   
-    // Check left ellipsis visibility
     setLeftEllipsisVisible(startPage > 2);
     
-    // Check right ellipsis visibility
     setrightEllipsisVisible(endPage < totalPagesCount - 1);
   
-    // Set the visible pages array
     setVisiblePagesArray(visiblePages);
     
     console.log("Current page:", actualStatePage);
