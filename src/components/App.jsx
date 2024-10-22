@@ -38,7 +38,7 @@ export default function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
-  const { actualStatePage, setActualStatePage } = useContext(PaginationContext);
+  const { actualStatePage, setTotalPagesCount } = useContext(PaginationContext);
 
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
@@ -57,6 +57,8 @@ export default function App() {
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
+
+      setTotalPagesCount(fetchedData.total_pages)
 
       const formattedData = fetchedData.results
         .filter((media) => media.media_type !== "person")
@@ -150,7 +152,7 @@ export default function App() {
       const apiUrl = `https://api.themoviedb.org/3/trending/${mediaType}/week?language=en-US&page=${actualStatePage}`;
       fetchMediasData(apiUrl, apiOptions);
     }
-  }, [location.pathname, mediasGenresFetched]);
+  }, [location.pathname, mediasGenresFetched, actualStatePage]);
 
   /* SEARCH QUERY HOOK */
   useEffect(() => {
@@ -174,12 +176,12 @@ export default function App() {
   /* FETCH SEARCHED MEDIA */
   useEffect(() => {
     if (debouncedSearchValue) {
-      const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${pagination}`;
+      const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${actualStatePage}`;
       fetchMediasData(apiUrl, apiOptions);
 
       navigate(`/search?keyword=${debouncedSearchValue}`);
     }
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, actualStatePage]);
 
   /* JSX TEMPLATE *************************************************************/
   return (

@@ -24,12 +24,33 @@
       fill: $color-blue-dark;
       background-color: $color-gold;
     }
+
+    &--disabled {
+      pointer-events: none;
+      opacity: 20%;
+    }
+  }
+
+  &__list-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+  }
+
+  &__svg-ellipsis {
+    fill: $color-blue-dark;
+    width: 35px;
+    height: 35px;
+    margin-inline: 1rem;
   }
 
   &__list {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    margin-inline: 0.5rem
   }
 
   &__button {
@@ -49,7 +70,20 @@
     background-color: $color-blue-dark;
     font-weight: bold;
 
+    &--first {
+      margin-right: 0.5rem;
+    }
+
+    &--last {
+      margin-left: 0.5rem;
+    }
+
     &:hover {
+      color: $color-blue-dark;
+      background-color: $color-gold;
+    }
+
+    &--active {
       color: $color-blue-dark;
       background-color: $color-gold;
     }

@@ -41,7 +41,7 @@ export default function MediasList({ mediasData }) {
                   <MediaListCard key={index} {...{ media, index }} />
                 ))}
               </ul>
-              <PaginationContainer propsPagesCount={5} />
+              <PaginationContainer />
             </>
           )}
         </div>
