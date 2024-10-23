@@ -1,6 +1,12 @@
 /* IMPORTS ********************************************************************/
-import { useState, useEffect, useContext, act } from "react";
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 
 import {
   SearchContext,
@@ -39,12 +45,7 @@ export default function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
-  const {
-    actualPageState,
-    setActualPageState,
-    totalPagesCount,
-    setTotalPagesCount,
-  } = useContext(PaginationContext);
+  const { actualPageState, setTotalPagesCount } = useContext(PaginationContext);
   const { mediaTypeState } = useContext(MediaGenresContext);
 
   /* API KEY */
@@ -72,7 +73,6 @@ export default function App() {
       const fetchedData = await response.json();
 
       setTotalPagesCount(fetchedData.total_pages);
-      console.log("fetchedVole?")
 
       const formattedData = fetchedData.results
         .filter((media) => media.media_type !== "person")
@@ -114,6 +114,7 @@ export default function App() {
 
       setMediasData(formattedData);
       setMediasDataFetched(true);
+      console.log("fetchedMediaData"); // WORKING SEND TO REPLACE LOADER
     } catch (error) {
       console.error("Caught error while fetching media data:", error);
     }
@@ -143,10 +144,6 @@ export default function App() {
 
   /* LOCATION PATHNAME HOOK */
   useEffect(() => {
-    if (location.pathname === "/") {
-      navigate("/all");
-    }
-
     if (
       location.pathname !== "/search" &&
       !location.pathname.startsWith("/media/")
@@ -182,32 +179,10 @@ export default function App() {
 
       const queryParams = new URLSearchParams();
       queryParams.set("keyword", debouncedSearchValue);
-      queryParams.set("page", actualPageState);
 
       navigate(`/search?${queryParams.toString()}`);
     }
-  }, [debouncedSearchValue, actualPageState]);
-
-  /* QUERY PAGE COMPARE */
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const queryPageNumber = Number(queryParams.get("page"));
-
-    let parsedPageNumber = actualPageState;
-
-    console.log("page", queryPageNumber)
-
-    if (queryPageNumber && queryPageNumber !== actualPageState) {
-      parsedPageNumber =
-        queryPageNumber > totalPagesCount ? totalPagesCount : queryPageNumber;
-    }
-
-    console.log(parsedPageNumber)
-
-    setActualPageState(parsedPageNumber);
-
-    console.log(actualPageState);
-  }, [location.search]);
+  }, [debouncedSearchValue]);
 
   /* JSX TEMPLATE *************************************************************/
   return (
@@ -221,6 +196,7 @@ export default function App() {
         <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
           <FavoritesProvider>
             <Routes>
+              <Route path="/" element={<Navigate to="/all" replace />} />
               <Route
                 path="/all"
                 element={<HomePage mediasData={mediasData} />}
@@ -239,7 +215,6 @@ export default function App() {
                 path="/media/:selectedMovieId"
                 element={<MediaDetailPage />}
               />
-
               <Route path="/error" element={<ErrorPage />} />
               <Route path="/*" element={<NotFoundPage />} />
             </Routes>

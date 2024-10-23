@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { MediaGenresContext } from "./MediaGenresContext";
 
@@ -8,15 +8,17 @@ export const PaginationContext = createContext();
 export const PaginationProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { validMediaGenres, mediaTypeState } = useContext(MediaGenresContext);
 
   const [firstPage, _] = useState(1);
   const [totalPagesCount, setTotalPagesCount] = useState(1); // FINISH
+  const [actualPageState, setActualPageState] = useState(1);
   const [visiblePagesArray, setVisiblePagesArray] = useState([]);
   const [leftEllipsisVisible, setLeftEllipsisVisible] = useState(false);
   const [rightEllipsisVisible, setrightEllipsisVisible] = useState(true);
-  const [actualPageState, setActualPageState] = useState(1);
+  const [skipUseEffect, setSkipUseEffect] = useEffect(false);
 
   function incrementPage() {
     if (actualPageState < totalPagesCount) {
@@ -32,11 +34,22 @@ export const PaginationProvider = ({ children }) => {
 
   function setPage(pageNumber) {
     setActualPageState(pageNumber);
-    const queryParams = new URLSearchParams(location.search);
-    queryParams.set("page", pageNumber.toString());
-
-    navigate({ search: `?${queryParams.toString()}` }, { replace: true });
   }
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      return;
+    }
+
+    const newSearchParams = new URLSearchParams(searchParams);
+    const mappedPageQuery = newSearchParams.get("page"); // CONTINUE
+
+    if (actualPageState !== 1) {
+      newSearchParams.set("page", actualPageState);
+    }
+
+    setSearchParams(newSearchParams);
+  }, [searchParams, actualPageState]);
 
   useEffect(() => {
     const visiblePages = [];

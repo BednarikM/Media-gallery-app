@@ -50,7 +50,7 @@ export default function Header({ heading }) {
               return (
                 <NavLink
                   key={genre}
-                  to={`/${genre}?page=1`}
+                  to={`/${genre}`}
                   className={({ isActive }) =>
                     `header__nav-link ${
                       isActive ? "header__nav-link--active" : ""
