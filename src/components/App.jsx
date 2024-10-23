@@ -1,5 +1,5 @@
 /* IMPORTS ********************************************************************/
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, act } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -8,7 +8,7 @@ import {
   MediasDataFetchedContext,
 } from "../context/Context.js";
 import { PaginationContext } from "../context/PaginationContext.jsx";
-import { MediaTypeContext } from "../context/MediaTypeContext.jsx";
+import { MediaGenresContext } from "../context/MediaGenresContext.jsx";
 import { FavoritesProvider } from "../context/FavoritesContext.jsx";
 
 import { formatRoute, formatDate } from "../utils/Utils.js";
@@ -39,10 +39,23 @@ export default function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
-  const { actualStatePage, setTotalPagesCount } = useContext(PaginationContext);
-  const { mediaTypeState } = useContext(MediaTypeContext);
+  const {
+    actualPageState,
+    setActualPageState,
+    totalPagesCount,
+    setTotalPagesCount,
+  } = useContext(PaginationContext);
+  const { mediaTypeState } = useContext(MediaGenresContext);
 
+  /* API KEY */
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
+
+  /* DYNAMIC URLS */
+  const trendingUrl = `https://api.themoviedb.org/3/trending/${mediaTypeState}/week?language=en-US&page=${actualPageState}`;
+  const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${actualPageState}`;
+  const movieGenresUrl =
+    "https://api.themoviedb.org/3/genre/movie/list?language=en";
+  const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
 
   const apiOptions = {
     method: "GET",
@@ -58,9 +71,8 @@ export default function App() {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
 
-      console.log(fetchedData);
-
       setTotalPagesCount(fetchedData.total_pages);
+      console.log("fetchedVole?")
 
       const formattedData = fetchedData.results
         .filter((media) => media.media_type !== "person")
@@ -108,14 +120,8 @@ export default function App() {
   }
 
   async function fetchMediasGenres(apiOptions) {
-    const movieGenresResponse = await fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?language=en",
-      apiOptions
-    );
-    const tvGenresResponse = await fetch(
-      "https://api.themoviedb.org/3/genre/tv/list?language=en",
-      apiOptions
-    );
+    const movieGenresResponse = await fetch(movieGenresUrl, apiOptions);
+    const tvGenresResponse = await fetch(tvGenresUrl, apiOptions);
 
     const movieGenresData = await movieGenresResponse.json();
     const tvGenresData = await tvGenresResponse.json();
@@ -156,20 +162,9 @@ export default function App() {
     }
 
     if (mediaTypeState && mediasGenresFetched) {
-      const apiUrl = `https://api.themoviedb.org/3/trending/${mediaTypeState}/week?language=en-US&page=${actualStatePage}`;
-      fetchMediasData(apiUrl, apiOptions);
+      fetchMediasData(trendingUrl, apiOptions);
     }
-  }, [mediaTypeState, mediasGenresFetched, actualStatePage]);
-
-  /* MEDIA SEARCH QUERY HOOK */
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const keyword = queryParams.get("keyword");
-
-    if (keyword) {
-      setSearchInputValue(keyword);
-    }
-  }, [location.search]);
+  }, [mediaTypeState, mediasGenresFetched, actualPageState]);
 
   /* SAVE DEBOUNCED SEARCH VALUE */
   useEffect(() => {
@@ -183,17 +178,43 @@ export default function App() {
   /* FETCH SEARCHED MEDIA */
   useEffect(() => {
     if (debouncedSearchValue) {
-      const apiUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${actualStatePage}`;
-      fetchMediasData(apiUrl, apiOptions);
+      fetchMediasData(searchUrl, apiOptions);
 
-      navigate(`/search?keyword=${debouncedSearchValue}`);
+      const queryParams = new URLSearchParams();
+      queryParams.set("keyword", debouncedSearchValue);
+      queryParams.set("page", actualPageState);
+
+      navigate(`/search?${queryParams.toString()}`);
     }
-  }, [debouncedSearchValue, actualStatePage]);
+  }, [debouncedSearchValue, actualPageState]);
+
+  /* QUERY PAGE COMPARE */
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const queryPageNumber = Number(queryParams.get("page"));
+
+    let parsedPageNumber = actualPageState;
+
+    console.log("page", queryPageNumber)
+
+    if (queryPageNumber && queryPageNumber !== actualPageState) {
+      parsedPageNumber =
+        queryPageNumber > totalPagesCount ? totalPagesCount : queryPageNumber;
+    }
+
+    console.log(parsedPageNumber)
+
+    setActualPageState(parsedPageNumber);
+
+    console.log(actualPageState);
+  }, [location.search]);
 
   /* JSX TEMPLATE *************************************************************/
   return (
     <ApiOptionsContext.Provider value={{ apiOptions }}>
-      <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
+      <SearchContext.Provider
+        value={{ searchInputValue, setSearchInputValue, fetchMediasData }}
+      >
         <Header heading="Medias Search App" />
       </SearchContext.Provider>
       <PageLayout>

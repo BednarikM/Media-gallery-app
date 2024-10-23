@@ -22,7 +22,7 @@ export default function MediaListCard({ media, index }) {
     <li className="media-list-card" key={index}>
       <Link
         to={`${formattedRoute}?type=${media_type}&id=${id}`}
-        state={{ stateMediaData: media }}
+        state={{ mediaDataLocationState: media }}
         className="media-list-card__link"
       >
         <ImageContainer

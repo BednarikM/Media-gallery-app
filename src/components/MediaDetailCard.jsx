@@ -14,8 +14,7 @@ import MediaSubInformation from "../components/MediaSubInformation.jsx";
 import "../styles/components/MediaDetailCard.scss";
 
 export default function MediaDetailCard() {
-  const { state: { stateMediaData } = {} } = useLocation();
-  console.log("state", stateMediaData);
+  const { state: { mediaDataLocationState } = {} } = useLocation();
   const { apiOptions } = useContext(ApiOptionsContext);
 
   const [queryParams, setQueryParams] = useState({});
@@ -87,7 +86,7 @@ export default function MediaDetailCard() {
                       voteAverage={mediaData.vote_average}
                       voteCount={mediaData.vote_count}
                     />
-                    <FavoriteIcon media={stateMediaData} />
+                    <FavoriteIcon media={mediaDataLocationState} />
                   </div>
                 </div>
                 <ImageContainer

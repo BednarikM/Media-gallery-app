@@ -1,16 +1,15 @@
 import { createContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-export const MediaTypeContext = createContext();
+export const MediaGenresContext = createContext();
 
 export const MediaTypeProvider = ({ children }) => {
   const location = useLocation();
   const [mediaTypeState, setMediaTypeState] = useState(false);
-
-  const validMediaTypes = ["all", "movie", "tv", "search"];
+  const [validMediaGenres, setValidMediaGenress] = useState(["all", "movie", "tv"])
 
   useEffect(() => {
-    const mediaType = validMediaTypes.find((type) =>
+    const mediaType = validMediaGenres.find((type) =>
       location.pathname.includes(type)
     );
 
@@ -18,13 +17,15 @@ export const MediaTypeProvider = ({ children }) => {
   }, [location, location.pathname]);
 
   return (
-    <MediaTypeContext.Provider
+    <MediaGenresContext.Provider
       value={{
+        validMediaGenres,
+        setValidMediaGenress,
         mediaTypeState,
         setMediaTypeState,
       }}
     >
       {children}
-    </MediaTypeContext.Provider>
+    </MediaGenresContext.Provider>
   );
 };

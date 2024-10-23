@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { NavLink } from "react-router-dom";
+
+import { MediaGenresContext } from "../context/MediaGenresContext.jsx";
 
 import SearchInput from "../components/SearchInput.jsx";
 import SvgIcon from "../components/SvgIcon.jsx";
@@ -7,9 +9,11 @@ import SvgIcon from "../components/SvgIcon.jsx";
 import "../styles/components/Header.scss";
 
 export default function Header({ heading }) {
+  const { validMediaGenres } = useContext(MediaGenresContext);
+
   const [isMobileMenuOpened, setIsMobileMenuOpened] = useState(false);
   const headerRef = useRef(null);
-  const mediaGenres = ["all", "movie", "tv", "favorites"];
+  const navLinks = [...validMediaGenres, "favorites"];
 
   function toggleMenu() {
     setIsMobileMenuOpened((open) => !open);
@@ -42,11 +46,11 @@ export default function Header({ heading }) {
         >
           <SearchInput />
           <ul className="header__nav-link-list">
-            {mediaGenres.map((genre) => {
+            {navLinks.map((genre) => {
               return (
                 <NavLink
                   key={genre}
-                  to={`/${genre}`}
+                  to={`/${genre}?page=1`}
                   className={({ isActive }) =>
                     `header__nav-link ${
                       isActive ? "header__nav-link--active" : ""

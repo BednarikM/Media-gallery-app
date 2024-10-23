@@ -1,7 +1,5 @@
+import "../styles/components/Loader.scss"
+
 export default function Loader() {
-  return (
-    <div className="loading">
-      <p>Loading...</p>
-    </div>
-  );
+  return <span class="loader"></span>;
 }

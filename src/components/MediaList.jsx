@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import { MediasDataFetchedContext } from "../context/Context.js";
 import { FavoritesContext } from "../context/FavoritesContext.jsx";
-import { MediaTypeContext } from "../context/MediaTypeContext.jsx";
+import { MediaGenresContext } from "../context/MediaGenresContext.jsx";
 
 import MediaListCard from "../components/MediaListCard.jsx";
 import PaginationContainer from "../components/PaginationContainer";
@@ -12,9 +12,10 @@ import "../styles/components/MediaList.scss";
 
 export default function MediasList({ mediasData }) {
   const location = useLocation();
+
   const { favorites } = useContext(FavoritesContext);
   const { mediasDataFetched } = useContext(MediasDataFetchedContext);
-  const { mediaTypeState } = useContext(MediaTypeContext);
+  const { mediaTypeState } = useContext(MediaGenresContext);
 
   const isFavoritesRoute = location.pathname === "/favorites";
   const listData = isFavoritesRoute ? favorites : mediasData;
@@ -43,7 +44,7 @@ export default function MediasList({ mediasData }) {
                   <MediaListCard key={index} {...{ media, index }} />
                 ))}
               </ul>
-              {mediaTypeState && <PaginationContainer />}
+              {(mediaTypeState || location.pathname.includes("search")) && <PaginationContainer />}
             </>
           )}
         </div>

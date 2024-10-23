@@ -13,7 +13,7 @@ export default function SearchInput() {
   function handleKeyDown(event) {
     if (event.key === "Enter") {
       console.log("trigered");
-      setSearchInputValue(inputRef.current.value); // SET DEBOUNCED VALUE RIGHT and ACTUALSTATEPAGE to 1
+      setDebouncedInputValue(inputRef.current.value); // SET DEBOUNCED VALUE RIGHT and actualPageState to 1
     }
   }
 

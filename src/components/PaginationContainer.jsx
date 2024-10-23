@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 
 import { PaginationContext } from "../context/PaginationContext.jsx";
 
@@ -10,7 +10,7 @@ export default function PaginationContainer() {
   const {
     firstPage,
     totalPagesCount,
-    actualStatePage,
+    actualPageState,
     visiblePagesArray,
     leftEllipsisVisible,
     rightEllipsisVisible,
@@ -24,7 +24,7 @@ export default function PaginationContainer() {
       <div className="pagination-container">
         <SvgIcon
           className={`pagination-container__svg-chevron-left ${
-            actualStatePage === 1
+            actualPageState === 1
               ? "pagination-container__svg-chevron-left--disabled"
               : ""
           }`}
@@ -34,7 +34,7 @@ export default function PaginationContainer() {
         <div className="pagination-container__list-container">
           <button
             className={`pagination-container__button pagination-container__button--first ${
-              firstPage === actualStatePage
+              firstPage === actualPageState
                 ? "pagination-container__button--active"
                 : ""
             }`}
@@ -54,7 +54,7 @@ export default function PaginationContainer() {
                 <li className="pagination-container__item" key={pageNumber}>
                   <button
                     className={`pagination-container__button ${
-                      pageNumber === actualStatePage
+                      pageNumber === actualPageState
                         ? "pagination-container__button--active"
                         : ""
                     }`}
@@ -74,7 +74,7 @@ export default function PaginationContainer() {
           )}
           <button
             className={`pagination-container__button pagination-container__button--last ${
-              totalPagesCount === actualStatePage
+              totalPagesCount === actualPageState
                 ? "pagination-container__button--active"
                 : ""
             }`}
@@ -85,7 +85,7 @@ export default function PaginationContainer() {
         </div>
         <SvgIcon
           className={`pagination-container__svg-chevron-right ${
-            actualStatePage === totalPagesCount.length
+            actualPageState === totalPagesCount
               ? "pagination-container__svg-chevron-right--disabled"
               : ""
           }`}

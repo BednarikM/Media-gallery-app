@@ -1,29 +1,41 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { MediaGenresContext } from "./MediaGenresContext";
 
 export const PaginationContext = createContext();
 
 export const PaginationProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { validMediaGenres, mediaTypeState } = useContext(MediaGenresContext);
+
   const [firstPage, _] = useState(1);
-  const [totalPagesCount, setTotalPagesCount] = useState(); // FINISH
+  const [totalPagesCount, setTotalPagesCount] = useState(1); // FINISH
   const [visiblePagesArray, setVisiblePagesArray] = useState([]);
   const [leftEllipsisVisible, setLeftEllipsisVisible] = useState(false);
   const [rightEllipsisVisible, setrightEllipsisVisible] = useState(true);
-  const [actualStatePage, setActualStatePage] = useState(1);
+  const [actualPageState, setActualPageState] = useState(1);
 
   function incrementPage() {
-    if (actualStatePage < totalPagesCount) {
-      setActualStatePage((prev) => prev + 1);
+    if (actualPageState < totalPagesCount) {
+      setActualPageState((prev) => prev + 1);
     }
   }
 
   function decrementPage() {
-    if (actualStatePage > 1) {
-      setActualStatePage((prev) => prev - 1);
+    if (actualPageState > 1) {
+      setActualPageState((prev) => prev - 1);
     }
   }
 
   function setPage(pageNumber) {
-    setActualStatePage(pageNumber);
+    setActualPageState(pageNumber);
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set("page", pageNumber.toString());
+
+    navigate({ search: `?${queryParams.toString()}` }, { replace: true });
   }
 
   useEffect(() => {
@@ -31,17 +43,17 @@ export const PaginationProvider = ({ children }) => {
     const totalVisiblePages = 5;
     const lastVisiblePage = totalPagesCount - 1;
 
-    let startPage = Math.max(2, actualStatePage - 2);
-    let endPage = Math.min(lastVisiblePage, actualStatePage + 2);
+    let startPage = Math.max(2, actualPageState - 2);
+    let endPage = Math.min(lastVisiblePage, actualPageState + 2);
 
     // ARRAY BEGINNING
-    if (actualStatePage <= 3) {
+    if (actualPageState <= 3) {
       startPage = 2;
       endPage = Math.min(lastVisiblePage, totalVisiblePages + 1);
     }
 
     // ARRAY END
-    if (actualStatePage >= lastVisiblePage - 2) {
+    if (actualPageState >= lastVisiblePage - 2) {
       startPage = Math.max(2, lastVisiblePage - (totalVisiblePages - 1));
       endPage = lastVisiblePage;
     }
@@ -60,7 +72,7 @@ export const PaginationProvider = ({ children }) => {
     setrightEllipsisVisible(endPage < totalPagesCount - 1);
 
     setVisiblePagesArray(visiblePages);
-  }, [actualStatePage, totalPagesCount]);
+  }, [actualPageState, totalPagesCount]);
 
   return (
     <PaginationContext.Provider
@@ -69,8 +81,8 @@ export const PaginationProvider = ({ children }) => {
         totalPagesCount,
         setTotalPagesCount,
         visiblePagesArray,
-        actualStatePage,
-        setActualStatePage,
+        actualPageState,
+        setActualPageState,
         leftEllipsisVisible,
         rightEllipsisVisible,
         setPage, // BUTTON FUNCTION
