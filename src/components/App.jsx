@@ -5,6 +5,7 @@ import {
   useNavigate,
   useLocation,
   Navigate,
+  useSearchParams,
 } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 
@@ -38,6 +39,8 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [mediasData, setMediasData] = useState([]);
   const [mediasDataFetched, setMediasDataFetched] = useState(false);
   const [mediaGenres, setMediaGenres] = useState({});
@@ -45,15 +48,16 @@ export default function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
-  const { currentPageState, setTotalPagesCount } = useContext(PaginationContext);
-  const { mediaTypeState } = useContext(MediaGenresContext);
+  const { currentPageState, setTotalPagesCount } =
+    useContext(PaginationContext);
+  const { currentMediaTypeState, isValidTrendingMediaGenre } =
+    useContext(MediaGenresContext);
 
   /* API KEY */
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
   /* DYNAMIC URLS */
-  const trendingUrl = `https://api.themoviedb.org/3/trending/${mediaTypeState}/week?language=en-US&page=${currentPageState}`;
-  const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${currentPageState}`;
+  const trendingUrl = `https://api.themoviedb.org/3/trending/${currentMediaTypeState}/week?language=en-US&page=${currentPageState}`;
   const movieGenresUrl =
     "https://api.themoviedb.org/3/genre/movie/list?language=en";
   const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
@@ -68,7 +72,7 @@ export default function App() {
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMediasData(url, apiOptions) {
-    setMediasDataFetched(false)
+    setMediasDataFetched(false);
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
@@ -155,14 +159,10 @@ export default function App() {
 
   /* LOCATION MEDIAS DATA FETCH HOOK */
   useEffect(() => {
-    if (mediaTypeState === "search") {
-      return;
-    }
-
-    if (mediaTypeState && mediasGenresFetched) {
+    if (isValidTrendingMediaGenre && mediasGenresFetched) {
       fetchMediasData(trendingUrl, apiOptions);
     }
-  }, [mediaTypeState, mediasGenresFetched, currentPageState]);
+  }, [currentMediaTypeState, mediasGenresFetched, currentPageState]);
 
   /* SAVE DEBOUNCED SEARCH VALUE */
   useEffect(() => {
@@ -173,19 +173,35 @@ export default function App() {
     return () => clearTimeout(timeoutId);
   }, [searchInputValue]);
 
-  /* FETCH SEARCHED MEDIA */
+  /* SEPARATE SEARCH FETCH LOGIC */
   useEffect(() => {
-    if (debouncedSearchValue) {
+    const newSearchParams = new URLSearchParams(searchParams);
+    const searchValue = newSearchParams.get("keyword") || debouncedSearchValue;
+    const searchPage = newSearchParams.get("page") || currentPageState;
+    const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${searchValue}&include_adult=false&language=en-US&page=${searchPage}`;
+
+    const shouldFetchSearchMedias = mediasGenresFetched && searchValue;
+
+    if (shouldFetchSearchMedias) {
       fetchMediasData(searchUrl, apiOptions);
 
-      console.log("Trigered")
+      if (!newSearchParams.get("keyword")) {
+        newSearchParams.set("keyword", searchValue);
+      }
+      if (currentPageState !== 1) {
+        newSearchParams.set("page", currentPageState);
+      }
 
-      const queryParams = new URLSearchParams();
-      queryParams.set("keyword", debouncedSearchValue);
+      setSearchParams(newSearchParams);
 
-      navigate(`/search?${queryParams.toString()}`);
+      navigate(`/search?${newSearchParams.toString()}`, { replace: true });
     }
-  }, [debouncedSearchValue, currentPageState, navigate]);
+  }, [
+    debouncedSearchValue,
+    searchParams,
+    mediasGenresFetched,
+    currentPageState,
+  ]);
 
   /* JSX TEMPLATE *************************************************************/
   return (

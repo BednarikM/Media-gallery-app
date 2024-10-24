@@ -1,23 +1,20 @@
-import { createContext, useEffect, useState, useContext } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 export const PaginationContext = createContext();
 
 export const PaginationProvider = ({ children }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // const { validMediaGenres, mediaTypeState } = useContext(MediaGenresContext); DELETE
 
   const [totalPagesCount, setTotalPagesCount] = useState(); // FINISH
   const [currentPageState, setCurrentPageState] = useState(1);
   const [visiblePagesArray, setVisiblePagesArray] = useState([]);
   const [leftEllipsisVisible, setLeftEllipsisVisible] = useState(false);
   const [rightEllipsisVisible, setrightEllipsisVisible] = useState(true);
-  const [isPageExcluded, setIsPageExcluded] = useState(false)
+  const [isPageExcluded, setIsPageExcluded] = useState(false);
 
-  const firstPage = 1
+  const firstPage = 1;
 
   function incrementPage() {
     if (currentPageState < totalPagesCount) {
@@ -33,48 +30,30 @@ export const PaginationProvider = ({ children }) => {
 
   function setPage(pageNumber) {
     setCurrentPageState(pageNumber);
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (pageNumber === 1) {
+      newSearchParams.delete("page");
+    } else {
+      newSearchParams.set("page", pageNumber);
+    }
+    setSearchParams(newSearchParams);
   }
 
   useEffect(() => {
-    const excludedPages = ["/", "/media", "/favorites"];
-  
-    const isExcluded = excludedPages.some(page => location.pathname === page);
-    setIsPageExcluded(isExcluded);
-  
-  
-  }, [location.pathname]);
-
-
-  useEffect(() => {
-    if (location.pathname === "/" || location.pathname.startsWith("/media")) {
-      return;
-    }
-
     const newSearchParams = new URLSearchParams(searchParams);
-    const queryPageState = Number(newSearchParams.get("page"));
-
-    if (queryPageState === currentPageState) return;
-
-    if (currentPageState === 1) {
-      newSearchParams.delete("page");
-      setSearchParams(newSearchParams);
-      return;
-    }
-
-    if (currentPageState >= 2) {
-      newSearchParams.set("page", currentPageState.toString());
-      setSearchParams(newSearchParams);
-      return;
-    }
+    const queryPageState = Number(newSearchParams.get("page")) || 1;
 
     if (queryPageState !== currentPageState) {
-      queryPageState > totalPagesCount
-        ? totalPagesCount
-        : setCurrentPageState(queryPageState);
-      return;
+      setCurrentPageState(queryPageState);
     }
+  }, [searchParams]);
 
-  }, [searchParams, currentPageState]);
+  useEffect(() => {
+    const excludedPages = ["/", "/media", "/favorites"];
+
+    const isExcluded = excludedPages.some((page) => location.pathname === page);
+    setIsPageExcluded(isExcluded);
+  }, [location.pathname]);
 
   useEffect(() => {
     const visiblePages = [];

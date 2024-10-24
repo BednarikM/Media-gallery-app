@@ -3,17 +3,31 @@ import { useLocation } from "react-router-dom";
 
 export const MediaGenresContext = createContext();
 
-export const MediaTypeProvider = ({ children }) => {
+export const MediaGenresProvider = ({ children }) => {
   const location = useLocation();
-  const [mediaTypeState, setMediaTypeState] = useState(false);
-  const [validMediaGenres, setValidMediaGenress] = useState(["all", "movie", "tv"])
+
+  const [currentMediaTypeState, setCurrentMediaTypeState] = useState();
+  const [isValidTrendingMediaGenre, setIsValidTrendingMediaGenres] = useState();
+  const [validMediaGenres, setValidMediaGenress] = useState([
+    "all",
+    "movie",
+    "tv",
+  ]);
 
   useEffect(() => {
     const mediaType = validMediaGenres.find((type) =>
       location.pathname.includes(type)
     );
 
-    setMediaTypeState(mediaType);
+    if (currentMediaTypeState !== mediaType) {
+      setCurrentMediaTypeState(mediaType);
+    }
+
+    if (validMediaGenres.includes(mediaType)) {
+      setIsValidTrendingMediaGenres(true);
+    } else {
+      setIsValidTrendingMediaGenres(false);
+    }
   }, [location, location.pathname]);
 
   return (
@@ -21,8 +35,10 @@ export const MediaTypeProvider = ({ children }) => {
       value={{
         validMediaGenres,
         setValidMediaGenress,
-        mediaTypeState,
-        setMediaTypeState,
+        currentMediaTypeState,
+        setCurrentMediaTypeState,
+        isValidTrendingMediaGenre,
+        setIsValidTrendingMediaGenres,
       }}
     >
       {children}
