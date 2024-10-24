@@ -45,15 +45,15 @@ export default function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
-  const { actualPageState, setTotalPagesCount } = useContext(PaginationContext);
+  const { currentPageState, setTotalPagesCount } = useContext(PaginationContext);
   const { mediaTypeState } = useContext(MediaGenresContext);
 
   /* API KEY */
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
   /* DYNAMIC URLS */
-  const trendingUrl = `https://api.themoviedb.org/3/trending/${mediaTypeState}/week?language=en-US&page=${actualPageState}`;
-  const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${actualPageState}`;
+  const trendingUrl = `https://api.themoviedb.org/3/trending/${mediaTypeState}/week?language=en-US&page=${currentPageState}`;
+  const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchValue}&include_adult=false&language=en-US&page=${currentPageState}`;
   const movieGenresUrl =
     "https://api.themoviedb.org/3/genre/movie/list?language=en";
   const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
@@ -68,6 +68,7 @@ export default function App() {
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMediasData(url, apiOptions) {
+    setMediasDataFetched(false)
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
@@ -114,7 +115,7 @@ export default function App() {
 
       setMediasData(formattedData);
       setMediasDataFetched(true);
-      console.log("fetchedMediaData"); // WORKING SEND TO REPLACE LOADER
+      console.log("media", mediasDataFetched); // WORKING SEND TO REPLACE LOADER
     } catch (error) {
       console.error("Caught error while fetching media data:", error);
     }
@@ -161,7 +162,7 @@ export default function App() {
     if (mediaTypeState && mediasGenresFetched) {
       fetchMediasData(trendingUrl, apiOptions);
     }
-  }, [mediaTypeState, mediasGenresFetched, actualPageState]);
+  }, [mediaTypeState, mediasGenresFetched, currentPageState]);
 
   /* SAVE DEBOUNCED SEARCH VALUE */
   useEffect(() => {
@@ -177,12 +178,14 @@ export default function App() {
     if (debouncedSearchValue) {
       fetchMediasData(searchUrl, apiOptions);
 
+      console.log("Trigered")
+
       const queryParams = new URLSearchParams();
       queryParams.set("keyword", debouncedSearchValue);
 
       navigate(`/search?${queryParams.toString()}`);
     }
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, currentPageState, navigate]);
 
   /* JSX TEMPLATE *************************************************************/
   return (

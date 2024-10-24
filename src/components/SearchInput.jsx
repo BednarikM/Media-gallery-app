@@ -10,12 +10,12 @@ export default function SearchInput() {
   const { searchInputValue, setSearchInputValue } = useContext(SearchContext);
   const inputRef = useRef();
 
-  function handleKeyDown(event) {
-    if (event.key === "Enter") {
-      console.log("trigered");
-      setDebouncedInputValue(inputRef.current.value); // SET DEBOUNCED VALUE RIGHT and actualPageState to 1
-    }
-  }
+  // function handleKeyDown(event) {
+  //   if (event.key === "Enter") {
+  //     console.log("trigered");
+  //     setDebouncedInputValue(inputRef.current.value); // SET DEBOUNCED VALUE RIGHT and currentPageState to 1
+  //   }
+  // }
 
   function handleClearIconClick() {
     if (searchInputValue) {
@@ -33,7 +33,7 @@ export default function SearchInput() {
         className="search-input__element"
         placeholder="Search"
         onChange={(e) => setSearchInputValue(e.target.value)}
-        onKeyDown={handleKeyDown}
+        // onKeyDown={handleKeyDown}
       />
       <SvgIcon
         className={`search-input__svg-clear ${

@@ -10,7 +10,7 @@ export default function PaginationContainer() {
   const {
     firstPage,
     totalPagesCount,
-    actualPageState,
+    currentPageState,
     visiblePagesArray,
     leftEllipsisVisible,
     rightEllipsisVisible,
@@ -24,7 +24,7 @@ export default function PaginationContainer() {
       <div className="pagination-container">
         <SvgIcon
           className={`pagination-container__svg-chevron-left ${
-            actualPageState === 1
+            currentPageState === 1
               ? "pagination-container__svg-chevron-left--disabled"
               : ""
           }`}
@@ -34,7 +34,7 @@ export default function PaginationContainer() {
         <div className="pagination-container__list-container">
           <button
             className={`pagination-container__button pagination-container__button--first ${
-              firstPage === actualPageState
+              firstPage === currentPageState
                 ? "pagination-container__button--active"
                 : ""
             }`}
@@ -54,7 +54,7 @@ export default function PaginationContainer() {
                 <li className="pagination-container__item" key={pageNumber}>
                   <button
                     className={`pagination-container__button ${
-                      pageNumber === actualPageState
+                      pageNumber === currentPageState
                         ? "pagination-container__button--active"
                         : ""
                     }`}
@@ -74,7 +74,7 @@ export default function PaginationContainer() {
           )}
           <button
             className={`pagination-container__button pagination-container__button--last ${
-              totalPagesCount === actualPageState
+              totalPagesCount === currentPageState
                 ? "pagination-container__button--active"
                 : ""
             }`}
@@ -85,7 +85,7 @@ export default function PaginationContainer() {
         </div>
         <SvgIcon
           className={`pagination-container__svg-chevron-right ${
-            actualPageState === totalPagesCount
+            currentPageState === totalPagesCount
               ? "pagination-container__svg-chevron-right--disabled"
               : ""
           }`}
