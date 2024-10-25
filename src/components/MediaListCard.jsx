@@ -7,7 +7,7 @@ import MediaSubInformation from "../components/MediaSubInformation.jsx";
 
 import "../styles/components/MediaListCard.scss";
 
-export default function MediaListCard({ media, index }) {
+export default function MediaListCard({ mediaItem, index }) {
   const {
     formattedRoute,
     id,
@@ -16,13 +16,13 @@ export default function MediaListCard({ media, index }) {
     media_type,
     vote_average,
     vote_count,
-  } = media;
+  } = mediaItem;
 
   return (
     <li className="media-list-card" key={index}>
       <Link
         to={`${formattedRoute}?type=${media_type}&id=${id}`}
-        state={{ mediaDataLocationState: media }}
+        state={{ mediaDataLocationState: mediaItem }}
         className="media-list-card__link"
       >
         <ImageContainer
@@ -33,11 +33,11 @@ export default function MediaListCard({ media, index }) {
         <div className="media-list-card__information">
           <div className="media-list-card__information-container">
             <div className="media-list-card__title">{formattedTitle}</div>
-            <MediaSubInformation mediaData={media} />
+            <MediaSubInformation mediaData={mediaItem} />
           </div>
           <div className="media-list-card__likeness">
             <Rating voteAverage={vote_average} voteCount={vote_count} />
-            <FavoriteIcon media={media} />
+            <FavoriteIcon mediaData={mediaItem} />
           </div>
         </div>
       </Link>

@@ -17,7 +17,7 @@ export default function MediaSubInformation({ mediaData }) {
     runtime,
     number_of_seasons,
     number_of_episodes,
-    homepage,
+    media_page,
     imdb_id,
     type,
   } = mediaData;
@@ -46,16 +46,16 @@ export default function MediaSubInformation({ mediaData }) {
           {number_of_episodes && <span>{`${number_of_episodes} EP`}</span>}
         </>
       )}
-      {homepage && (
-        <span className="sub-information__homepage-link">
-          <a href={homepage} target="_blank" rel="noopener noreferrer">
-            Homepage
+      {media_page && (
+        <span className="sub-information__media-page-link">
+          <a href={media_page} target="_blank" rel="noopener noreferrer">
+            Media page
           </a>
         </span>
       )}
 
       {imdb_id && (
-        <span className="sub-information__imdb-link">
+        <span className="sub-information__media-imdb-link">
           <a
             href={`https://www.imdb.com/title/${imdb_id}`}
             target="_blank"

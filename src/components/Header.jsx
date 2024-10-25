@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 import { MediaGenresContext } from "../context/MediaGenresContext.jsx";
 import { PaginationContext } from "../context/PaginationContext.jsx";
@@ -38,9 +38,9 @@ export default function Header({ heading }) {
   return (
     <div className="header" ref={headerRef}>
       <div className="header__content">
-        <div className="header__title-container">
+        <Link className="header__title-container" to={"/all"}>
           <span className="header__title">{heading}</span>
-        </div>
+        </Link>
         <div
           className={`header__menu ${
             isMobileMenuOpened ? "header__menu--is-opened" : ""

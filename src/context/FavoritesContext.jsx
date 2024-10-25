@@ -3,35 +3,37 @@ import { createContext, useState, useEffect } from "react";
 export const FavoritesContext = createContext();
 
 export const FavoritesProvider = ({ children }) => {
-  const [favorites, setFavorites] = useState([]);
+  const [favoritesState, setFavoritesState] = useState([]);
 
   useEffect(() => {
-    const storedFavorites =
-      JSON.parse(localStorage.getItem("favoriteMedias")) || [];
-    setFavorites(storedFavorites);
+    const storedFavorites = JSON.parse(localStorage.getItem("favoritesMedia"));
+    console.log("storedFavorites", storedFavorites)
+    if (storedFavorites && storedFavorites.length) {
+      setFavoritesState(storedFavorites);
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("favoriteMedias", JSON.stringify(favorites));
-  }, [favorites]);
+    localStorage.setItem("favoritesMedia", JSON.stringify(favoritesState));
+  }, [favoritesState]);
 
-  function addFavorite(media) {
-    setFavorites((prevFavorites) => [...prevFavorites, media]);
+  function addFavorite(mediaData) {
+    setFavoritesState((prevFavorites) => [...prevFavorites, mediaData]);
   }
 
   function removeFavorite(mediaId) {
-    setFavorites((prevFavorites) =>
+    setFavoritesState((prevFavorites) =>
       prevFavorites.filter((fav) => fav.id !== mediaId)
     );
   }
 
   function isFavorited(mediaId) {
-    return favorites.some((fav) => fav.id === mediaId);
+    return favoritesState.some((fav) => fav.id === mediaId);
   }
 
   return (
     <FavoritesContext.Provider
-      value={{ favorites, addFavorite, removeFavorite, isFavorited }}
+      value={{ favoritesState, addFavorite, removeFavorite, isFavorited }}
     >
       {children}
     </FavoritesContext.Provider>

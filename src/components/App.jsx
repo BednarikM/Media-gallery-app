@@ -7,12 +7,12 @@ import {
   Navigate,
   useSearchParams,
 } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 
 import {
   SearchContext,
   ApiOptionsContext,
-  MediasDataFetchedContext,
+  MediaDataFetchedContext,
 } from "../context/Context.js";
 import { PaginationContext } from "../context/PaginationContext.jsx";
 import { MediaGenresContext } from "../context/MediaGenresContext.jsx";
@@ -41,12 +41,14 @@ export default function App() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [mediasData, setMediasData] = useState([]);
-  const [mediasDataFetched, setMediasDataFetched] = useState(false);
+  const [mediaDataState, setMediaDataState] = useState([]);
+  const [areMediaDataFetched, setAreMediaDataFetched] = useState(false);
   const [mediaGenres, setMediaGenres] = useState({});
-  const [mediasGenresFetched, setMediasGenresFetched] = useState(false);
+  const [areMediaGenresFetched, setAreMediaGenresFetched] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  // const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [triggerState, setTriggerState] = useState(false);
+  const previousSearchInputRef = useRef("");
 
   const { currentPageState, setTotalPagesCount } =
     useContext(PaginationContext);
@@ -71,8 +73,8 @@ export default function App() {
   };
 
   /* FUNCTIONS ****************************************************************/
-  async function fetchMediasData(url, apiOptions) {
-    setMediasDataFetched(false);
+  async function fetchMediaData(url, apiOptions) {
+    setAreMediaDataFetched(false);
     try {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
@@ -117,15 +119,15 @@ export default function App() {
           };
         });
 
-      setMediasData(formattedData);
-      setMediasDataFetched(true);
-      console.log("media", mediasDataFetched); // WORKING SEND TO REPLACE LOADER
+      setMediaDataState(formattedData);
+      setAreMediaDataFetched(true);
+      console.log("media", areMediaDataFetched); // DELETE, DATA FETCHING INFORMATION
     } catch (error) {
       console.error("Caught error while fetching media data:", error);
     }
   }
 
-  async function fetchMediasGenres(apiOptions) {
+  async function fetchMediaGenres(apiOptions) {
     const movieGenresResponse = await fetch(movieGenresUrl, apiOptions);
     const tvGenresResponse = await fetch(tvGenresUrl, apiOptions);
 
@@ -138,13 +140,13 @@ export default function App() {
     };
 
     setMediaGenres(genresList);
-    setMediasGenresFetched(true);
+    setAreMediaGenresFetched(true);
   }
 
   /* HOOKS ********************************************************************/
   /* FETCH GENRE LIST HOOK */
   useEffect(() => {
-    fetchMediasGenres(apiOptions);
+    fetchMediaGenres(apiOptions);
   }, []);
 
   /* LOCATION PATHNAME HOOK */
@@ -157,77 +159,86 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  /* LOCATION MEDIAS DATA FETCH HOOK */
+  /* LOCATION MEDIA DATA FETCH HOOK */
   useEffect(() => {
-    if (isValidTrendingMediaGenre && mediasGenresFetched) {
-      fetchMediasData(trendingUrl, apiOptions);
+    if (isValidTrendingMediaGenre && areMediaGenresFetched) {
+      fetchMediaData(trendingUrl, apiOptions);
     }
-  }, [currentMediaTypeState, mediasGenresFetched, currentPageState]);
+  }, [currentMediaTypeState, areMediaGenresFetched, currentPageState]);
 
   /* SAVE DEBOUNCED SEARCH VALUE */
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedSearchValue(searchInputValue);
-    }, 500);
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setDebouncedSearchValue(searchInputValue);
+  //   }, 500);
 
-    return () => clearTimeout(timeoutId);
-  }, [searchInputValue]);
+  //   return () => clearTimeout(timeoutId);
+  // }, [searchInputValue]);
 
   /* SEPARATE SEARCH FETCH LOGIC */
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    const searchValue = newSearchParams.get("keyword") || debouncedSearchValue;
-    const searchPage = newSearchParams.get("page") || currentPageState;
-    const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${searchValue}&include_adult=false&language=en-US&page=${searchPage}`;
+    const timeoutId = setTimeout(() => {
+      const newSearchParams = new URLSearchParams(searchParams);
+      const keywordQuery = newSearchParams.get("keyword") || "";
+      const searchValue =
+        searchInputValue === previousSearchInputRef.current
+          ? keywordQuery
+          : searchInputValue;
+      const searchPage = newSearchParams.get("page") || currentPageState;
+      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${searchValue}&include_adult=false&language=en-US&page=${searchPage}`;
 
-    const shouldFetchSearchMedias = mediasGenresFetched && searchValue;
+      const shouldFetchSearchMedia = areMediaGenresFetched && searchValue;
 
-    if (shouldFetchSearchMedias) {
-      fetchMediasData(searchUrl, apiOptions);
+      if (shouldFetchSearchMedia) {
+        fetchMediaData(searchUrl, apiOptions);
 
-      if (!newSearchParams.get("keyword")) {
-        newSearchParams.set("keyword", searchValue);
+        newSearchParams.set("keyword", searchInputValue ? searchInputValue : keywordQuery);
+
+        setSearchParams(newSearchParams);
+
+        navigate(`/search?${newSearchParams.toString()}`, { replace: true });
       }
-      if (currentPageState !== 1) {
-        newSearchParams.set("page", currentPageState);
-      }
 
-      setSearchParams(newSearchParams);
+      previousSearchInputRef.current = searchInputValue;
+    }, 500);
 
-      navigate(`/search?${newSearchParams.toString()}`, { replace: true });
-    }
+    return () => clearTimeout(timeoutId);
   }, [
-    debouncedSearchValue,
+    searchInputValue,
     searchParams,
-    mediasGenresFetched,
+    areMediaGenresFetched,
     currentPageState,
+    triggerState,
   ]);
 
   /* JSX TEMPLATE *************************************************************/
   return (
     <ApiOptionsContext.Provider value={{ apiOptions }}>
       <SearchContext.Provider
-        value={{ searchInputValue, setSearchInputValue, fetchMediasData }}
+        value={{ searchInputValue, setSearchInputValue, fetchMediaData }}
       >
-        <Header heading="Medias Search App" />
+        <Header heading="Media gallery app" />
       </SearchContext.Provider>
       <PageLayout>
-        <MediasDataFetchedContext.Provider value={{ mediasDataFetched }}>
+        <MediaDataFetchedContext.Provider value={{ areMediaDataFetched }}>
           <FavoritesProvider>
             <Routes>
               <Route path="/" element={<Navigate to="/all" replace />} />
               <Route
                 path="/all"
-                element={<HomePage mediasData={mediasData} />}
+                element={<HomePage mediaDataState={mediaDataState} />}
               />
               <Route
                 path="/movie"
-                element={<MoviePage mediasData={mediasData} />}
+                element={<MoviePage mediaDataState={mediaDataState} />}
               />
-              <Route path="/tv" element={<TvPage mediasData={mediasData} />} />
+              <Route
+                path="/tv"
+                element={<TvPage mediaDataState={mediaDataState} />}
+              />
               <Route
                 path="/search"
-                element={<SearchPage mediasData={mediasData} />}
+                element={<SearchPage mediaDataState={mediaDataState} />}
               />
               <Route path="/favorites" element={<FavoritesPage />} />
               <Route
@@ -238,7 +249,7 @@ export default function App() {
               <Route path="/*" element={<NotFoundPage />} />
             </Routes>
           </FavoritesProvider>
-        </MediasDataFetchedContext.Provider>
+        </MediaDataFetchedContext.Provider>
       </PageLayout>
     </ApiOptionsContext.Provider>
   );

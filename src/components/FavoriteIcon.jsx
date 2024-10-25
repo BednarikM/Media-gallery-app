@@ -6,20 +6,20 @@ import SvgIcon from "./SvgIcon.jsx";
 
 import "../styles/components/FavoriteIcon.scss";
 
-export default function Favorite({ media }) {
+export default function FavoriteIcon({ mediaData }) {
   const { isFavorited, addFavorite, removeFavorite } =
     useContext(FavoritesContext);
 
-  const favorited = isFavorited(media.id);
+  const favorited = isFavorited(mediaData.id);
 
   function toggleFavorite(e) {
     e.stopPropagation();
     e.preventDefault();
 
     if (favorited) {
-      removeFavorite(media.id);
+      removeFavorite(mediaData.id);
     } else {
-      addFavorite(media);
+      addFavorite(mediaData);
     }
   }
 

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useLocation } from "react-router-dom";
 
-import { MediasDataFetchedContext } from "../context/Context.js";
+import { MediaDataFetchedContext } from "../context/Context.js";
 import { FavoritesContext } from "../context/FavoritesContext.jsx";
 import { PaginationContext } from "../context/PaginationContext.jsx";
 
@@ -11,21 +11,21 @@ import SpinningLoader from "./SpinningLoader.jsx";
 
 import "../styles/components/MediaList.scss";
 
-export default function MediasList({ mediasData }) {
+export default function MediaList({ mediaDataState }) {
   const location = useLocation();
 
-  const { favorites } = useContext(FavoritesContext);
+  const { favoritesState } = useContext(FavoritesContext);
   const { isPageExcluded } = useContext(PaginationContext);
-  const { mediasDataFetched } = useContext(MediasDataFetchedContext);
+  const { areMediaDataFetched } = useContext(MediaDataFetchedContext);
 
   const isFavoritesRoute = location.pathname === "/favorites";
-  const listData = isFavoritesRoute ? favorites : mediasData;
+  const mediaList = isFavoritesRoute ? favoritesState : mediaDataState;
 
   return (
     <>
-      {mediasDataFetched && (
+      {(areMediaDataFetched || isFavoritesRoute) && (
         <div className="media-list">
-          {!listData.length && (
+          {mediaList.length === 0 && (
             <div className="media-list__no-results">
               <span>
                 {isFavoritesRoute
@@ -39,11 +39,11 @@ export default function MediasList({ mediasData }) {
               </span>
             </div>
           )}
-          {!!listData.length && (
+          {mediaList.length >= 1 && (
             <>
               <ul className="media-list__content">
-                {listData.map((media, index) => (
-                  <MediaListCard key={index} {...{ media, index }} />
+                {mediaList.map((mediaItem, index) => (
+                  <MediaListCard key={index} {...{ mediaItem, index }} />
                 ))}
               </ul>
               {!isPageExcluded && <PaginationContainer />}
@@ -51,7 +51,7 @@ export default function MediasList({ mediasData }) {
           )}
         </div>
       )}
-      {!mediasDataFetched && <SpinningLoader />}
+      {(!areMediaDataFetched && !isFavoritesRoute) && <SpinningLoader />}
     </>
   );
 }

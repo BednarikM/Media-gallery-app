@@ -18,7 +18,7 @@ export default function MediaDetailCard() {
   const { apiOptions } = useContext(ApiOptionsContext);
 
   const [queryParams, setQueryParams] = useState({});
-  const [mediaData, setMediaData] = useState({});
+  const [mediaDataState, setMediaDataState] = useState({});
   const [dataAreFetched, setDataAreFetched] = useState(false);
 
   async function fetchSelectedMedia(queryParams, apiOptions) {
@@ -42,9 +42,10 @@ export default function MediaDetailCard() {
         fetchedData.created_by && fetchedData.created_by.length
           ? fetchedData.created_by.map((creator) => creator.name)
           : "",
+      media_page: fetchedData.homepage,
     };
 
-    setMediaData(mappedData);
+    setMediaDataState(mappedData);
     setDataAreFetched(true);
   }
 
@@ -70,54 +71,54 @@ export default function MediaDetailCard() {
               <div className="media-detail-card__main-information-container">
                 <div className="media-detail-card__meta-container media-detail-card__meta-container">
                   <div className="media-detail-card__title">
-                    {mediaData.media_type === "movie" && mediaData.title}
-                    {mediaData.media_type === "tv" && mediaData.name}
+                    {mediaDataState.media_type === "movie" && mediaDataState.title}
+                    {mediaDataState.media_type === "tv" && mediaDataState.name}
                   </div>
                   <div className="media-detail-card__tagline">
-                    {mediaData.tagline}
+                    {mediaDataState.tagline}
                   </div>
-                  <MediaSubInformation mediaData={mediaData} />
+                  <MediaSubInformation mediaData={mediaDataState} />
                   <GenreList
                     parentClass={"media-detail-card"}
-                    formattedGenres={mediaData.genres}
+                    formattedGenres={mediaDataState.genres}
                   />
                   <div className="media-detail-card__likeness">
                     <Rating
-                      voteAverage={mediaData.vote_average}
-                      voteCount={mediaData.vote_count}
+                      voteAverage={mediaDataState.vote_average}
+                      voteCount={mediaDataState.vote_count}
                     />
-                    <FavoriteIcon media={mediaDataLocationState} />
+                    <FavoriteIcon mediaData={mediaDataLocationState} />
                   </div>
                 </div>
                 <ImageContainer
                   classModifier={"mobile"}
                   parentClass={"media-detail-card"}
-                  imageUrl={mediaData.poster_path}
-                  imageAlt={mediaData.title}
+                  imageUrl={mediaDataState.poster_path}
+                  imageAlt={mediaDataState.title}
                 />
               </div>
               <div className="media-detail-card__secondary-information-container">
                 <MediaDetailField
                   parentClass={"media-detail-card"}
                   label="Overview"
-                  value={mediaData.overview}
+                  value={mediaDataState.overview}
                 />
-                {mediaData.production_companies && (
+                {mediaDataState.production_companies && (
                   <MediaDetailField
                     parentClass={"media-detail-card"}
                     label="Production companies"
                   >
-                    {mediaData.production_companies.map((company) => {
+                    {mediaDataState.production_companies.map((company) => {
                       return <span key={company}>{company}</span>;
                     })}
                   </MediaDetailField>
                 )}
-                {mediaData.created_by && (
+                {mediaDataState.created_by && (
                   <MediaDetailField
                     parentClass={"media-detail-card"}
                     label="Created by"
                   >
-                    {mediaData.created_by.map((creator) => {
+                    {mediaDataState.created_by.map((creator) => {
                       return <span key={creator}>{creator}</span>;
                     })}
                   </MediaDetailField>
@@ -126,7 +127,7 @@ export default function MediaDetailCard() {
                   parentClass={"media-detail-card"}
                   label="Spoken languages"
                 >
-                  {mediaData.spoken_languages.map((language) => {
+                  {mediaDataState.spoken_languages.map((language) => {
                     return <span key={language}>{language}</span>;
                   })}
                 </MediaDetailField>
@@ -135,8 +136,8 @@ export default function MediaDetailCard() {
             <ImageContainer
               classModifier={"desktop"}
               parentClass={"media-detail-card"}
-              imageUrl={mediaData.poster_path}
-              imageAlt={mediaData.title}
+              imageUrl={mediaDataState.poster_path}
+              imageAlt={mediaDataState.title}
             />
           </div>
         </div>
