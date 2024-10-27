@@ -26,20 +26,26 @@
     a {
       color: $color-purple-light;
       text-decoration: none;
+    }
 
-      &:visited {
+    &--visited {
+      a {
         color: $color-gray-dark;
+        text-decoration: line-through;
       }
     }
   }
 
-  &__media-imdb-link {
+  &__imdb-link {
     a {
       color: $color-gold;
       text-decoration: none;
+    }
 
-      &:visited {
+    &--visited {
+      a {
         color: $color-gray-dark;
+        text-decoration: line-through;
       }
     }
   }

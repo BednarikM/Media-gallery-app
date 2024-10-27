@@ -13,7 +13,7 @@ export default function SearchInput() {
   // function handleKeyDown(event) {
   //   if (event.key === "Enter") {
   //     console.log("trigered");
-  //     setDebouncedInputValue(inputRef.current.value); // SET DEBOUNCED VALUE RIGHT and currentPageState to 1
+  //     setTriggerState(inputRef.current.value); // TODO TRIGGER SEARCH HOOK WITH ENTER KEYDOWN
   //   }
   // }
 
@@ -29,8 +29,8 @@ export default function SearchInput() {
         type="text"
         ref={inputRef}
         value={searchInputValue}
-        id="search-input__element"
         className="search-input__element"
+        aria-label="Search input"
         placeholder="Search"
         onChange={(e) => setSearchInputValue(e.target.value)}
         // onKeyDown={handleKeyDown}

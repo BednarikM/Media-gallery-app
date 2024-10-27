@@ -10,9 +10,8 @@ export const PaginationProvider = ({ children }) => {
   const [totalPagesCount, setTotalPagesCount] = useState(); // FINISH
   const [currentPageState, setCurrentPageState] = useState(1);
   const [visiblePagesArray, setVisiblePagesArray] = useState([]);
-  const [leftEllipsisVisible, setLeftEllipsisVisible] = useState(false);
-  const [rightEllipsisVisible, setrightEllipsisVisible] = useState(true);
   const [isPageExcluded, setIsPageExcluded] = useState(false);
+  const [paginationInputValue, setPaginationInputValue] = useState("");
 
   const firstPage = 1;
 
@@ -58,35 +57,29 @@ export const PaginationProvider = ({ children }) => {
   useEffect(() => {
     const visiblePages = [];
     const totalVisiblePages = 5;
-    const lastVisiblePage = totalPagesCount - 1;
+    const lastVisiblePage = totalPagesCount;
 
-    let startPage = Math.max(2, currentPageState - 2);
-    let endPage = Math.min(lastVisiblePage, currentPageState + 2);
+    let startPage;
+    let endPage;
 
-    // ARRAY BEGINNING
-    if (currentPageState <= 3) {
-      startPage = 2;
-      endPage = Math.min(lastVisiblePage, totalVisiblePages + 1);
-    }
-
-    // ARRAY END
-    if (currentPageState >= lastVisiblePage - 2) {
-      startPage = Math.max(2, lastVisiblePage - (totalVisiblePages - 1));
+    if (currentPageState < 3) {
+      // Scenario 1: Current page is less than 4, so display pages 1 through 7
+      startPage = 1;
+      endPage = Math.min(totalVisiblePages, lastVisiblePage);
+    } else if (currentPageState >= lastVisiblePage - 2) {
+      // Scenario 3: Near the end, display the last 7 pages
+      startPage = Math.max(1, lastVisiblePage - totalVisiblePages + 1);
       endPage = lastVisiblePage;
+    } else {
+      // Scenario 2: Center currentPageState in the middle of the visible range
+      startPage = currentPageState - 2;
+      endPage = currentPageState + 2;
     }
 
-    // VISIBLE ARRAY
-    for (
-      let i = startPage;
-      i <= endPage && visiblePages.length < totalVisiblePages;
-      i++
-    ) {
+    // Populate visiblePages array based on calculated start and end pages
+    for (let i = startPage; i <= endPage; i++) {
       visiblePages.push(i);
     }
-
-    setLeftEllipsisVisible(startPage > 2);
-
-    setrightEllipsisVisible(endPage < totalPagesCount - 1);
 
     setVisiblePagesArray(visiblePages);
   }, [currentPageState, totalPagesCount]);
@@ -101,11 +94,11 @@ export const PaginationProvider = ({ children }) => {
         visiblePagesArray,
         currentPageState,
         setCurrentPageState,
-        leftEllipsisVisible,
-        rightEllipsisVisible,
         setPage, // BUTTON FUNCTION
         incrementPage, // SVG FUNCTION
         decrementPage, // SVG FUNCTION
+        paginationInputValue, // INPUT STATE
+        setPaginationInputValue, // INPUT SETSTATE
       }}
     >
       {children}

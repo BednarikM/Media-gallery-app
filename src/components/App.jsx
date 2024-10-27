@@ -20,9 +20,7 @@ import { FavoritesProvider } from "../context/FavoritesContext.jsx";
 
 import { formatRoute, formatDate } from "../utils/Utils.js";
 
-import HomePage from "../pages/HomePage.jsx";
-import MoviePage from "../pages/MoviePage.jsx";
-import TvPage from "../pages/TvPage.jsx";
+import GenrePage from "../pages/GenrePage.jsx";
 import SearchPage from "../pages/SearchPage.jsx";
 import FavoritesPage from "../pages/FavoritesPage.jsx";
 import MediaDetailPage from "../pages/MediaDetailPage.jsx";
@@ -166,15 +164,6 @@ export default function App() {
     }
   }, [currentMediaTypeState, areMediaGenresFetched, currentPageState]);
 
-  /* SAVE DEBOUNCED SEARCH VALUE */
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     setDebouncedSearchValue(searchInputValue);
-  //   }, 500);
-
-  //   return () => clearTimeout(timeoutId);
-  // }, [searchInputValue]);
-
   /* SEPARATE SEARCH FETCH LOGIC */
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -192,7 +181,10 @@ export default function App() {
       if (shouldFetchSearchMedia) {
         fetchMediaData(searchUrl, apiOptions);
 
-        newSearchParams.set("keyword", searchInputValue ? searchInputValue : keywordQuery);
+        newSearchParams.set(
+          "keyword",
+          searchInputValue ? searchInputValue : keywordQuery
+        );
 
         setSearchParams(newSearchParams);
 
@@ -208,7 +200,7 @@ export default function App() {
     searchParams,
     areMediaGenresFetched,
     currentPageState,
-    triggerState,
+    triggerState, // TODO TRIGGERING THE SEARCH INPUT BY ENTER KEYDOWN EVENT
   ]);
 
   /* JSX TEMPLATE *************************************************************/
@@ -225,16 +217,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/all" replace />} />
               <Route
-                path="/all"
-                element={<HomePage mediaDataState={mediaDataState} />}
-              />
-              <Route
-                path="/movie"
-                element={<MoviePage mediaDataState={mediaDataState} />}
-              />
-              <Route
-                path="/tv"
-                element={<TvPage mediaDataState={mediaDataState} />}
+                path="/:genre"
+                element={<GenrePage mediaDataState={mediaDataState} />}
               />
               <Route
                 path="/search"
@@ -246,7 +230,8 @@ export default function App() {
                 element={<MediaDetailPage />}
               />
               <Route path="/error" element={<ErrorPage />} />
-              <Route path="/*" element={<NotFoundPage />} />
+              <Route path="/*" element={<Navigate to="/404" replace />} />
+              <Route path="/404" element={<NotFoundPage />} />
             </Routes>
           </FavoritesProvider>
         </MediaDataFetchedContext.Provider>

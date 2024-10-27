@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   formatRuntime,
   capitalFirstLetter,
@@ -9,6 +11,11 @@ import CountryFlags from "../components/CountryFlags.jsx";
 import "../styles/components/MediaSubInformation.scss";
 
 export default function MediaSubInformation({ mediaData }) {
+  const [visitedLinks, setVisitedLinks] = useState({
+    mediaPage: false,
+    imdb: false,
+  });
+
   const {
     media_type,
     origin_country,
@@ -21,6 +28,10 @@ export default function MediaSubInformation({ mediaData }) {
     imdb_id,
     type,
   } = mediaData;
+
+  function handleLinkVisited(linkType) {
+    setVisitedLinks((prev) => ({ ...prev, [linkType]: true }));
+  }
 
   return (
     <div className="sub-information">
@@ -47,19 +58,37 @@ export default function MediaSubInformation({ mediaData }) {
         </>
       )}
       {media_page && (
-        <span className="sub-information__media-page-link">
-          <a href={media_page} target="_blank" rel="noopener noreferrer">
+        <span
+          className={`sub-information__media-page-link ${
+            visitedLinks.mediaPage
+              ? "sub-information__media-page-link--visited"
+              : ""
+          }`}
+        >
+          <a
+            href={media_page}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => handleLinkVisited("mediaPage")}
+          >
             Media page
           </a>
         </span>
       )}
 
       {imdb_id && (
-        <span className="sub-information__media-imdb-link">
+        <span
+          className={`sub-information__imdb-link ${
+            visitedLinks.mediaPage
+              ? "sub-information__media-page-link--visited"
+              : ""
+          }`}
+        >
           <a
             href={`https://www.imdb.com/title/${imdb_id}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => handleLinkVisited("imdb")}
           >
             IMDB
           </a>
