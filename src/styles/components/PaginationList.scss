@@ -1,0 +1,55 @@
+@use "../variables" as *;
+
+.pagination-list {
+  display: none;
+
+  &__button {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: none;
+    color: $color-white;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: $color-blue-dark;
+    font-weight: bold;
+    height: fit-content;
+    width: fit-content;
+
+    &--first {
+      margin-right: 0.5rem;
+    }
+
+    &--last {
+      margin-left: 0.5rem;
+    }
+
+    &:hover {
+      color: $color-blue-dark;
+      background-color: $color-white;
+    }
+
+    &--active {
+      color: $color-blue-dark;
+      background-color: $color-gold;
+      pointer-events: none;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-inline: 2rem;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+}

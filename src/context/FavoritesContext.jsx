@@ -7,7 +7,6 @@ export const FavoritesProvider = ({ children }) => {
 
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem("favoritesMedia"));
-    console.log("storedFavorites", storedFavorites)
     if (storedFavorites && storedFavorites.length) {
       setFavoritesState(storedFavorites);
     }

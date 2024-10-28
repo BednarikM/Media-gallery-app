@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useRef } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const PaginationContext = createContext();
@@ -13,8 +13,10 @@ export const PaginationProvider = ({ children }) => {
   const [isPageExcluded, setIsPageExcluded] = useState(false);
   const [paginationInputValue, setPaginationInputValue] = useState("");
 
+  const isSynced = useRef(false);
   const firstPage = 1;
 
+  /* FUNCTIONS ****************************************************************/
   function incrementPage() {
     if (currentPageState < totalPagesCount) {
       setCurrentPageState((prev) => prev + 1);
@@ -29,24 +31,31 @@ export const PaginationProvider = ({ children }) => {
 
   function setPage(pageNumber) {
     setCurrentPageState(pageNumber);
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (pageNumber === 1) {
-      newSearchParams.delete("page");
-    } else {
-      newSearchParams.set("page", pageNumber);
-    }
-    setSearchParams(newSearchParams);
   }
 
+  /* HOOKS ********************************************************************/
+  /* CURRENT PAGE */
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
-    const queryPageState = Number(newSearchParams.get("page")) || 1;
+    const queryPageState = Number(newSearchParams.get("page"))
 
-    if (queryPageState !== currentPageState) {
-      setCurrentPageState(queryPageState);
+    if(queryPageState && queryPageState !== currentPageState && !isSynced.current) {
+      setCurrentPageState(queryPageState)
+      isSynced.current = true;
     }
-  }, [searchParams]);
 
+    if (currentPageState === 1) {
+      newSearchParams.delete("page")
+    } else {
+      newSearchParams.set("page", currentPageState);
+    }
+
+    if (newSearchParams.toString() !== searchParams.toString()) {
+      setSearchParams(newSearchParams);
+    }
+  }, [currentPageState, searchParams]);
+
+  /* EXCLUDED PAGES TO HIDE PAGINATION*/
   useEffect(() => {
     const excludedPages = ["/", "/media", "/favorites"];
 
@@ -63,20 +72,18 @@ export const PaginationProvider = ({ children }) => {
     let endPage;
 
     if (currentPageState < 3) {
-      // Scenario 1: Current page is less than 4, so display pages 1 through 7
       startPage = 1;
       endPage = Math.min(totalVisiblePages, lastVisiblePage);
+
     } else if (currentPageState >= lastVisiblePage - 2) {
-      // Scenario 3: Near the end, display the last 7 pages
       startPage = Math.max(1, lastVisiblePage - totalVisiblePages + 1);
       endPage = lastVisiblePage;
+
     } else {
-      // Scenario 2: Center currentPageState in the middle of the visible range
       startPage = currentPageState - 2;
       endPage = currentPageState + 2;
     }
 
-    // Populate visiblePages array based on calculated start and end pages
     for (let i = startPage; i <= endPage; i++) {
       visiblePages.push(i);
     }

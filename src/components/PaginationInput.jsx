@@ -3,7 +3,7 @@ import { PaginationContext } from "../context/PaginationContext";
 
 import "../styles/components/PaginationInput.scss";
 
-export default function PaginationInput() {
+export default function PaginationInput({classModifier}) {
   const { currentPageState, setPage, totalPagesCount } =
     useContext(PaginationContext);
   const [paginationInputValue, setPaginationInputValue] =
@@ -24,7 +24,7 @@ export default function PaginationInput() {
   }
 
   return (
-    <div className="pagination-input">
+    <div className={`pagination-input ${classModifier ? `pagination-input--${classModifier}` : ""}`}>
       <input
         type="number"
         value={paginationInputValue}

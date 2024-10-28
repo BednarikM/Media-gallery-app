@@ -31,7 +31,7 @@ export default function SearchInput() {
         value={searchInputValue}
         className="search-input__element"
         aria-label="Search input"
-        placeholder="Search"
+        placeholder="Type to search"
         onChange={(e) => setSearchInputValue(e.target.value)}
         // onKeyDown={handleKeyDown}
       />

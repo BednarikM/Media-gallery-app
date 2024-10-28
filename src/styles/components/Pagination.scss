@@ -1,0 +1,74 @@
+@use "../variables" as *;
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 10rem;
+
+  &__container {
+    padding: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__svg-chevron-left,
+  &__svg-chevron-right,
+  &__svg-double-chevron-left,
+  &__svg-double-chevron-right {
+    width: 35px;
+    height: 35px;
+    fill: $color-white;
+    border-radius: 4px;
+    background-color: $color-blue-dark;
+    cursor: pointer;
+
+    &:hover {
+      fill: $color-blue-dark;
+      background-color: $color-white;
+    }
+
+    &--disabled {
+      pointer-events: none;
+      opacity: 20%;
+    }
+  }
+
+  &__svg-chevron-left {
+    margin-right: 0.5rem;
+  }
+
+  &__svg-chevron-right {
+    margin-left: 0.5rem;
+  }
+
+  &__svg-double-chevron-left {
+    margin-right: 0.5rem;
+    width: 50px;
+  }
+
+  &__svg-double-chevron-right {
+    margin-left: 0.5rem;
+    width: 50px;
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination {
+    &__container {
+      flex-direction: column;
+      gap: 2rem;
+    }
+  }
+}

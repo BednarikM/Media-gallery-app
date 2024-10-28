@@ -24,8 +24,8 @@ import GenrePage from "../pages/GenrePage.jsx";
 import SearchPage from "../pages/SearchPage.jsx";
 import FavoritesPage from "../pages/FavoritesPage.jsx";
 import MediaDetailPage from "../pages/MediaDetailPage.jsx";
-import ErrorPage from "../pages/ErrorPage.jsx"; // Custom 5XX page component
-import NotFoundPage from "../pages/NotFoundPage.jsx"; // Custom 404 page component
+import ErrorPage from "../pages/ErrorPage.jsx"; // CUSTOM 5XX PAGE
+import NotFoundPage from "../pages/NotFoundPage.jsx"; // CUSTOM PAGE
 
 import PageLayout from "../layouts/PageLayout.jsx";
 
@@ -44,11 +44,11 @@ export default function App() {
   const [mediaGenres, setMediaGenres] = useState({});
   const [areMediaGenresFetched, setAreMediaGenresFetched] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-  // const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
-  const [triggerState, setTriggerState] = useState(false);
-  const previousSearchInputRef = useRef("");
+  const [debouncedValue, setDebouncedValue] = useState("");
 
-  const { currentPageState, setTotalPagesCount } =
+  // const previousSearchInputRef = useRef("");
+
+  const { currentPageState, setPage, setTotalPagesCount } =
     useContext(PaginationContext);
   const { currentMediaTypeState, isValidTrendingMediaGenre } =
     useContext(MediaGenresContext);
@@ -119,7 +119,6 @@ export default function App() {
 
       setMediaDataState(formattedData);
       setAreMediaDataFetched(true);
-      console.log("media", areMediaDataFetched); // DELETE, DATA FETCHING INFORMATION
     } catch (error) {
       console.error("Caught error while fetching media data:", error);
     }
@@ -157,51 +156,45 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  /* LOCATION MEDIA DATA FETCH HOOK */
+  /* GENRE MEDIA TYPE DATA FETCH HOOK */
   useEffect(() => {
     if (isValidTrendingMediaGenre && areMediaGenresFetched) {
       fetchMediaData(trendingUrl, apiOptions);
     }
-  }, [currentMediaTypeState, areMediaGenresFetched, currentPageState]);
+  }, [
+    currentMediaTypeState,
+    areMediaGenresFetched,
+    currentPageState,
+  ]);
 
-  /* SEPARATE SEARCH FETCH LOGIC */
+  /* DEBOUNCED SEARCH KEYWORD LOGIC */
   useEffect(() => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    const keywordQuery = newSearchParams.get("keyword");
+
+    const value = keywordQuery ? keywordQuery : searchInputValue;
+
+    //TODO ADD isSynced.current = true;
+
     const timeoutId = setTimeout(() => {
-      const newSearchParams = new URLSearchParams(searchParams);
-      const keywordQuery = newSearchParams.get("keyword") || "";
-      const searchValue =
-        searchInputValue === previousSearchInputRef.current
-          ? keywordQuery
-          : searchInputValue;
-      const searchPage = newSearchParams.get("page") || currentPageState;
-      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${searchValue}&include_adult=false&language=en-US&page=${searchPage}`;
-
-      const shouldFetchSearchMedia = areMediaGenresFetched && searchValue;
-
-      if (shouldFetchSearchMedia) {
-        fetchMediaData(searchUrl, apiOptions);
-
-        newSearchParams.set(
-          "keyword",
-          searchInputValue ? searchInputValue : keywordQuery
-        );
-
-        setSearchParams(newSearchParams);
-
-        navigate(`/search?${newSearchParams.toString()}`, { replace: true });
-      }
-
-      previousSearchInputRef.current = searchInputValue;
+      setDebouncedValue(value);
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [
-    searchInputValue,
-    searchParams,
-    areMediaGenresFetched,
-    currentPageState,
-    triggerState, // TODO TRIGGERING THE SEARCH INPUT BY ENTER KEYDOWN EVENT
-  ]);
+  }, [searchInputValue, searchParams]);
+
+  /* SEPARATE SEARCH FETCH LOGIC */
+  useEffect(() => {
+    console.log("trigered")
+    if (debouncedValue) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("keyword", debouncedValue);
+
+      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedValue}&include_adult=false&language=en-US&page=${currentPageState}`;
+      fetchMediaData(searchUrl, apiOptions);
+      navigate(`/search?${newSearchParams.toString()}`, { replace: true });
+    }
+  }, [debouncedValue, currentPageState]);
 
   /* JSX TEMPLATE *************************************************************/
   return (

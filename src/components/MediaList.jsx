@@ -6,7 +6,7 @@ import { FavoritesContext } from "../context/FavoritesContext.jsx";
 import { PaginationContext } from "../context/PaginationContext.jsx";
 
 import MediaListCard from "../components/MediaListCard.jsx";
-import PaginationContainer from "../components/PaginationContainer";
+import Pagination from "../components/Pagination";
 import SpinningLoader from "./SpinningLoader.jsx";
 
 import "../styles/components/MediaList.scss";
@@ -46,7 +46,7 @@ export default function MediaList({ mediaDataState }) {
                   <MediaListCard key={index} {...{ mediaItem, index }} />
                 ))}
               </ul>
-              {!isPageExcluded && <PaginationContainer />}
+              {!isPageExcluded && <Pagination />}
             </>
           )}
         </div>
