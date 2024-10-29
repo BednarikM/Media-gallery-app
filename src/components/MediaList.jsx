@@ -43,7 +43,7 @@ export default function MediaList({ mediaDataState }) {
             <>
               <ul className="media-list__content">
                 {mediaList.map((mediaItem, index) => (
-                  <MediaListCard key={index} {...{ mediaItem, index }} />
+                  <MediaListCard key={index} {...{ mediaItem}} />
                 ))}
               </ul>
               {!isPageExcluded && <Pagination />}

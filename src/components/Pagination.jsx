@@ -30,7 +30,7 @@ export default function PaginationContainer() {
                   : ""
               }`}
               iconName={"double-chevron-left"}
-              handleIconClick={() => setPage(firstPage)}
+              handleIconClick={() => setPage(1)}
             />
             <SvgIcon
               className={`pagination__svg-chevron-left ${

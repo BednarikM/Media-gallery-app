@@ -1,12 +1,13 @@
 import { useContext } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { PaginationContext } from "../context/PaginationContext.jsx";
 
 import "../styles/components/PaginationList.scss";
 
 export default function PaginationList() {
-  const { currentPageState, visiblePagesArray, setPage } =
-    useContext(PaginationContext);
+  const [searchParams, setSearchParams ] = useSearchParams()
+  const { visiblePagesArray, setPage } = useContext(PaginationContext);
 
   return (
     <ul className="pagination-list">
@@ -15,7 +16,7 @@ export default function PaginationList() {
           <li className="pagination-list__item" key={pageNumber}>
             <button
               className={`pagination-list__button ${
-                pageNumber === currentPageState
+                pageNumber === Number(searchParams.get("page") || 1)
                   ? "pagination-list__button--active"
                   : ""
               }`}

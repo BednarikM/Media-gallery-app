@@ -45,22 +45,18 @@ export default function App() {
   const [areMediaGenresFetched, setAreMediaGenresFetched] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedValue, setDebouncedValue] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
 
-  const { firstPage, currentPageState, setPage, setTotalPagesCount } =
-    useContext(PaginationContext);
-  const { currentMediaTypeState, isValidTrendingMediaGenre } =
-    useContext(MediaGenresContext);
+  const { setTotalPagesCount } = useContext(PaginationContext);
+  const { currentMediaTypeState, isValidTrendingMediaGenre } = useContext(MediaGenresContext);
 
+  /* REF KEY */
   const previousSearchedKeyword = useRef("");
 
   /* API KEY */
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
   /* DYNAMIC URLS */
-  const trendingUrl = `https://api.themoviedb.org/3/trending/${currentMediaTypeState}/week?language=en-US&page=${currentPageState}`;
-  const movieGenresUrl =
-    "https://api.themoviedb.org/3/genre/movie/list?language=en";
+  const movieGenresUrl = "https://api.themoviedb.org/3/genre/movie/list?language=en";
   const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
 
   const apiOptions = {
@@ -129,6 +125,7 @@ export default function App() {
       setAreMediaDataFetched(true);
     } catch (error) {
       console.error("Caught error while fetching media data:", error);
+      navigate("/error");
     }
   }
 
@@ -156,12 +153,6 @@ export default function App() {
 
   /* LOCATION PATHNAME HOOK */
   useEffect(() => {
-    if (location.pathname.startsWith("/search")) {
-      setIsSearching(true);
-    } else {
-      setIsSearching(false);
-    }
-
     if (
       location.pathname !== "/search" &&
       !location.pathname.startsWith("/media/")
@@ -172,21 +163,21 @@ export default function App() {
 
   /* GENRE MEDIA TYPE DATA FETCH HOOK */
   useEffect(() => {
-    if (!isSearching && isValidTrendingMediaGenre && areMediaGenresFetched) {
+    if (isValidTrendingMediaGenre && areMediaGenresFetched) {
+      const currentPage = Number(searchParams.get("page") || 1)
+      const trendingUrl = `https://api.themoviedb.org/3/trending/${currentMediaTypeState}/week?language=en-US&page=${currentPage}`;
       fetchMediaData(trendingUrl, apiOptions);
     }
   }, [
     currentMediaTypeState,
     areMediaGenresFetched,
-    currentPageState,
-    isSearching,
+    searchParams,
   ]);
 
   /* DEBOUNCED SEARCH KEYWORD LOGIC */
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
     const keywordQuery = newSearchParams.get("keyword");
-
     const value = searchInputValue || keywordQuery;
 
     const timeoutId = setTimeout(() => {
@@ -200,23 +191,16 @@ export default function App() {
   useEffect(() => {
     if (debouncedValue) {
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("keyword", debouncedValue);
-
-      let searchPage;
-
-      if (debouncedValue !== previousSearchedKeyword.current) {
-        searchPage = "1";
-        setPage(firstPage);
-      } else {
-        searchPage = currentPageState;
-      }
-
-      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedValue}&include_adult=false&language=en-US&page=${searchPage}`;
+      const currentPage = Number(searchParams.get("page") || 1)
+      newSearchParams.set("keyword", debouncedValue)
+      
+      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedValue}&include_adult=false&language=en-US&page=${currentPage}`;
       fetchMediaData(searchUrl, apiOptions);
+
       previousSearchedKeyword.current = debouncedValue;
       navigate(`/search?${newSearchParams.toString()}`, { replace: true });
     }
-  }, [debouncedValue, currentPageState]);
+  }, [debouncedValue, searchParams]);
 
   /* JSX TEMPLATE *************************************************************/
   return (

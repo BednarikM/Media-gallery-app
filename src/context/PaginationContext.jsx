@@ -1,69 +1,82 @@
-import { createContext, useEffect, useState, useRef } from "react";
+import { createContext, useEffect, useState, useRef, useContext } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const PaginationContext = createContext();
 
 export const PaginationProvider = ({ children }) => {
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams({page: 1});
 
   const [totalPagesCount, setTotalPagesCount] = useState(); // FINISH
-  const [currentPageState, setCurrentPageState] = useState(1);
   const [visiblePagesArray, setVisiblePagesArray] = useState([]);
   const [isPageExcluded, setIsPageExcluded] = useState(false);
   const [paginationInputValue, setPaginationInputValue] = useState("");
 
-  const isSynced = useRef(false);
-  const firstPage = 1;
+  const excludedPages = ["/", "/media", "/favorites"];
 
   /* FUNCTIONS ****************************************************************/
   function incrementPage() {
-    if (currentPageState < totalPagesCount) {
-      setCurrentPageState((prev) => prev + 1);
-    }
+    setSearchParams((prev) => {
+      const currentPage = Number(prev.get("page"));
+      return { ...Object.fromEntries(prev), page: currentPage + 1 };
+    });
   }
 
   function decrementPage() {
-    if (currentPageState > 1) {
-      setCurrentPageState((prev) => prev - 1);
-    }
+    setSearchParams((prev) => {
+      const currentPage = Number(prev.get("page")); // Default to 1 if not set
+      if (currentPage > 1) {
+        return { ...Object.fromEntries(prev), page: currentPage - 1 }; // Decrement page if > 1
+      }
+      return prev; // Return previous params if already at 1
+    });
   }
 
   function setPage(pageNumber) {
-    setCurrentPageState(pageNumber);
+    setSearchParams((prev) => {
+      return { ...Object.fromEntries(prev), page: pageNumber }; // Set the specific page number
+    });
   }
 
   /* HOOKS ********************************************************************/
   /* CURRENT PAGE */
-  useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    const queryPageState = Number(newSearchParams.get("page"))
+  // useEffect(() => {
+  //   const newSearchParams = new URLSearchParams(searchParams);
+  //   const queryPageState = Number(newSearchParams.get("page"));
 
-    if(queryPageState && queryPageState !== currentPageState && !isSynced.current) {
-      setCurrentPageState(queryPageState)
-      isSynced.current = true;
-    }
+  //   // if (
+  //   //   queryPageState &&
+  //   //   queryPageState !== currentPageState &&
+  //   //   !isSynced.current
+  //   // ) {
+  //   //   setCurrentPageState(queryPageState);
+  //   //   isSynced.current = true;
+  //   // }
 
-    if (currentPageState === 1) {
-      newSearchParams.delete("page")
-    } else {
-      newSearchParams.set("page", currentPageState);
-    }
+  //   // console.log("params", newSearchParams.get("page"));
+  //   // console.log("current", currentPageState);
+  //   // console.log("queryPageState", queryPageState);
 
-    if (newSearchParams.toString() !== searchParams.toString()) {
-      setSearchParams(newSearchParams);
-    }
-  }, [currentPageState, searchParams]);
+  //   // // if (currentPageState !== firstPage && !isPageExcluded) {
+  //   // //   newSearchParams.set("page", currentPageState);
+  //   // // } else if (currentPageState === firstPage || isPageExcluded) {
+  //   // //   // console.log(currentPageState, firstPage, currentPageState === firstPage)
+  //   // //   // console.log(isPageExcluded)
+  //   // //   newSearchParams.delete("page");
+  //   // // }
+
+  //   setSearchParams(newSearchParams);
+  // }, [currentPageState]);
 
   /* EXCLUDED PAGES TO HIDE PAGINATION*/
   useEffect(() => {
-    const excludedPages = ["/", "/media", "/favorites"];
-
     const isExcluded = excludedPages.some((page) => location.pathname === page);
     setIsPageExcluded(isExcluded);
   }, [location.pathname]);
 
   useEffect(() => {
+    const currentPage = Number(searchParams.get("page"))
+
     const visiblePages = [];
     const totalVisiblePages = 5;
     const lastVisiblePage = totalPagesCount;
@@ -71,17 +84,15 @@ export const PaginationProvider = ({ children }) => {
     let startPage;
     let endPage;
 
-    if (currentPageState < 3) {
+    if (currentPage < 3) {
       startPage = 1;
       endPage = Math.min(totalVisiblePages, lastVisiblePage);
-
-    } else if (currentPageState >= lastVisiblePage - 2) {
+    } else if (currentPage >= lastVisiblePage - 2) {
       startPage = Math.max(1, lastVisiblePage - totalVisiblePages + 1);
       endPage = lastVisiblePage;
-
     } else {
-      startPage = currentPageState - 2;
-      endPage = currentPageState + 2;
+      startPage = currentPage - 2;
+      endPage = currentPage + 2;
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -89,18 +100,15 @@ export const PaginationProvider = ({ children }) => {
     }
 
     setVisiblePagesArray(visiblePages);
-  }, [currentPageState, totalPagesCount]);
+  }, [searchParams, totalPagesCount]);
 
   return (
     <PaginationContext.Provider
       value={{
-        firstPage,
         isPageExcluded,
         totalPagesCount,
         setTotalPagesCount,
         visiblePagesArray,
-        currentPageState,
-        setCurrentPageState,
         setPage, // BUTTON FUNCTION
         incrementPage, // SVG FUNCTION
         decrementPage, // SVG FUNCTION

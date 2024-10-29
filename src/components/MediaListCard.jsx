@@ -18,10 +18,17 @@ export default function MediaListCard({ mediaItem, index }) {
     vote_count,
   } = mediaItem;
 
+  const newSearchParams = () => {
+    const params = new URLSearchParams();
+    params.set("type", media_type);
+    params.set("id", id);
+    return params.toString();  // Return the search string
+  };
+
   return (
-    <li className="media-list-card" key={index}>
+    <li className="media-list-card">
       <Link
-        to={`${formattedRoute}?type=${media_type}&id=${id}`}
+        to={`${formattedRoute}?${newSearchParams()}`}
         state={{ mediaDataLocationState: mediaItem }}
         className="media-list-card__link"
       >
