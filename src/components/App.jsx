@@ -37,7 +37,7 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [mediaDataState, setMediaDataState] = useState([]);
   const [areMediaDataFetched, setAreMediaDataFetched] = useState(false);
@@ -45,13 +45,14 @@ export default function App() {
   const [areMediaGenresFetched, setAreMediaGenresFetched] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedValue, setDebouncedValue] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
-  // const previousSearchInputRef = useRef("");
-
-  const { currentPageState, setPage, setTotalPagesCount } =
+  const { firstPage, currentPageState, setPage, setTotalPagesCount } =
     useContext(PaginationContext);
   const { currentMediaTypeState, isValidTrendingMediaGenre } =
     useContext(MediaGenresContext);
+
+  const previousSearchedKeyword = useRef("");
 
   /* API KEY */
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
@@ -88,25 +89,32 @@ export default function App() {
           let selectedGenreList;
 
           if (media.media_type === "movie") {
-            formattedTitle = media.title;
-            formattedRoute = formatRoute(media.title);
-            formattedReleaseDate = formatDate(media.release_date);
+            formattedTitle = media.title || "Untitled Movie";
+            formattedRoute = formatRoute(media.title || "unknown-movie-title");
+            formattedReleaseDate = formatDate(
+              media.release_date || "Unknown date"
+            );
             selectedGenreList = mediaGenres.movie;
           }
 
           if (media.media_type === "tv") {
-            formattedTitle = media.name;
-            formattedRoute = formatRoute(media.name);
-            formattedReleaseDate = formatDate(media.first_air_date);
+            formattedTitle = media.name || "Untitled Show";
+            formattedRoute = formatRoute(media.name || "unknown-show-title");
+            formattedReleaseDate = formatDate(
+              media.first_air_date || "Unknown date"
+            );
             selectedGenreList = mediaGenres.tv;
           }
 
-          const formattedGenres = media.genre_ids.map((genreId) => {
-            const genre = selectedGenreList.find(
-              (genre) => genre.id === genreId
-            );
-            return genre.name;
-          });
+          const formattedGenres =
+            selectedGenreList && selectedGenreList.length > 0
+              ? media.genre_ids.map((genreId) => {
+                  const genre = selectedGenreList.find(
+                    (genre) => genre.id === genreId
+                  );
+                  return genre.name;
+                })
+              : [];
 
           return {
             ...media,
@@ -148,23 +156,30 @@ export default function App() {
 
   /* LOCATION PATHNAME HOOK */
   useEffect(() => {
+    if (location.pathname.startsWith("/search")) {
+      setIsSearching(true);
+    } else {
+      setIsSearching(false);
+    }
+
     if (
       location.pathname !== "/search" &&
       !location.pathname.startsWith("/media/")
     ) {
       setSearchInputValue("");
     }
-  }, [location.pathname]);
+  }, [location.pathname, location]);
 
   /* GENRE MEDIA TYPE DATA FETCH HOOK */
   useEffect(() => {
-    if (isValidTrendingMediaGenre && areMediaGenresFetched) {
+    if (!isSearching && isValidTrendingMediaGenre && areMediaGenresFetched) {
       fetchMediaData(trendingUrl, apiOptions);
     }
   }, [
     currentMediaTypeState,
     areMediaGenresFetched,
     currentPageState,
+    isSearching,
   ]);
 
   /* DEBOUNCED SEARCH KEYWORD LOGIC */
@@ -172,9 +187,7 @@ export default function App() {
     const newSearchParams = new URLSearchParams(searchParams);
     const keywordQuery = newSearchParams.get("keyword");
 
-    const value = keywordQuery ? keywordQuery : searchInputValue;
-
-    //TODO ADD isSynced.current = true;
+    const value = searchInputValue || keywordQuery;
 
     const timeoutId = setTimeout(() => {
       setDebouncedValue(value);
@@ -185,13 +198,22 @@ export default function App() {
 
   /* SEPARATE SEARCH FETCH LOGIC */
   useEffect(() => {
-    console.log("trigered")
     if (debouncedValue) {
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set("keyword", debouncedValue);
 
-      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedValue}&include_adult=false&language=en-US&page=${currentPageState}`;
+      let searchPage;
+
+      if (debouncedValue !== previousSearchedKeyword.current) {
+        searchPage = "1";
+        setPage(firstPage);
+      } else {
+        searchPage = currentPageState;
+      }
+
+      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedValue}&include_adult=false&language=en-US&page=${searchPage}`;
       fetchMediaData(searchUrl, apiOptions);
+      previousSearchedKeyword.current = debouncedValue;
       navigate(`/search?${newSearchParams.toString()}`, { replace: true });
     }
   }, [debouncedValue, currentPageState]);

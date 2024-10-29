@@ -130,7 +130,7 @@
     &__spoken-languages {
       .media-detail-field__children span:not(:first-child) {
         &::before {
-          margin-right:0.5rem;
+          margin-right: 0.5rem;
           content: ", ";
         }
       }
@@ -179,6 +179,8 @@
     }
 
     &__meta-container {
+      margin-bottom: 2rem;
+
       &--mobile {
         display: none;
       }

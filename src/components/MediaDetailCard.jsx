@@ -1,5 +1,5 @@
-import { useEffect, useContext, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useContext, useState, useRef } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import { ApiOptionsContext } from "../context/Context.js";
 import { getFullLangNames } from "../utils/Utils.js";
@@ -17,9 +17,11 @@ export default function MediaDetailCard() {
   const { state: { mediaDataLocationState } = {} } = useLocation();
   const { apiOptions } = useContext(ApiOptionsContext);
 
-  const [queryParams, setQueryParams] = useState({});
+  const [searchParams] = useSearchParams();
   const [mediaDataState, setMediaDataState] = useState({});
   const [dataAreFetched, setDataAreFetched] = useState(false);
+
+  const prevSearchParamsRef = useRef();
 
   async function fetchSelectedMedia(queryParams, apiOptions) {
     const url = `https://api.themoviedb.org/3/${queryParams.type}/${queryParams.id}?language=en-US`;
@@ -50,17 +52,19 @@ export default function MediaDetailCard() {
   }
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const paramsObject = Object.fromEntries(queryParams.entries());
+    const paramsObject = Object.fromEntries(searchParams.entries());
 
-    setQueryParams(paramsObject);
-  }, []);
+    if (
+      JSON.stringify(paramsObject) !==
+      JSON.stringify(prevSearchParamsRef.current)
+    ) {
+      prevSearchParamsRef.current = paramsObject;
 
-  useEffect(() => {
-    if (Object.entries(queryParams).length) {
-      fetchSelectedMedia(queryParams, apiOptions);
+      if (Object.keys(paramsObject).length > 0) {
+        fetchSelectedMedia(paramsObject, apiOptions);
+      }
     }
-  }, [queryParams]);
+  }, [searchParams]);
 
   return (
     <>
@@ -71,7 +75,8 @@ export default function MediaDetailCard() {
               <div className="media-detail-card__main-information-container">
                 <div className="media-detail-card__meta-container media-detail-card__meta-container">
                   <div className="media-detail-card__title">
-                    {mediaDataState.media_type === "movie" && mediaDataState.title}
+                    {mediaDataState.media_type === "movie" &&
+                      mediaDataState.title}
                     {mediaDataState.media_type === "tv" && mediaDataState.name}
                   </div>
                   <div className="media-detail-card__tagline">
