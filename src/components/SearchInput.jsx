@@ -29,6 +29,7 @@ export default function SearchInput() {
         type="text"
         ref={inputRef}
         value={searchInputValue}
+        id="search-input__element"
         className="search-input__element"
         aria-label="Search input"
         placeholder="Type to search"

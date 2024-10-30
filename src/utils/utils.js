@@ -1,7 +1,6 @@
 import ISO6391 from 'iso-639-1';
 
 export function formatRoute(mediaTitle) {
-  // console.log(mediaTitle)
   return `/media/` + mediaTitle
     .toLowerCase()
     .replace(/'/g, "") // Remove single quotes

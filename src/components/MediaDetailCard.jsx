@@ -1,7 +1,8 @@
 import { useEffect, useContext, useState, useRef } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import { ApiOptionsContext } from "../context/Context.js";
+
 import { getFullLangNames } from "../utils/Utils.js";
 
 import MediaDetailField from "../components/MediaDetailField.jsx";
@@ -14,12 +15,11 @@ import MediaSubInformation from "../components/MediaSubInformation.jsx";
 import "../styles/components/MediaDetailCard.scss";
 
 export default function MediaDetailCard() {
-  const { state: { mediaDataLocationState } = {} } = useLocation();
   const { apiOptions } = useContext(ApiOptionsContext);
 
   const [searchParams] = useSearchParams();
   const [mediaDataState, setMediaDataState] = useState({});
-  const [dataAreFetched, setDataAreFetched] = useState(false);
+  const [areDataFetched, setAreDataFetched] = useState(false);
 
   const prevSearchParamsRef = useRef();
 
@@ -48,27 +48,25 @@ export default function MediaDetailCard() {
     };
 
     setMediaDataState(mappedData);
-    setDataAreFetched(true);
+    setAreDataFetched(true);
   }
 
   useEffect(() => {
     const paramsObject = Object.fromEntries(searchParams.entries());
-
-    if (
-      JSON.stringify(paramsObject) !==
-      JSON.stringify(prevSearchParamsRef.current)
-    ) {
-      prevSearchParamsRef.current = paramsObject;
-
-      if (Object.keys(paramsObject).length > 0) {
-        fetchSelectedMedia(paramsObject, apiOptions);
-      }
+    const { id, type } = paramsObject;
+  
+    const hasValidParams = id && type;
+    const isNewParams = JSON.stringify({ id, type }) !== JSON.stringify(prevSearchParamsRef.current);
+  
+    if (hasValidParams && isNewParams) {
+      prevSearchParamsRef.current = { id, type };
+      fetchSelectedMedia({ id, type }, apiOptions);
     }
   }, [searchParams]);
 
   return (
     <>
-      {dataAreFetched && (
+      {areDataFetched && (
         <div className="media-detail-card">
           <div className="media-detail-card__content-container">
             <div className="media-detail-card__content">
@@ -92,7 +90,7 @@ export default function MediaDetailCard() {
                       voteAverage={mediaDataState.vote_average}
                       voteCount={mediaDataState.vote_count}
                     />
-                    <FavoriteIcon mediaData={mediaDataLocationState} />
+                    <FavoriteIcon mediaData={mediaDataState} />
                   </div>
                 </div>
                 <ImageContainer

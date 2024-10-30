@@ -7,7 +7,8 @@ import MediaSubInformation from "../components/MediaSubInformation.jsx";
 
 import "../styles/components/MediaListCard.scss";
 
-export default function MediaListCard({ mediaItem, index }) {
+export default function MediaListCard({ mediaItem}) {
+  
   const {
     formattedRoute,
     id,
@@ -18,18 +19,17 @@ export default function MediaListCard({ mediaItem, index }) {
     vote_count,
   } = mediaItem;
 
-  const newSearchParams = () => {
-    const params = new URLSearchParams();
-    params.set("type", media_type);
-    params.set("id", id);
-    return params.toString();  // Return the search string
+  const createSearchParams = () => {
+    const newSearchParams = new URLSearchParams();
+    newSearchParams.set("type", media_type);
+    newSearchParams.set("id", id);
+    return newSearchParams.toString();
   };
 
   return (
     <li className="media-list-card">
       <Link
-        to={`${formattedRoute}?${newSearchParams()}`}
-        state={{ mediaDataLocationState: mediaItem }}
+        to={`${formattedRoute}?${createSearchParams()}`}
         className="media-list-card__link"
       >
         <ImageContainer

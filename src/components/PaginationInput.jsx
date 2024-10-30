@@ -1,11 +1,11 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PaginationContext } from "../context/PaginationContext";
 
 import "../styles/components/PaginationInput.scss";
 
 export default function PaginationInput({ classModifier }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { setPage, totalPagesCount } = useContext(PaginationContext);
   const [paginationInputValue, setPaginationInputValue] = useState("");
 
@@ -40,7 +40,7 @@ export default function PaginationInput({ classModifier }) {
         min={1}
         max={totalPagesCount}
         placeholder={Number(searchParams.get("page")) || 1}
-        id="pagination-input-element"
+        id={`pagination-input-element--"${classModifier}`}
         className="pagination-input__element"
         aria-label="Pagination input"
         onChange={(e) => handleChange(e)}
@@ -48,7 +48,7 @@ export default function PaginationInput({ classModifier }) {
       />
       <label
         className="pagination-input__label"
-        htmlFor="pagination-input-element"
+        htmlFor={`pagination-input-element--"${classModifier}`}
       >
         of {totalPagesCount}
       </label>

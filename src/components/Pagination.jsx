@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { PaginationContext } from "../context/PaginationContext.jsx";
 
@@ -9,10 +10,9 @@ import SvgIcon from "./SvgIcon.jsx";
 import "../styles/components/Pagination.scss";
 
 export default function PaginationContainer() {
+  const [searchParams] = useSearchParams()
   const {
-    firstPage,
     totalPagesCount,
-    currentPageState,
     setPage,
     incrementPage,
     decrementPage,
@@ -25,7 +25,7 @@ export default function PaginationContainer() {
           <div className="pagination__panel">
             <SvgIcon
               className={`pagination__svg-double-chevron-left ${
-                currentPageState === 1
+                !Number(searchParams.get("page")) || Number(searchParams.get("page")) === 1
                   ? "pagination__svg-double-chevron-left--disabled"
                   : ""
               }`}
@@ -34,7 +34,7 @@ export default function PaginationContainer() {
             />
             <SvgIcon
               className={`pagination__svg-chevron-left ${
-                currentPageState === 1
+                !Number(searchParams.get("page")) || Number(searchParams.get("page")) === 1
                   ? "pagination__svg-chevron-left--disabled"
                   : ""
               }`}
@@ -45,7 +45,7 @@ export default function PaginationContainer() {
             <PaginationInput classModifier={"mobile"} />
             <SvgIcon
               className={`pagination__svg-chevron-right ${
-                currentPageState === totalPagesCount
+                Number(searchParams.get("page")) === totalPagesCount
                   ? "pagination__svg-chevron-right--disabled"
                   : ""
               }`}
@@ -54,7 +54,7 @@ export default function PaginationContainer() {
             />
             <SvgIcon
               className={`pagination__svg-double-chevron-right ${
-                totalPagesCount === currentPageState
+                Number(searchParams.get("page")) === totalPagesCount
                   ? "pagination__svg-double-chevron-right--disabled"
                   : ""
               }`}

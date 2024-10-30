@@ -5,8 +5,6 @@ export default function ErrorPage() {
 
   const { status, message } = location.state || {}; // Fallback in case state is missing
 
-  console.log("error page hitted");
-
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
       <h1>{status}</h1>

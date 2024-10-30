@@ -1,13 +1,12 @@
 /* IMPORTS ********************************************************************/
+import { useState, useEffect, useContext } from "react";
 import {
   Route,
   Routes,
   useNavigate,
-  useLocation,
   Navigate,
   useSearchParams,
 } from "react-router-dom";
-import { useState, useEffect, useContext, useRef } from "react";
 
 import {
   SearchContext,
@@ -24,41 +23,34 @@ import GenrePage from "../pages/GenrePage.jsx";
 import SearchPage from "../pages/SearchPage.jsx";
 import FavoritesPage from "../pages/FavoritesPage.jsx";
 import MediaDetailPage from "../pages/MediaDetailPage.jsx";
-import ErrorPage from "../pages/ErrorPage.jsx"; // CUSTOM 5XX PAGE
-import NotFoundPage from "../pages/NotFoundPage.jsx"; // CUSTOM PAGE
-
-import PageLayout from "../layouts/PageLayout.jsx";
+import ErrorPage from "../pages/ErrorPage.jsx";
+import NotFoundPage from "../pages/NotFoundPage.jsx";
 
 import Header from "./Header.jsx";
+import PageLayout from "../layouts/PageLayout.jsx";
+
 
 /* JSX LOGIC ******************************************************************/
 export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [mediaDataState, setMediaDataState] = useState([]);
   const [areMediaDataFetched, setAreMediaDataFetched] = useState(false);
   const [mediaGenres, setMediaGenres] = useState({});
   const [areMediaGenresFetched, setAreMediaGenresFetched] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-  const [debouncedValue, setDebouncedValue] = useState("");
 
   const { setTotalPagesCount } = useContext(PaginationContext);
-  const { currentMediaTypeState, isValidTrendingMediaGenre } = useContext(MediaGenresContext);
-
-  /* REF KEY */
-  const previousSearchedKeyword = useRef("");
+  const { currentMediaTypeState, isValidTrendingMediaGenre } =
+    useContext(MediaGenresContext);
 
   /* API KEY */
   const apiKey = process.env.REACT_APP_TMDB_API_BEARER_TOKEN;
 
-  /* DYNAMIC URLS */
-  const movieGenresUrl = "https://api.themoviedb.org/3/genre/movie/list?language=en";
-  const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
-
+  /* API OPTION */
   const apiOptions = {
     method: "GET",
     headers: {
@@ -66,6 +58,12 @@ export default function App() {
       Authorization: `Bearer ${apiKey}`,
     },
   };
+
+  /* URLS */
+  const movieGenresUrl =
+    "https://api.themoviedb.org/3/genre/movie/list?language=en";
+  const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
+
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMediaData(url, apiOptions) {
@@ -151,62 +149,60 @@ export default function App() {
     fetchMediaGenres(apiOptions);
   }, []);
 
-  /* LOCATION PATHNAME HOOK */
-  useEffect(() => {
-    if (
-      location.pathname !== "/search" &&
-      !location.pathname.startsWith("/media/")
-    ) {
-      setSearchInputValue("");
-    }
-  }, [location.pathname, location]);
-
   /* GENRE MEDIA TYPE DATA FETCH HOOK */
   useEffect(() => {
-    if (isValidTrendingMediaGenre && areMediaGenresFetched) {
-      const currentPage = Number(searchParams.get("page") || 1)
+    const keywordQuery = searchParams.get("keyword");
+
+    if (!keywordQuery && isValidTrendingMediaGenre && areMediaGenresFetched) {
+      const currentPage = Number(searchParams.get("page") || 1);
       const trendingUrl = `https://api.themoviedb.org/3/trending/${currentMediaTypeState}/week?language=en-US&page=${currentPage}`;
       fetchMediaData(trendingUrl, apiOptions);
     }
   }, [
     currentMediaTypeState,
+    isValidTrendingMediaGenre,
     areMediaGenresFetched,
     searchParams,
   ]);
 
   /* DEBOUNCED SEARCH KEYWORD LOGIC */
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    const keywordQuery = newSearchParams.get("keyword");
-    const value = searchInputValue || keywordQuery;
+    if (searchInputValue) {
+      const timeoutId = setTimeout(() => {
+        setSearchParams(() => {
+          return {keyword: searchInputValue, page: 1}
+        })
 
-    const timeoutId = setTimeout(() => {
-      setDebouncedValue(value);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchInputValue, searchParams]);
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [searchInputValue]);
 
   /* SEPARATE SEARCH FETCH LOGIC */
   useEffect(() => {
-    if (debouncedValue) {
-      const newSearchParams = new URLSearchParams(searchParams);
-      const currentPage = Number(searchParams.get("page") || 1)
-      newSearchParams.set("keyword", debouncedValue)
-      
-      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${debouncedValue}&include_adult=false&language=en-US&page=${currentPage}`;
-      fetchMediaData(searchUrl, apiOptions);
+    const keywordQuery = searchParams.get("keyword");
 
-      previousSearchedKeyword.current = debouncedValue;
+    if (keywordQuery) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      const currentPage = Number(searchParams.get("page") || 1);
+
+      if (currentPage === 1) {
+        newSearchParams.delete("page");
+      } else {
+        newSearchParams.set("page", currentPage);
+      }
+
+      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${keywordQuery}&include_adult=false&language=en-US&page=${currentPage}`;
+      fetchMediaData(searchUrl, apiOptions);
       navigate(`/search?${newSearchParams.toString()}`, { replace: true });
     }
-  }, [debouncedValue, searchParams]);
+  }, [searchParams]);
 
   /* JSX TEMPLATE *************************************************************/
   return (
     <ApiOptionsContext.Provider value={{ apiOptions }}>
       <SearchContext.Provider
-        value={{ searchInputValue, setSearchInputValue, fetchMediaData }}
+        value={{ searchInputValue, setSearchInputValue }}
       >
         <Header heading="Media gallery app" />
       </SearchContext.Provider>

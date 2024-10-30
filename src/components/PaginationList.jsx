@@ -6,7 +6,7 @@ import { PaginationContext } from "../context/PaginationContext.jsx";
 import "../styles/components/PaginationList.scss";
 
 export default function PaginationList() {
-  const [searchParams, setSearchParams ] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const { visiblePagesArray, setPage } = useContext(PaginationContext);
 
   return (

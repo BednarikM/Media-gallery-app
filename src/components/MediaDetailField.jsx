@@ -14,3 +14,4 @@ export default function MediaDetailField({ label, value, children }) {
     </div>
   );
 }
+;
