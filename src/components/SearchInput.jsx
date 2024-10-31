@@ -1,4 +1,5 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { SearchContext } from "../context/Context.js";
 
@@ -7,21 +8,38 @@ import SvgIcon from "../components/SvgIcon.jsx";
 import "../styles/components/SearchInput.scss";
 
 export default function SearchInput() {
+  const [ searchParams , setSearchParams] = useSearchParams()
   const { searchInputValue, setSearchInputValue } = useContext(SearchContext);
   const inputRef = useRef();
 
-  // function handleKeyDown(event) {
-  //   if (event.key === "Enter") {
-  //     console.log("trigered");
-  //     setTriggerState(inputRef.current.value); // TODO TRIGGER SEARCH HOOK WITH ENTER KEYDOWN
-  //   }
-  // }
+  /* FUNCTIONS ******************************************************************/
+  function handleKeyDown(event) {
+    if (event.key === "Enter") {
+      setSearchParams(() => {
+        return {keyword: searchInputValue}
+      })
+    }
+  }
 
   function handleClearIconClick() {
     if (searchInputValue) {
       setSearchInputValue("");
     }
   }
+
+  /* HOOKS ********************************************************************/
+  /* DEBOUNCED SEARCH KEYWORD LOGIC */
+  useEffect(() => {
+    if (searchInputValue) {
+      const timeoutId = setTimeout(() => {
+        setSearchParams(() => {
+          return {keyword: searchInputValue}
+        })
+
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [searchInputValue]);
 
   return (
     <div className="search-input">
@@ -34,7 +52,7 @@ export default function SearchInput() {
         aria-label="Search input"
         placeholder="Type to search"
         onChange={(e) => setSearchInputValue(e.target.value)}
-        // onKeyDown={handleKeyDown}
+        onKeyDown={(e) => handleKeyDown(e)}
       />
       <SvgIcon
         className={`search-input__svg-clear ${

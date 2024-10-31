@@ -29,13 +29,12 @@ import NotFoundPage from "../pages/NotFoundPage.jsx";
 import Header from "./Header.jsx";
 import PageLayout from "../layouts/PageLayout.jsx";
 
-
 /* JSX LOGIC ******************************************************************/
 export default function App() {
   /* DEFINITION ***************************************************************/
   const navigate = useNavigate();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [mediaDataState, setMediaDataState] = useState([]);
   const [areMediaDataFetched, setAreMediaDataFetched] = useState(false);
@@ -63,7 +62,6 @@ export default function App() {
   const movieGenresUrl =
     "https://api.themoviedb.org/3/genre/movie/list?language=en";
   const tvGenresUrl = "https://api.themoviedb.org/3/genre/tv/list?language=en";
-
 
   /* FUNCTIONS ****************************************************************/
   async function fetchMediaData(url, apiOptions) {
@@ -165,34 +163,19 @@ export default function App() {
     searchParams,
   ]);
 
-  /* DEBOUNCED SEARCH KEYWORD LOGIC */
-  useEffect(() => {
-    if (searchInputValue) {
-      const timeoutId = setTimeout(() => {
-        setSearchParams(() => {
-          return {keyword: searchInputValue, page: 1}
-        })
-
-      }, 500);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [searchInputValue]);
-
   /* SEPARATE SEARCH FETCH LOGIC */
   useEffect(() => {
     const keywordQuery = searchParams.get("keyword");
+    const pageQuery = Number(searchParams.get("page") || 1);
 
     if (keywordQuery) {
       const newSearchParams = new URLSearchParams(searchParams);
-      const currentPage = Number(searchParams.get("page") || 1);
 
-      if (currentPage === 1) {
-        newSearchParams.delete("page");
-      } else {
-        newSearchParams.set("page", currentPage);
+      if (pageQuery !== 1) {
+        newSearchParams.set("page", pageQuery);
       }
 
-      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${keywordQuery}&include_adult=false&language=en-US&page=${currentPage}`;
+      const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${keywordQuery}&include_adult=false&language=en-US&page=${pageQuery}`;
       fetchMediaData(searchUrl, apiOptions);
       navigate(`/search?${newSearchParams.toString()}`, { replace: true });
     }
@@ -201,9 +184,7 @@ export default function App() {
   /* JSX TEMPLATE *************************************************************/
   return (
     <ApiOptionsContext.Provider value={{ apiOptions }}>
-      <SearchContext.Provider
-        value={{ searchInputValue, setSearchInputValue }}
-      >
+      <SearchContext.Provider value={{ searchInputValue, setSearchInputValue }}>
         <Header heading="Media gallery app" />
       </SearchContext.Provider>
       <PageLayout>
