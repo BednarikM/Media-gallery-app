@@ -6,7 +6,7 @@ import { MediaGenresProvider } from "./context/MediaGenresContext.jsx";
 
 import App from "./components/App.jsx";
 
-import "./styles/Index.scss";
+import "./styles/main.scss";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>

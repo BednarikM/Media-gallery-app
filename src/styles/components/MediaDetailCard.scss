@@ -2,22 +2,22 @@
 
 .media-detail-card {
   background-color: $color-blue-dark;
+  border-radius: 4px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  border-radius: 4px;
 
   &__content-container {
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
-    width: 100%;
     height: 100%;
     margin: 0 auto;
     max-width: 100rem;
+    padding: 2rem;
+    width: 100%;
   }
 
   &__title-container {
@@ -53,17 +53,17 @@
   }
 
   &__likeness {
+    align-items: center;
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: 2rem;
   }
 
   &__image-container {
-    position: relative;
-    height: auto;
     display: none;
+    height: auto;
     padding: 3rem 0;
+    position: relative;
 
     &--mobile {
       display: flex;
@@ -78,9 +78,9 @@
   &__placeholder,
   &__image {
     height: 100%;
-    width: 100%;
     max-width: 30rem;
     object-fit: contain;
+    width: 100%;
   }
 
   &__secondary-information-container {
@@ -90,27 +90,27 @@
 
   /* NESTED MEDIA-DETAIL-FIELD STYLES AND ITS VARIANTS */
   .media-detail-field {
-    font-size: 2rem;
+    align-items: flex-start;
+    align-items: start;
     color: $color-white;
     display: flex;
     flex-direction: column;
-    align-items: start;
-    align-items: flex-start;
-    padding: 1rem 0;
+    font-size: 2rem;
     gap: 1rem;
+    padding: 1rem 0;
     position: relative;
 
     &:not(:last-child) {
       margin-bottom: 2rem;
       &::after {
+        background-color: $color-gray-dark; /* Color of the line */
+        bottom: -1rem; /* Position it at the bottom of the element */
         content: "";
         display: block;
-        width: 100%; /* Full width of the element */
         height: 1px; /* Height of the line */
-        background-color: $color-gray-dark; /* Color of the line */
-        position: absolute;
-        bottom: -1rem; /* Position it at the bottom of the element */
         left: 0;
+        position: absolute;
+        width: 100%; /* Full width of the element */
       }
     }
 
@@ -120,9 +120,9 @@
 
     &__value,
     &__children {
+      color: $color-gray-light;
       font-size: 1.6rem;
       white-space: pre-wrap;
-      color: $color-gray-light;
     }
 
     &__created-by,
@@ -130,15 +130,15 @@
     &__spoken-languages {
       .media-detail-field__children span:not(:first-child) {
         &::before {
-          margin-right: 0.5rem;
           content: ", ";
+          margin-right: 0.5rem;
         }
       }
     }
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: $breakpointMedium) {
   .media-detail-card {
     padding: 5rem 2rem;
 
@@ -150,8 +150,8 @@
 
     &__content {
       flex-direction: row;
-      max-width: 120rem;
       gap: 5rem;
+      max-width: 120rem;
     }
 
     &__image-container {
@@ -173,9 +173,9 @@
     }
 
     &__image {
+      max-width: 30rem;
       min-height: 100%;
       width: auto;
-      max-width: 30rem;
     }
 
     &__meta-container {

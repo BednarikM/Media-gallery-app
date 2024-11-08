@@ -18,6 +18,7 @@ import { MediaGenresContext } from "../context/MediaGenresContext.jsx";
 import { FavoritesProvider } from "../context/FavoritesContext.jsx";
 
 import { formatRoute, formatDate } from "../utils/Utils.js";
+import { errorCodes } from "../errorCodes/errorCodes.js";
 
 import GenrePage from "../pages/GenrePage.jsx";
 import SearchPage from "../pages/SearchPage.jsx";
@@ -70,6 +71,14 @@ export default function App() {
       const response = await fetch(url, apiOptions);
       const fetchedData = await response.json();
 
+      if (!response.ok) {
+        let fetchedError = errorCodes.find(
+          (item) => item.code === fetchedData.status_code
+        );
+        const { code, ...errorDetails } = fetchedError;
+        throw errorDetails;
+      }
+
       setTotalPagesCount(fetchedData.total_pages);
 
       const formattedData = fetchedData.results
@@ -120,8 +129,7 @@ export default function App() {
       setMediaDataState(formattedData);
       setAreMediaDataFetched(true);
     } catch (error) {
-      console.error("Caught error while fetching media data:", error);
-      navigate("/error");
+      navigate("/error", { state: error });
     }
   }
 
@@ -151,6 +159,10 @@ export default function App() {
   useEffect(() => {
     const keywordQuery = searchParams.get("keyword");
 
+    if (location.pathname === "/error") {
+      return;
+    }
+
     if (!keywordQuery && isValidTrendingMediaGenre && areMediaGenresFetched) {
       const currentPage = Number(searchParams.get("page") || 1);
       const trendingUrl = `https://api.themoviedb.org/3/trending/${currentMediaTypeState}/week?language=en-US&page=${currentPage}`;
@@ -161,6 +173,7 @@ export default function App() {
     isValidTrendingMediaGenre,
     areMediaGenresFetched,
     searchParams,
+    location,
   ]);
 
   /* SEPARATE SEARCH FETCH LOGIC */

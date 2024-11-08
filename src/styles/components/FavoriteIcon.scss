@@ -2,12 +2,13 @@
 
 .favorite-icon {
   display: inline-flex;
+
   &__svg-favorite {
-    width: 40px;
-    height: 40px;
-    fill: $color-gray-light;
-    z-index: 20;
     cursor: pointer;
+    fill: $color-gray-light;
+    height: 40px;
+    width: 40px;
+    z-index: 20;
 
     &--added {
       fill: $color-purple-medium;

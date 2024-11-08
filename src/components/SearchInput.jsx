@@ -8,16 +8,16 @@ import SvgIcon from "../components/SvgIcon.jsx";
 import "../styles/components/SearchInput.scss";
 
 export default function SearchInput() {
-  const [ searchParams , setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
   const { searchInputValue, setSearchInputValue } = useContext(SearchContext);
   const inputRef = useRef();
 
   /* FUNCTIONS ******************************************************************/
   function handleKeyDown(event) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && searchInputValue) {
       setSearchParams(() => {
-        return {keyword: searchInputValue}
-      })
+        return { keyword: searchInputValue };
+      });
     }
   }
 
@@ -33,9 +33,8 @@ export default function SearchInput() {
     if (searchInputValue) {
       const timeoutId = setTimeout(() => {
         setSearchParams(() => {
-          return {keyword: searchInputValue}
-        })
-
+          return { keyword: searchInputValue };
+        });
       }, 500);
       return () => clearTimeout(timeoutId);
     }

@@ -8,16 +8,16 @@
   font-size: 2rem;
   height: fit-content;
   justify-content: center;
-  width: min-content;
   position: relative;
+  width: min-content;
 
   &__element {
     border: none;
     font-size: 2rem;
+    height: 100%;
     outline: none;
     padding: 0.5rem 2.5rem 0.5rem 1rem;
     width: 20rem;
-    height: 100%;
 
     &:hover {
       cursor: text;
@@ -25,14 +25,14 @@
   }
 
   &__svg-clear {
-    position: absolute;
+    cursor: pointer;
     display: none;
     height: 15px;
-    width: 15px;
+    position: absolute;
     right: 5px;
     top: 50%;
     transform: translateY(-50%);
-    cursor: pointer;
+    width: 15px;
 
     &--display {
       display: block;

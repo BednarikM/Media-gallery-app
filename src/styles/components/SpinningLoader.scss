@@ -1,11 +1,11 @@
 @use "../variables" as *;
 
 .spinning-loader {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 4rem;
+  justify-content: center;
   padding: 5rem 2rem;
 
   &__text {
@@ -14,13 +14,12 @@
   }
 
   &__circle {
-    border: 16px solid $color-loader-circle;
-    border-radius: 50%;
-    border-top: 16px solid $color-loader-sector;
-    width: 80px;
-    height: 80px;
-    -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
+    border: 16px solid $color-loader-circle;
+    border-top: 16px solid $color-loader-sector;
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
   }
 }
 
@@ -33,15 +32,15 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: $breakpointMedium) {
   .spinning-loader {
     &__text {
       font-size: 2.8rem;
     }
 
     &__circle {
-      width: 100px;
       height: 100px;
+      width: 100px;
     }
   }
 }

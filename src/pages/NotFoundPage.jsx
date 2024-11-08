@@ -1,13 +1,22 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function ErrorPage() {
+import "../styles/pages/NotFoundPage.scss";
+
+export default function NotFoundPage() {
   return (
-    <div style={{ textAlign: "center", padding: "50px" }}>
-      <h1>404</h1>
-      <p>Page not found</p>
-      <p>
-        go to the <Link to={"/all"}>Homepage</Link>
-      </p>
+    <div className="not-found-page">
+      <div className="not-found-page__content">
+        <h1 className="not-found-page__status-code">404</h1>
+        <p className="not-found-page__title">Page not found</p>
+        <section className="not-found-page__message-section">
+          <p className="not-found-page__redirect-instructions">
+            {`go to the `}
+            <Link className="not-found-page__redirect-link" to={"/all"}>
+              Homepage
+            </Link>
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

@@ -1,16 +1,16 @@
 @use "../variables" as *;
 
 .rating {
+  align-items: center;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
   gap: 1rem;
+  justify-content: flex-start;
 
   &__svg-star {
+    fill: $color-gold;
     height: 35px;
     width: 35px;
-    fill: $color-gold;
   }
 
   &__average {
@@ -19,12 +19,12 @@
   }
 
   &__maximum {
-    font-size: 1.6rem;
     color: $color-gray-medium;
+    font-size: 1.6rem;
   }
 
   &__count {
-    font-size: 1.4rem;
     color: $color-gray-medium;
+    font-size: 1.4rem;
   }
 }
