@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 
 import { ApiOptionsContext } from "../context/Context.js";
 
@@ -12,9 +12,11 @@ import Rating from "../components/Rating.jsx";
 import FavoriteIcon from "../components/FavoriteIcon.jsx";
 import MediaSubInformation from "../components/MediaSubInformation.jsx";
 
+import SvgIcon from "./SvgIcon.jsx";
 import "../styles/components/MediaDetailCard.scss";
 
 export default function MediaDetailCard() {
+  const navigate = useNavigate();
   const { apiOptions } = useContext(ApiOptionsContext);
 
   const [searchParams] = useSearchParams();
@@ -54,10 +56,12 @@ export default function MediaDetailCard() {
   useEffect(() => {
     const paramsObject = Object.fromEntries(searchParams.entries());
     const { id, type } = paramsObject;
-  
+
     const hasValidParams = id && type;
-    const isNewParams = JSON.stringify({ id, type }) !== JSON.stringify(prevSearchParamsRef.current);
-  
+    const isNewParams =
+      JSON.stringify({ id, type }) !==
+      JSON.stringify(prevSearchParamsRef.current);
+
     if (hasValidParams && isNewParams) {
       prevSearchParamsRef.current = { id, type };
       fetchSelectedMedia({ id, type }, apiOptions);
@@ -68,6 +72,21 @@ export default function MediaDetailCard() {
     <>
       {areDataFetched && (
         <div className="media-detail-card">
+          <div className="media-detail-card__interaction-panel">
+            <Link
+              className="media-detail-card__return-back"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
+            >
+              <SvgIcon
+                iconName={"arrow-back"}
+                className={"media-detail-card__svg-arrow-back"}
+              />
+              <span className="media-detail-card__return-back-text">Back</span>
+            </Link>
+          </div>
           <div className="media-detail-card__content-container">
             <div className="media-detail-card__content">
               <div className="media-detail-card__main-information-container">
